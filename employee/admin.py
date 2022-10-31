@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Employee
+from .models import Employee, TimesheetUser
 
 
 class EmployeeAdmin(admin.ModelAdmin):
@@ -7,5 +7,4 @@ class EmployeeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Employee, EmployeeAdmin)
-
-
+admin.site.register(TimesheetUser)

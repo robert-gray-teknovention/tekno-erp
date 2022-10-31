@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'employee.apps.EmployeeConfig',
     'accounts.apps.AccountsConfig',
+    'organizations.apps.OrganizationsConfig',
 ]
 
 MIDDLEWARE = [
@@ -79,8 +80,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'timesheetdb',
-        'USER': 'postgres',
-        'PASSWORD': 'geoff1994',
+        'USER': 'timesheet',
+        'PASSWORD': 'DonkusTownMarietta',
         'HOST': 'localhost'
     }
 }
