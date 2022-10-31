@@ -80,8 +80,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'timesheetdb',
-        'USER': 'timesheet',
-        'PASSWORD': 'DonkusTownMarietta',
+        'USER': '*******',
+        'PASSWORD': '********',
         'HOST': 'localhost'
     }
 }
