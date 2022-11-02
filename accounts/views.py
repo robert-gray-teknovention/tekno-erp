@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.models import User
 from employee.models import Employee
+from organizations.models import Organization
 
 
 def register(request):
@@ -42,7 +43,11 @@ def register(request):
             messages.error(request, 'Passwords do not match')
             return redirect('register')
     else:
-        return render(request, 'accounts/register.html')
+        organizations = Organization.objects.all().order_by('name')
+        context = {
+            'organizations': organizations,
+        }
+        return render(request, 'accounts/register.html', context)
 
 
 def login(request):
