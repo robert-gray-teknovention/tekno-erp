@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
         <div class="container">
           <a class="navbar-brand" href="{% url 'index' %}">
-            <b>GT</b>
+            <b>{{ user.timesheetuser.organization.name }}</b>
           </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup">
             <span class="navbar-toggler-icon"></span>

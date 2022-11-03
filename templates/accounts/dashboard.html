@@ -31,7 +31,7 @@
 
       <!--Alerts-->
       {% include 'partials/_alerts.html' %}
-    
+
       <section id="dashboard" class="py-4">
         <div class="container">
           <div class="row">
@@ -51,7 +51,7 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                      <form action="{% url 'employees' %}" method="POST">
+                      <form action="{% url 'timesheetentries' %}" method="POST">
                         {% csrf_token %}
                         {% if user.is_authenticated %}
                           <input type="hidden" name="emp_id" value="{{ user.id }}">
@@ -106,8 +106,8 @@
                     <td>{{ emp.date_time_in }}</td>
                     <td>{{ emp.date_time_out }}</td>
                     <td>{{ emp.duration }}</td>
-                    <td>{{ emp.hourly_rate }}</td>
-                    <td>{{ emp.hourly_rate | multiply:emp.duration }}</td>
+                    <td>{{ emp.user.hourly_rate }}</td>
+                    <td>{{ emp.user.hourly_rate | multiply:emp.duration }}</td>
                     <td>{{ emp.is_approved }}</td>
                   </tr>
                   {% endfor %}

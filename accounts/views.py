@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.models import User
-from employee.models import Employee
+from timesheets.models import TimesheetEntry
+from employee.models import TimesheetUser
 from organizations.models import Organization
 
 
@@ -56,7 +57,6 @@ def login(request):
         password = request.POST['password']
 
         user = auth.authenticate(username=username, password=password)
-
         if user is not None:
             auth.login(request, user)
             messages.success(request, 'You are now logged in')
@@ -76,7 +76,8 @@ def logout(request):
 
 
 def dashboard(request):
-    user_time_entries = Employee.objects.order_by('-date_time_out').filter(emp_id=request.user.id)
+    user = TimesheetUser.objects.get(user=User.objects.get(id=request.user.id))
+    user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(user=user)
 
     context = {
         'time_entries': user_time_entries
