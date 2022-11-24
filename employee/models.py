@@ -25,15 +25,6 @@ class TimesheetUser(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
     hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            TimesheetUser.objects.create(user=instance)
-
-    @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):
-        instance.timesheetuser.save()
-
     def __str__(self):
         name = self.user.first_name + ' ' + self.user.last_name
         return name
