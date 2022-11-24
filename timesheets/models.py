@@ -1,5 +1,22 @@
+
 from django.db import models
 from employee.models import TimesheetUser
+from organizations.models import Organization
+
+
+class TimesheetPeriod(models.Model):
+    org = models.ForeignKey(Organization, on_delete=models.CASCADE, null=False)
+    date_start = models.DateTimeField(auto_now=False, auto_now_add=False)
+    date_end = models.DateTimeField(auto_now=False, auto_now_add=False)
+
+    class Meta:
+        unique_together = ('org_id', 'date_start', 'date_end')
+
+    def __str__(self):
+        return_string = str(self.date_start.month) + '/' + str(self.date_start.day) + '/'
+        return_string += str(self.date_start.year) + ' - '
+        return_string += str(self.date_end.month) + '/' + str(self.date_end.day) + '/' + str(self.date_end.year)
+        return return_string
 
 
 class TimesheetEntry(models.Model):
@@ -9,7 +26,9 @@ class TimesheetEntry(models.Model):
     date_time_out = models.DateTimeField(auto_now=False, auto_now_add=False)
     duration = models.DecimalField(max_digits=10, decimal_places=2)
     is_approved = models.BooleanField(default=False)
+    period = models.ForeignKey(TimesheetPeriod, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        name = self.user.first_name + ' ' + self.user.last_name
+        #        name = self.user.first_name + ' ' + self.user.last_name
+        name = str(self.date_time_entry)
         return name

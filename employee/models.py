@@ -22,7 +22,7 @@ class Employee(models.Model):
 class TimesheetUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=20)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
     hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     @receiver(post_save, sender=User)
