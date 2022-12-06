@@ -21,6 +21,7 @@ def timesheet_entries(request):
                                           ts_user.organization.timezone), pytz.timezone(ts_user.organization.timezone))
         entry = TimesheetEntry(user=ts_user, date_time_in=request.POST['date_time_in'],
                                date_time_out=request.POST['date_time_out'], duration=duration)
+        entry.notes = request.POST['notes']
         period = util.get_timesheet_period(date_time_in, ts_user.organization)
         entry.period = period
         entry.save()

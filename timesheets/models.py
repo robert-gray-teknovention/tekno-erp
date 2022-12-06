@@ -27,6 +27,7 @@ class TimesheetEntry(models.Model):
     duration = models.DecimalField(max_digits=10, decimal_places=2)
     is_approved = models.BooleanField(default=False)
     period = models.ForeignKey(TimesheetPeriod, on_delete=models.CASCADE, null=True)
+    notes = models.TextField(null=True)
 
     def __str__(self):
         #        name = self.user.first_name + ' ' + self.user.last_name

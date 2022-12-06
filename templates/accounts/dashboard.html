@@ -78,6 +78,10 @@
                           <label for="hourly_rate" class="col-form-label">$/Hr:</label>
                           <input type="number" name="hourly_rate" class="form-control">
                         </div>
+                        <div class="form-group">
+                          <label for="notes" class="col-form-label">Entry Notes</label>
+                          <textarea name="notes" rows="2" cols="80" class="form-control"></textarea>
+                        </div>
                         <hr>
                         <input type="submit" value="Add" class="btn btn-block btn-secondary">
                       </form>
@@ -96,6 +100,7 @@
                     <th scope="col">$/HR</th>
                     <th scope="col">SALARY($)</th>
                     <th scope="col">APPROVED</th>
+                    <th scope="col">Notes</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -109,6 +114,7 @@
                     <td>{{ emp.user.hourly_rate }}</td>
                     <td>{{ emp.user.hourly_rate | multiply:emp.duration }}</td>
                     <td>{{ emp.is_approved }}</td>
+                    <td>{{ emp.notes}}</td>
                   </tr>
                   {% endfor %}
                 </tbody>
