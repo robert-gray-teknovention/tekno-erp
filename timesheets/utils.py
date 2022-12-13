@@ -10,7 +10,6 @@ class TimesheetUtil():
 
     def get_timesheet_period(self, date, org):
         period = TimesheetPeriod.objects.filter(org=org, date_start__lte=date, date_end__gt=date)
-        print("TS date ", str(date))
         if period.count() > 0:
             return period[0]
         else:

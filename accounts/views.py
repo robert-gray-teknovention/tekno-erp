@@ -1,9 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.models import User
-from timesheets.models import TimesheetEntry
+from django.utils import timezone
+from timesheets.models import TimesheetEntry, TimesheetPeriod
 from employee.models import TimesheetUser
 from organizations.models import Organization
+from datetime import date
+import pytz
 
 
 def register(request):
@@ -76,10 +79,22 @@ def logout(request):
 
 
 def dashboard(request):
+    periods = []
     user = TimesheetUser.objects.get(user=User.objects.get(id=request.user.id))
-    user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(user=user)
+    tz = pytz.timezone(user.organization.timezone)
+    for p in TimesheetPeriod.objects.filter(org=user.organization).order_by('-date_end')[0:12]:
+        periods.append({'id': p.id, 'date_start': date.strftime(timezone.localtime(p.date_start, tz), '%m/%d/%Y'),
+                       'date_end': date.strftime(timezone.localtime(p.date_end, tz), '%m/%d/%Y')})
+    query_period = periods[0]
+    if request.GET.get('period_id'):
+        p = TimesheetPeriod.objects.get(id=request.GET.get('period_id'))
+        query_period = {'id': p.id, 'date_start': date.strftime(timezone.localtime(p.date_start, tz), '%m/%d/%Y'),
+                        'date_end': date.strftime(timezone.localtime(p.date_end, tz), '%m/%d/%Y')}
+    user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(period_id=query_period['id'])
 
     context = {
-        'time_entries': user_time_entries
+        'time_entries': user_time_entries,
+        'periods': periods,
+        'selected_period': query_period['id']
     }
     return render(request, 'accounts/dashboard.html', context)
