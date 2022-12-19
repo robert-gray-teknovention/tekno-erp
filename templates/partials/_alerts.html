@@ -2,7 +2,7 @@
     {% for message in messages %}
     <div id="message" class="container">
         <div class="alert alert-{{ message.tags }} alert-dismissible text-centerfade show" role="alert">
-                
+
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -19,7 +19,7 @@
     <script>
     setTimeout( function() {
     $('#message').fadeOut('slow');
-    }, 3000);
+    }, 5000);
     </script>
     {% endfor %}
 {%  endif %}

@@ -97,4 +97,5 @@ def dashboard(request):
         'periods': periods,
         'selected_period': query_period['id']
     }
+
     return render(request, 'accounts/dashboard.html', context)
