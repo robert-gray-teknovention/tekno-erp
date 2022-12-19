@@ -27,14 +27,17 @@ function stringToDateTime(ds) {
   var datetime=ds.split(" ");
   var date=datetime[0];
   var time=datetime[1];
-
-
   var dateString=date.slice(6) + "-" + date.slice(0,5) + "T" + time+":00";
   return dateString;
 }
 function dateTimeToString(date) {
     return date.getFullYear()+'-'+ (date.getMonth()+1).toString().padStart(2,'0') +'-'+ date.getDate().toString().padStart(2,'0')+'T'+date.getHours().toString().padStart(2,'0')+':'+ date.getMinutes().toString().padStart(2,'0');
 
+}
+
+function getHoursBetweenDates(start, end) {
+  var diff = end.getTime() - start.getTime();
+  return Math.abs(diff/(1000*60*60));
 }
 </script>
 <script>
@@ -53,6 +56,15 @@ function dateTimeToString(date) {
       $("#confirmForm").attr("action",$("#confirmForm").attr("action")+'timesheetentries/')
       $("#confirmMessage").html("Are you sure you want to delete the entry "+$('#delete_entry_id').val());
       $('#confirmModal').modal('show');
+    });
+    $("#date_time_out").on("focusout", function(){
+      console.log($("#date_time_out").val());
+      console.log($("#date_time_in").val());
+      $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
+    });
+    $("#date_time_in").on("focusout", function(){
+
+      $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
     });
   });
 </script>
@@ -128,7 +140,7 @@ function dateTimeToString(date) {
                         </div>
                         <div class="form-group">
                           <label for="duration" class="col-form-label">Duration:</label>
-                          <input id='duration' type="number" name="duration" class="form-control">
+                          <input id='duration' type="number" name="duration" step="any" class="form-control">
                         </div>
                         <div class="form-group">
                           <label for="notes" class="col-form-label">Entry Notes</label>
