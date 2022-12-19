@@ -11,18 +11,30 @@ function refreshWithNewPeriod() {
 
 function tableRowClicked(e) {
   row=document.getElementById("tsEntriesTable").rows[e.rowIndex];
-  var time_in = new Date(Date.parse(row.cells[0].innerHTML));
-  var time_out = new Date(Date.parse(row.cells[1].innerHTML));
-  document.getElementById("date_time_in").value=dateTimeToString(time_in);
-  document.getElementById("date_time_out").value=dateTimeToString(time_out);
+  var time_in = new Date(Date.parse(stringToDateTime(row.cells[0].innerHTML)));
+  var time_out = new Date(Date.parse(stringToDateTime(row.cells[1].innerHTML)));
   document.getElementById("duration").value=row.cells[2].innerHTML;
   document.getElementById("notes").value=row.cells[5].innerHTML;
   document.getElementById("id").value=row.cells[6].innerHTML;
+
+  $('#date_time_in').val(dateTimeToString(time_in));
+  $('#date_time_out').val(dateTimeToString(time_out));
+
   $('#inquiryModal').modal('show');
   $('#submitBtn').val("Update")
 }
+function stringToDateTime(ds) {
+  var datetime=ds.split(" ");
+  var date=datetime[0];
+  var time=datetime[1];
+
+
+  var dateString=date.slice(6) + "-" + date.slice(0,5) + "T" + time+":00";
+  console.log(dateString);
+  return dateString;
+}
 function dateTimeToString(date) {
-    return date.getFullYear()+'-'+ (date.getMonth()+1) +'-'+date.getDate()+'T'+date.getHours()+':'+ (date.getMinutes()<10?'0':'') + date.getMinutes();
+    return date.getFullYear()+'-'+ (date.getMonth()+1).toString().padStart(2,'0') +'-'+ date.getDate().toString().padStart(2,'0')+'T'+date.getHours()+':'+ date.getMinutes().toString().padStart(2,'0');
 
 }
 </script>
