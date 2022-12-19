@@ -30,11 +30,10 @@ function stringToDateTime(ds) {
 
 
   var dateString=date.slice(6) + "-" + date.slice(0,5) + "T" + time+":00";
-  console.log(dateString);
   return dateString;
 }
 function dateTimeToString(date) {
-    return date.getFullYear()+'-'+ (date.getMonth()+1).toString().padStart(2,'0') +'-'+ date.getDate().toString().padStart(2,'0')+'T'+date.getHours()+':'+ date.getMinutes().toString().padStart(2,'0');
+    return date.getFullYear()+'-'+ (date.getMonth()+1).toString().padStart(2,'0') +'-'+ date.getDate().toString().padStart(2,'0')+'T'+date.getHours().toString().padStart(2,'0')+':'+ date.getMinutes().toString().padStart(2,'0');
 
 }
 </script>
