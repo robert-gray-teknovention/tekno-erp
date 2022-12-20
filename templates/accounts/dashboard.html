@@ -37,7 +37,7 @@ function dateTimeToString(date) {
 
 function getHoursBetweenDates(start, end) {
   var diff = end.getTime() - start.getTime();
-  return Math.abs(diff/(1000*60*60));
+  return diff/(1000*60*60);
 }
 </script>
 <script>
@@ -58,12 +58,13 @@ function getHoursBetweenDates(start, end) {
       $('#confirmModal').modal('show');
     });
     $("#date_time_out").on("focusout", function(){
-      console.log($("#date_time_out").val());
-      console.log($("#date_time_in").val());
       $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
     });
     $("#date_time_in").on("focusout", function(){
 
+      $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
+    });
+    $("#duration").on("focusout", function(){
       $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
     });
   });
@@ -140,7 +141,7 @@ function getHoursBetweenDates(start, end) {
                         </div>
                         <div class="form-group">
                           <label for="duration" class="col-form-label">Duration:</label>
-                          <input id='duration' type="number" name="duration" step="any" class="form-control">
+                          <input id='duration' type="number" name="duration" step="any" class="form-control" min="0" class="form-control is-invalid" data-error-msg="Your start time is greater that your end time.">
                         </div>
                         <div class="form-group">
                           <label for="notes" class="col-form-label">Entry Notes</label>
