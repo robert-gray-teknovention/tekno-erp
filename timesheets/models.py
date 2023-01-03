@@ -11,6 +11,7 @@ class TimesheetPeriod(models.Model):
 
     class Meta:
         unique_together = ('org_id', 'date_start', 'date_end')
+        permissions = (('approve_timesheetperiod', 'can approve timesheetperiod'),)
 
     def __str__(self):
         return_string = str(self.date_start.month) + '/' + str(self.date_start.day) + '/'
@@ -33,3 +34,6 @@ class TimesheetEntry(models.Model):
         #        name = self.user.first_name + ' ' + self.user.last_name
         name = str(self.date_time_entry)
         return name
+
+    class Meta:
+        permissions = (("approve_timesheetentry", "can approve timesheetentry"),)

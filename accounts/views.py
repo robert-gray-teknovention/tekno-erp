@@ -90,7 +90,8 @@ def dashboard(request):
         p = TimesheetPeriod.objects.get(id=request.GET.get('period_id'))
         query_period = {'id': p.id, 'date_start': date.strftime(timezone.localtime(p.date_start, tz), '%m/%d/%Y'),
                         'date_end': date.strftime(timezone.localtime(p.date_end, tz), '%m/%d/%Y')}
-    user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(period_id=query_period['id'])
+    user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(period_id=query_period['id'],
+                                                                                 user=user)
 
     context = {
         'time_entries': user_time_entries,
