@@ -25,5 +25,5 @@ class TimesheetUser(models.Model):
     approvees = models.ManyToManyField("self", blank=True, symmetrical=False, related_name='approvee_set')
 
     def __str__(self):
-        name = self.user.first_name + ' ' + self.user.last_name
+        name = self.user.username
         return name
