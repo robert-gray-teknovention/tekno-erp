@@ -67,6 +67,10 @@ function getHoursBetweenDates(start, end) {
     $("#duration").on("focusout", function(){
       $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
     });
+    $("#reportBtn").on("click",function(){
+      const period_id = $("#period_select").val();
+      window.open("{% url 'report' %}?period_id=" + period_id, "_blank")
+    })
   });
 </script>
       <!-- Breadcrumb -->
@@ -104,6 +108,10 @@ function getHoursBetweenDates(start, end) {
               {% endif %}
               <h2>Welcome {{ user.first_name }}</h2>
 
+              <div>
+
+              <button id="reportBtn" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Report</button>
+              </div>
               <div>
               <!--<button class="btn-primary btn-block btn-lg" data-toggle="modal" style="float: right; width:200px;" data-target="#inquiryModal">Add Time</button> -->
               <button id="addBtn" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Add Time</button>
@@ -180,7 +188,7 @@ function getHoursBetweenDates(start, end) {
                     <td>{{ emp.date_time_out|date:'m-d-Y H:i' }}</td>
                     <td>{{ emp.duration }}</td>
                     <td>{{ emp.user.hourly_rate | multiply:emp.duration }}</td>
-                    <td>{{ emp.is_approved }}</td>
+                    <td><input type="checkbox" onclick="return false;" {% if emp.is_approved %} checked {% endif %}></td>
                     <td>{{ emp.notes}}</td>
                     <td style="visibility:hidden;">{{ emp.id }}</td>
                   </tr>

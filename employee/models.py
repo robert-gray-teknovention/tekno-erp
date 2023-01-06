@@ -22,7 +22,7 @@ class TimesheetUser(models.Model):
     phone = models.CharField(max_length=20)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
     hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    approvees = models.ManyToManyField("self", blank=True, symmetrical=False, related_name='approvee_set')
+    approvers = models.ManyToManyField("self", blank=True, symmetrical=False, related_name='approvees')
 
     def __str__(self):
         name = self.user.username

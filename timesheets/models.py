@@ -1,4 +1,3 @@
-
 from django.db import models
 from employee.models import TimesheetUser
 from organizations.models import Organization
@@ -29,6 +28,7 @@ class TimesheetEntry(models.Model):
     is_approved = models.BooleanField(default=False)
     period = models.ForeignKey(TimesheetPeriod, on_delete=models.CASCADE, null=True)
     notes = models.TextField(null=True)
+    approver_approved = False
 
     def __str__(self):
         #        name = self.user.first_name + ' ' + self.user.last_name

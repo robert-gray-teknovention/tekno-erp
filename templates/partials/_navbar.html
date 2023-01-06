@@ -1,4 +1,5 @@
 <!-- Navbar -->
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
         <div class="container">
           <a class="navbar-brand" href="{% url 'index' %}">
@@ -7,6 +8,7 @@
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup">
             <span class="navbar-toggler-icon"></span>
           </button>
+
           <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <ul class="navbar-nav">
               <li
@@ -16,7 +18,6 @@
                 class="nav-item mr-3"
                 {% endif %}
               >
-                <a class="nav-link" href="{% url 'index' %}">Home</a>
               </li>
               <!--<li
                 {% if 'employees' in request.path %}
@@ -40,6 +41,17 @@
                 <a class="nav-link" href="{% url 'dashboard' %}">
                     Welcome {{ user.username }} (Dashboard)</a>
               </li>
+
+              {% if perms.timesheets.approve_timesheetentry %}
+              <li>
+
+                <a class="nav-link" href="{% url 'managedashboard' %}">
+                  Approvals
+                </a>
+
+              </li>
+              {% endif %}
+
               <li class="nav-item mr-3">
                 <a href="javascript:{document.getElementById('logout').submit()}" class="nav-link">
                   <i class="fas fa-sign-out-alt">Logout</i>

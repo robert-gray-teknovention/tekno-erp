@@ -9,13 +9,14 @@ function refreshWithNewPeriod() {
   window.location.href = window.location.href.split("?")[0] + "?period_id=" + document.getElementById("period_select").value
 }
 
-function tableRowClicked(e) {
-  row=document.getElementById("tsEntriesTable").rows[e.rowIndex];
-  var time_in = new Date(Date.parse(stringToDateTime(row.cells[0].innerHTML)));
-  var time_out = new Date(Date.parse(stringToDateTime(row.cells[1].innerHTML)));
-  document.getElementById("duration").value=row.cells[2].innerHTML;
-  document.getElementById("notes").value=row.cells[5].innerHTML;
-  document.getElementById("id").value=row.cells[6].innerHTML;
+function openTimesheetEntryModal(rowIndex) {
+
+  row=document.getElementById("tsEntriesTable").rows[rowIndex];
+  var time_in = new Date(Date.parse(stringToDateTime(row.cells[2].innerHTML)));
+  var time_out = new Date(Date.parse(stringToDateTime(row.cells[3].innerHTML)));
+  document.getElementById("duration").value=row.cells[4].innerHTML;
+  document.getElementById("notes").value=row.cells[6].innerHTML;
+  document.getElementById("id").value=row.cells[7].innerHTML;
 
   $('#date_time_in').val(dateTimeToString(time_in));
   $('#date_time_out').val(dateTimeToString(time_out));
@@ -67,6 +68,12 @@ function getHoursBetweenDates(start, end) {
     $("#duration").on("focusout", function(){
       $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
     });
+
+    $("#tsEntriesTable").on("click","td", function(){
+      const columnIndex=$(this).parent().find('td').index(this);
+      const rowIndex=$(this).parent().parent().find('tr').index($(this).parent());
+      if (columnIndex > 0)openTimesheetEntryModal(rowIndex)
+    })
   });
 </script>
       <!-- Breadcrumb -->
@@ -78,7 +85,7 @@ function getHoursBetweenDates(start, end) {
                 <a href="{% url 'index' %}">
                   <i class="fas fa-home"></i> Home</a>
               </li>
-              <li class="breadcrumb-item active"> Dashboard</li>
+              <li class="breadcrumb-item active"> Manage Dashboard</li>
             </ol>
           </nav>
         </div>
@@ -104,7 +111,7 @@ function getHoursBetweenDates(start, end) {
               {% endif %}
               <h2>Welcome {{ user.first_name }}</h2>
 
-            
+
               <!-- Time Sheet Model -->
               <div class="modal fade" id="inquiryModal" role="dialog">
                 <div class="modal-dialog">
@@ -154,17 +161,19 @@ function getHoursBetweenDates(start, end) {
               </div>
               {% include 'partials/_confirm.html' %}
               {% if time_entries %}
-              <p>Here are your time sheet entries</p>
+              <form action="{% url 'tsapprovals' %}" method="POST">
+                  {% csrf_token %}
+              <input type="hidden" name="period_id" value="{{ selected_period }}">
+              <p>Here are your timesheet entries that need approvals</p>
 
               <table class="table" id="tsEntriesTable">
-
                   <tr>
+                    <th scope="col">Appr</th>
                     <th scope='col'>Name</th>
                     <th scope="col">In</th>
                     <th scope="col">Out</th>
                     <th scope="col">Duration</th>
                     <th scope="col">Pay</th>
-                    <th scope="col">Approved</th>
                     <th scope="col">Notes</th>
                     <th></th>
                   </tr>
@@ -173,19 +182,22 @@ function getHoursBetweenDates(start, end) {
                   {% load test %}
 
                   {% for emp in time_entries %}
-                  <tr onclick="tableRowClicked(this)">
+                  <tr>
+                    <td><input type="checkbox" name="approveCheck" value="{{ emp.id }}" class="form-control" {% if emp.approver_approved %} checked {% endif %}></td>
                     <td>{{ emp.user.user.first_name }} &nbsp {{ emp.user.user.last_name }}</td>
                     <td>{{ emp.date_time_in|date:'m-d-Y H:i' }}</td>
                     <td>{{ emp.date_time_out|date:'m-d-Y H:i' }}</td>
                     <td>{{ emp.duration }}</td>
                     <td>{{ emp.user.hourly_rate | multiply:emp.duration }}</td>
-                    <td>{{ emp.is_approved }}</td>
                     <td>{{ emp.notes}}</td>
-                    <td style="visibility:hidden;">{{ emp.id }}</td>
+                    <td style="visibility:hidden;"><input name="entry_id" value="{{ emp.id }}" type="hidden"</td>
                   </tr>
                   {% endfor %}
 
               </table>
+              <input type="submit" value="Approve" class="btn btn-block btn-secondary" id="entriesApproveBtn" name="entriesApproveBtn">
+              </form>
+
 
               {% else %}
                 <p>You have not made any inquiries</p>
