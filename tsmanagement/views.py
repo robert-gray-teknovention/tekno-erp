@@ -4,9 +4,11 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from timesheets.models import TimesheetEntry, TimesheetPeriod
 from tsmanagement.models import Approval
+from timesheets.views import get_report
 from employee.models import TimesheetUser
 from django.contrib.auth.decorators import permission_required
 from datetime import date
+from django.http import FileResponse
 import pytz
 
 
@@ -24,8 +26,8 @@ def managedashboard(request):
         query_period = {'id': p.id, 'date_start': date.strftime(timezone.localtime(p.date_start, tz), '%m/%d/%Y'),
                         'date_end': date.strftime(timezone.localtime(p.date_end, tz), '%m/%d/%Y')}
     approvees = user.approvees.all()
-    user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(period_id=query_period['id'],
-                                                                                 user__in=approvees)
+    user_time_entries = TimesheetEntry.objects.order_by('user', '-date_time_in').filter(period_id=query_period['id'],
+                                                                                        user__in=approvees)
     for entry in user_time_entries:
         if (entry.approvals.filter(approver=user)):
             entry.approver_approved = True
@@ -67,3 +69,14 @@ def tsapprovals(request):
             entry.save()
         messages.success(request, "Your approvals have been successfully saved!")
         return redirect("/manage/managedashboard?period_id=" + request.POST.get("period_id"))
+
+
+@permission_required("timesheets.approve_timesheetentry", raise_exception=True)
+def report(request):
+    manager = User.objects.get(id=request.user.id)
+    user_ids = []
+    users = TimesheetUser.objects.get(user=manager).approvees.all()
+    for u in users:
+        user_ids.append(u.user.id)
+    buffer = get_report(user_ids, request.GET.get("period_id"), False)
+    return FileResponse(buffer, as_attachment=False, filename='report.pdf')

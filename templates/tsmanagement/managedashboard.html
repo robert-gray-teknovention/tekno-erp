@@ -74,6 +74,10 @@ function getHoursBetweenDates(start, end) {
       const rowIndex=$(this).parent().parent().find('tr').index($(this).parent());
       if (columnIndex > 0)openTimesheetEntryModal(rowIndex)
     })
+    $("#reportBtn").on("click",function(){
+      const period_id = $("#period_select").val();
+      window.open("{% url 'managereport' %}?period_id=" + period_id, "_blank")
+    })
   });
 </script>
       <!-- Breadcrumb -->
@@ -110,8 +114,10 @@ function getHoursBetweenDates(start, end) {
               </select>
               {% endif %}
               <h2>Welcome {{ user.first_name }}</h2>
+              <div>
 
-
+              <button id="reportBtn" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Report</button>
+              </div>
               <!-- Time Sheet Model -->
               <div class="modal fade" id="inquiryModal" role="dialog">
                 <div class="modal-dialog">
