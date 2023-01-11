@@ -15,7 +15,6 @@ def register(request):
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         username = request.POST['username']
-        id = request.POST['employee_id']
         email = request.POST['email']
         password = request.POST['password']
         password2 = request.POST['password2']
@@ -31,18 +30,16 @@ def register(request):
                     messages.error(request, 'That email id exists')
                     return redirect('register')
                 else:
-                    if User.objects.filter(id=id).exists():
-                        messages.error(request, 'A user with same employee id exists')
-                        return redirect('register')
-                    else:
-                        # Looks good
-                        user = User.objects.create_user(username=username, password=password, email=email,
-                                                        id=id, first_name=first_name,
-                                                        last_name=last_name)
 
-                        user.save()
-                        messages.success(request, 'You are now registered and can log in')
-                        return redirect('login')
+                    # Looks good
+                    user = User.objects.create_user(username=username, password=password, email=email,
+                                                    first_name=first_name,
+                                                    last_name=last_name)
+
+                    user.save()
+                    message = 'You are now registered.  You will receive an email when you are added as a user'
+                    messages.success(request, message)
+                    return redirect('login')
         else:
             messages.error(request, 'Passwords do not match')
             return redirect('register')
