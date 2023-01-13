@@ -18,7 +18,8 @@ def register(request):
         email = request.POST['email']
         password = request.POST['password']
         password2 = request.POST['password2']
-
+        phone = request.POST['phone']
+        org_id = request.POST['org_id']
         # Check if passwords match
         if password == password2:
             # Check username
@@ -37,6 +38,12 @@ def register(request):
                                                     last_name=last_name)
 
                     user.save()
+                    tsuser = TimesheetUser()
+                    org = Organization.objects.get(id=org_id)
+                    tsuser.user = user
+                    tsuser.telephone = phone
+                    tsuser.organization = org
+                    tsuser.save()
                     message = 'You are now registered.  You will receive an email when you are added as a user'
                     messages.success(request, message)
                     return redirect('login')
