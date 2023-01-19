@@ -21,33 +21,41 @@
         margin-left:100px !important;
         }
     </style>
-    <h1 align="center">TimeSheet App</h1>
+    <h1 align="center">Timesheet Application Home</h1>
     <div class="row">
 
-        <h4 align="center">A simple TimeSheets web app to add employee clock in/out information for manager approval</h4>
+        <h4 align="center">Please register or log in to start using the system</h4>
 
 
     </div>
     <div class="row">
 
-        <h5>Technologies Used --></h5>
-        <ul>
-            <li>Front End: HTML, CSS, JavaScript, Bootstrap 4</li>
-            <li>Back End: Python, Django</li>
-            <li>Database: PostgreSQL</li>
-        </ul>
+        <h5>Active Organizations</h5>
+
+
+    </div>
+    <div class="row">
+    <ul>
+      {% for org in orgs %}
+        <li>{{ org.name }}</li>
+      {% endfor %}
+    </ul>
+    </div>
 
     </div>
     <div class="row">
 
-        <h5>Description ----------></h5>
-        <ul>
-            <li>Currently, there is one admin user and two regular users</li>
-            <li>New users can register and add their clock in/out information</li>
-            <li>Custom Admin page to manage the application</li>
-            <li>Only admin user can approve the information and view all user information</li>
-            <li>Each user has their own dashboard displaying their clock in/out information along with their salary and approval status</li>
-        </ul>
+        <h5>To Know When Registering</h5>
+
 
     </div>
+    <div class="row">
+      <ul>
+          <li>You must be a member of an organization to use this app</li>
+          <li>Once registered you will receive an email when you have been approved by the organization</li>
+          <li>You can start using the system once you receive the approval email</li>
+          <li><a href="https://docs.google.com/document/d/e/2PACX-1vT4vrteqqQE96hToTMwgzHdVpmPa94FeUk8jtwSCOPw-qkjy2UCPzoLuxCECQ8-kZEtzHAp3XqsP5qZ/pub" target="_blank">Help Registering</a></li>
+      </ul>
+    </div>
+
 {% endblock %}

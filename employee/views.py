@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Employee
+from organizations.models import Organization
 
 
 def index(request):
-    return render(request, 'index.html')
+    orgs = Organization.objects.all().order_by('name')
+    context = {
+            'orgs': orgs
+    }
+    return render(request, 'index.html', context)
 
 
 def employees(request):
