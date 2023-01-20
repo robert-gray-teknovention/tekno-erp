@@ -41,6 +41,11 @@
                 <a class="nav-link" href="{% url 'dashboard' %}">
                     Welcome {{ user.username }} (Dashboard)</a>
               </li>
+              <li>
+                <a class="nav-link" href="https://docs.google.com/document/d/e/2PACX-1vQ2Tb5zj7r0k-rerYT3ocpP-tDxqLCWcAYPelDGmjKxlS06eAOupL0M3i1wQ092ZWITMjFzBDZNi1L8/pub" target="_blank">
+                  HELP
+                </a>
+              </li>
 
               {% if perms.timesheets.approve_timesheetentry %}
               <li>
