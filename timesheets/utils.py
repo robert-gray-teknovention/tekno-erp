@@ -1,4 +1,5 @@
-from .models import TimesheetPeriod
+from .models import TimesheetPeriod, UserTimesheetPeriod
+from employee.models import TimesheetUser
 import pytz
 import datetime
 
@@ -17,6 +18,10 @@ class TimesheetUtil():
             new_period = TimesheetPeriod(id=None, date_start=span['date_start'], date_end=span['date_end'],
                                          org=org)
             new_period.save()
+            users = TimesheetUser.objects.filter(organization=org)
+            for u in users:
+                if u.user.is_active:
+                    UserTimesheetPeriod.objects.create(user=u, period=new_period)
             return new_period
 
     def get_time_with_timezone(self, naive_date, format, timezone):

@@ -112,10 +112,13 @@ function getHoursBetweenDates(start, end) {
 
               <button id="reportBtn" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Report</button>
               </div>
+              {% if not user_period.submitted and not user_period.approved %}
               <div>
               <!--<button class="btn-primary btn-block btn-lg" data-toggle="modal" style="float: right; width:200px;" data-target="#inquiryModal">Add Time</button> -->
+
               <button id="addBtn" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Add Time</button>
               </div>
+              {% endif %}
               <!-- Time Sheet Model -->
               <div class="modal fade" id="inquiryModal" role="dialog">
                 <div class="modal-dialog">
@@ -134,7 +137,10 @@ function getHoursBetweenDates(start, end) {
                         {% else %}
                           <input type="hidden" name="emp_id" value="0">
                         {% endif %}
-                          <input type="hidden" id="id" name="id" value="0"
+                          <input type="hidden" id="id" name="id" value="0">
+                          <input type="hidden" id="utp_submitted" name="utp_submitted" value="{{ user_period.submitted }}">
+                          <input type="hidden" id="utp_approved" name="utp_approved" value="{{ user_period.approved }}">
+
                         <div class="form-group">
                           <label for="emp_name" class="col-form-label">Name:</label>
                           <input type="text" name="emp_name" class="form-control" {% if user.is_authenticated %} value="{{ user.first_name}} {{ user.last_name}}" {% endif %} required>
@@ -156,8 +162,10 @@ function getHoursBetweenDates(start, end) {
                           <textarea id='notes' name="notes" rows="2" cols="80" class="form-control"></textarea>
                         </div>
                         <hr>
+                        {% if not user_period.submitted and not user_period.approved %}
                         <input type="submit" value="Add" class="btn btn-block btn-secondary" id="submitBtn" name="addOrUpdateBtn">
                         <input type="button" value="Delete" class="btn btn-block btn-secondary" id="deleteBtn">
+                        {% endif %}
                       </form>
                     </div>
                   </div>
@@ -195,10 +203,45 @@ function getHoursBetweenDates(start, end) {
                   {% endfor %}
 
               </table>
+              <div class="container">
+                {% if not user_period.approved %}
+                <div class="row">
+                <form action="{% url 'submitutp' %}" method="POST">
+                  {% csrf_token %}
+                  <input id="utp_id" type="hidden" name="utp_id" value="{{ user_period.id }}">
 
-              {% else %}
-                <p>You have not made any inquiries</p>
+                   <button type= "submit" id="submitTimesheetBtn" class="btn-primary btn-block btn-lg" style="float: right; width:250px;">
+
+                     {% if not user_period.submitted %}
+                     Submit Timesheet
+                     {% else %}
+                     (Un)submit Timesheet
+                     {% endif %}
+
+                   </button>
+                </form>
+
+
+                </div>
+                {% endif %}
+                <div class="row">
+
+                <p><b>Timesheet Status:
+                  {% if not user_period.submitted %}
+                  Not Submitted
+                  {% elif user_period.submitted and not user_period.approved %}
+                  Submitted. You cannot make changes to any of the entries unless unsubmitted.
+                  {% elif user_period.submitted and user_period.approved %}
+                  Submitted and Approved.  You cannot make changes to any of the entries unless unapproved.
+                  {% else %}
+                  Status is undetermined
+                  {% endif %}
+
+                  </b>
+                </p>
+                </div>
               {% endif %}
+              </div>
             </div>
           </div>
         </div>

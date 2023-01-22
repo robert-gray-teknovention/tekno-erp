@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages, auth
 from django.contrib.auth.models import User
 from django.utils import timezone
-from timesheets.models import TimesheetEntry, TimesheetPeriod
+from timesheets.models import TimesheetEntry, TimesheetPeriod, UserTimesheetPeriod
 from employee.models import TimesheetUser
 from organizations.models import Organization
 from datetime import date
@@ -96,11 +96,12 @@ def dashboard(request):
                         'date_end': date.strftime(timezone.localtime(p.date_end, tz), '%m/%d/%Y')}
     user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(period_id=query_period['id'],
                                                                                  user=user)
-
+    user_period = UserTimesheetPeriod.objects.get(user=user, period_id=query_period['id'])
     context = {
         'time_entries': user_time_entries,
         'periods': periods,
-        'selected_period': query_period['id']
+        'selected_period': query_period['id'],
+        'user_period': user_period
     }
 
     return render(request, 'accounts/dashboard.html', context)

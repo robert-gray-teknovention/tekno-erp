@@ -37,3 +37,19 @@ class TimesheetEntry(models.Model):
 
     class Meta:
         permissions = (("approve_timesheetentry", "can approve timesheetentry"),)
+
+
+class UserTimesheetPeriod(models.Model):
+    user = models.ForeignKey(TimesheetUser, on_delete=models.CASCADE)
+    period = models.ForeignKey(TimesheetPeriod, on_delete=models.CASCADE)
+    submitted = models.BooleanField(default=False)
+    approved = models.BooleanField(default=False)
+    date_submitted = models.DateTimeField(auto_now_add=False, auto_now=False, null=True)
+    date_approved = models.DateTimeField(auto_now_add=False, auto_now=False, null=True)
+
+    class Meta:
+        unique_together = ('user', 'period')
+
+    def __str__(self):
+        return_string = str(self.user) + ' ' + str(self.period)
+        return return_string
