@@ -75,7 +75,13 @@ def tsapprovals(request):
             else:
                 entry.is_approved = False
             entry.save()
-        
+        utp = UserTimesheetPeriod.objects.get(id=request.POST.get('utp_id'))
+        for e in TimesheetEntry.objects.filter(user=utp.user.id, period=utp.period):
+            utp.approved = False
+            if not e.is_approved:
+                break
+            utp.approved = True
+        utp.save()
         messages.success(request, "Your approvals have been successfully saved!")
         return redirect("/manage/managedashboard?period_id=" + request.POST.get("period_id"))
 

@@ -175,9 +175,19 @@ function getHoursBetweenDates(start, end) {
                   <div class="card-header" id="heading-{{ utp.id }}">
                     <h5 class="mb-0">
                       <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-{{ utp.id }}" aria-expanded="true" aria-controls="collapse-{{ utp.id }}">
-                      {{ utp.user.user.first_name }} &nbsp {{ utp.user.user.last_name}}
+                      {{ utp.user.user.first_name }} &nbsp {{ utp.user.user.last_name}} &nbsp;&nbsp;&nbsp;Timesheet Status:
+                      {% if utp.approved %}
+                      APPROVED
+                      {% elif utp.submitted%}
+                      SUBMITTED
+                      {% else %}
+                      NOT SUBMITTED
+                      {% endif %}
+
+
                       </button>
                     </h5>
+
 
                   </div>
                   <div id="collapse-{{ utp.id }}" class="collapse show" aria-labelledby="heading-{{ utp.id }}" data-parent="#userTimesheetPeriodsAcc">
@@ -199,7 +209,12 @@ function getHoursBetweenDates(start, end) {
 
                         {% for emp in utp.entries %}
                         <tr>
-                          <td><input type="checkbox" name="approveCheck" value="{{ emp.id }}" class="form-control" {% if emp.approver_approved %} checked {% endif %}></td>
+                          <td><input type="checkbox" name="approveCheck" value="{{ emp.id }}" class="form-control"
+                            {% if emp.approver_approved %} checked {% endif %}
+                            {% if not utp.approved and not utp.submitted %}
+                            disabled
+                            {% endif %}
+                          ></td>
                           <td>{{ emp.date_time_in|date:'m-d-Y H:i' }}</td>
                           <td>{{ emp.date_time_out|date:'m-d-Y H:i' }}</td>
                           <td>{{ emp.duration }}</td>
@@ -217,7 +232,11 @@ function getHoursBetweenDates(start, end) {
                       </table>
                       <input type="hidden" name="utp_id" value="{{ utp.id }}">
                       <input type="hidden" id="name-{{ utp.id }}" value="{{ utp.user.user.first_name }} {{utp.user.user.last_name}}">
-                      <input type="submit" value="Approve" class="btn btn-block btn-secondary" id="entriesApproveBtn"
+                      <input type="submit" value="Submit" class="btn btn-block btn-secondary" id="entriesApproveBtn"
+                      {% if not utp.approved and not utp.submitted %}
+                      disabled
+                      {% endif %}
+                      >
                     </div>
                     </form>
                   </div>
