@@ -131,8 +131,8 @@ function getHoursBetweenDates(start, end) {
                       </button>
                     </div>
                     <div class="modal-body">
-                      <form action="{% url 'timesheetentries' %}" method="POST">
-                        {% csrf_token %}
+
+
                         {% if user.is_authenticated %}
                           <input type="hidden" name="emp_id" value="{{ user.id }}">
                         {% else %}
@@ -141,28 +141,27 @@ function getHoursBetweenDates(start, end) {
                           <input type="hidden" id="id" name="id" value="0"
                         <div class="form-group">
                           <label for="emp_name" class="col-form-label">Name:</label>
-                          <input id="emp_name" type="text" name="emp_name" class="form-control" required>
+                          <input id="emp_name" type="text" name="emp_name" class="form-control" required readonly>
                         </div>
                         <div class="form-group">
                           <label for="date_time_in" class="col-form-label">DateTime IN:</label>
-                          <input id="date_time_in" type="datetime-local" name="date_time_in" class="form-control" value="">
+                          <input id="date_time_in" type="datetime-local" name="date_time_in" class="form-control" value="" readonly>
                         </div>
                         <div class="form-group">
                           <label for="date_time_out" class="col-form-label">DateTime OUT:</label>
-                          <input id="date_time_out" type="datetime-local" name="date_time_out" class="form-control" value="">
+                          <input id="date_time_out" type="datetime-local" name="date_time_out" class="form-control" value="" readonly>
                         </div>
                         <div class="form-group">
                           <label for="duration" class="col-form-label">Duration:</label>
-                          <input id='duration' type="number" name="duration" step="any" class="form-control" min="0" class="form-control is-invalid" data-error-msg="Your start time is greater that your end time.">
+                          <input id='duration' type="number" name="duration" step="any" class="form-control" min="0" class="form-control is-invalid" data-error-msg="Your start time is greater that your end time." readonly>
                         </div>
                         <div class="form-group">
                           <label for="notes" class="col-form-label">Entry Notes</label>
-                          <textarea id='notes' name="notes" rows="2" cols="80" class="form-control"></textarea>
+                          <textarea id='notes' name="notes" rows="2" cols="80" class="form-control" readonly></textarea>
                         </div>
                         <hr>
-                        <input type="submit" value="Add" class="btn btn-block btn-secondary" id="submitBtn" name="addOrUpdateBtn">
-                        <input type="button" value="Delete" class="btn btn-block btn-secondary" id="deleteBtn">
-                      </form>
+
+
                     </div>
                   </div>
                 </div>
