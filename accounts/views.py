@@ -3,9 +3,10 @@ from django.contrib import messages, auth
 from django.contrib.auth.models import User
 from django.utils import timezone
 from timesheets.models import TimesheetEntry, TimesheetPeriod, UserTimesheetPeriod
+from timesheets.utils import TimesheetUtil
 from employee.models import TimesheetUser
 from organizations.models import Organization
-from datetime import date
+from datetime import date, datetime
 import pytz
 
 
@@ -44,6 +45,18 @@ def register(request):
                     tsuser.telephone = phone
                     tsuser.organization = org
                     tsuser.save()
+                    ts_periods = TimesheetPeriod.objects.filter(org=org).order_by('-date_end')[0:12]
+                    for p in ts_periods:
+                        utp = UserTimesheetPeriod()
+                        utp.period = p
+                        utp.user = tsuser
+                        print(p.id, ' ', ts_periods.first().id)
+                        if p.id != ts_periods.first().id:
+                            utp.submitted = True
+                            utp.approved = True
+                            utp.date_submitted = datetime.now()
+                            utp.date_approved = datetime.now()
+                        utp.save()
                     message = 'You are now registered.  You will receive an email when you are added as a user'
                     messages.success(request, message)
                     return redirect('login')

@@ -21,8 +21,7 @@ def index(request):
 
 def timesheet_entries(request):
     if request.method == 'POST':
-        print(request.POST['utp_approved'], ' ', request.POST['utp_submitted'])
-        if request.POST['utp_approved'] == 'False' and request.POST['utp_submitted'] == 'False':
+        if str(request.POST['utp_approved']) == 'False' and str(request.POST['utp_submitted'] == 'False'):
             if 'addOrUpdateBtn' in request.POST:
                 entry = {}
                 util = TimesheetUtil()
@@ -51,6 +50,7 @@ def timesheet_entries(request):
                     messages.error(request, 'This entry was not saved because it is not in the same timesheet period.')
                 return redirect('/accounts/dashboard')
             elif 'deleteBtn' in request.POST:
+                print("We are about to delete")
                 if int(request.POST['id']) > 0:
                     entry = TimesheetEntry.objects.get(id=int(request.POST['id']))
                     entry.delete()

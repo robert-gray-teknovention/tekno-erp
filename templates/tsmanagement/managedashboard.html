@@ -9,14 +9,14 @@ function refreshWithNewPeriod() {
   window.location.href = window.location.href.split("?")[0] + "?period_id=" + document.getElementById("period_select").value
 }
 
-function openTimesheetEntryModal(rowIndex) {
-
-  row=document.getElementById("tsEntriesTable").rows[rowIndex];
-  var time_in = new Date(Date.parse(stringToDateTime(row.cells[2].innerHTML)));
-  var time_out = new Date(Date.parse(stringToDateTime(row.cells[3].innerHTML)));
-  document.getElementById("duration").value=row.cells[4].innerHTML;
-  document.getElementById("notes").value=row.cells[6].innerHTML;
-  document.getElementById("id").value=row.cells[7].innerHTML;
+function openTimesheetEntryModal(id, rowIndex) {
+  row=document.getElementById("tsEntriesTable-"+id).rows[rowIndex];
+  var time_in = new Date(Date.parse(stringToDateTime(row.cells[1].innerHTML)));
+  var time_out = new Date(Date.parse(stringToDateTime(row.cells[2].innerHTML)));
+  document.getElementById("duration").value=row.cells[3].innerHTML;
+  document.getElementById("notes").value=row.cells[5].innerHTML;
+  document.getElementById("id").value=row.cells[6].innerHTML;
+  document.getElementById("emp_name").value=document.getElementById("name-"+id).value
 
   $('#date_time_in').val(dateTimeToString(time_in));
   $('#date_time_out').val(dateTimeToString(time_out));
@@ -68,12 +68,14 @@ function getHoursBetweenDates(start, end) {
     $("#duration").on("focusout", function(){
       $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
     });
-
-    $("#tsEntriesTable").on("click","td", function(){
+    {% for utp in utps%}
+    $("#tsEntriesTable-{{ utp.id }}").on("click","td", function(){
       const columnIndex=$(this).parent().find('td').index(this);
       const rowIndex=$(this).parent().parent().find('tr').index($(this).parent());
-      if (columnIndex > 0)openTimesheetEntryModal(rowIndex)
+      if (columnIndex > 0)openTimesheetEntryModal({{ utp.id }},rowIndex)
+
     })
+    {% endfor %}
     $("#reportBtn").on("click",function(){
       const period_id = $("#period_select").val();
       window.open("{% url 'managereport' %}?period_id=" + period_id, "_blank")
@@ -139,7 +141,7 @@ function getHoursBetweenDates(start, end) {
                           <input type="hidden" id="id" name="id" value="0"
                         <div class="form-group">
                           <label for="emp_name" class="col-form-label">Name:</label>
-                          <input type="text" name="emp_name" class="form-control" {% if user.is_authenticated %} value="{{ user.first_name}} {{ user.last_name}}" {% endif %} required>
+                          <input id="emp_name" type="text" name="emp_name" class="form-control" required>
                         </div>
                         <div class="form-group">
                           <label for="date_time_in" class="col-form-label">DateTime IN:</label>
@@ -166,48 +168,66 @@ function getHoursBetweenDates(start, end) {
                 </div>
               </div>
               {% include 'partials/_confirm.html' %}
-              {% if time_entries %}
-              <form action="{% url 'tsapprovals' %}" method="POST">
-                  {% csrf_token %}
-              <input type="hidden" name="period_id" value="{{ selected_period }}">
-              <p>Here are your timesheet entries that need approvals</p>
+              {% load test %}
 
-              <table class="table" id="tsEntriesTable">
-                  <tr>
-                    <th scope="col">Appr</th>
-                    <th scope='col'>Name</th>
-                    <th scope="col">In</th>
-                    <th scope="col">Out</th>
-                    <th scope="col">Duration</th>
-                    <th scope="col">Pay</th>
-                    <th scope="col">Notes</th>
-                    <th></th>
-                  </tr>
+              <div class="accordion" id="userTimesheetPeriodsAcc">
+              {% for utp in utps %}
+                <div class="card">
+                  <div class="card-header" id="heading-{{ utp.id }}">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-{{ utp.id }}" aria-expanded="true" aria-controls="collapse-{{ utp.id }}">
+                      {{ utp.user.user.first_name }} &nbsp {{ utp.user.user.last_name}}
+                      </button>
+                    </h5>
+
+                  </div>
+                  <div id="collapse-{{ utp.id }}" class="collapse show" aria-labelledby="heading-{{ utp.id }}" data-parent="#userTimesheetPeriodsAcc">
+                    <form action="{% url 'tsapprovals' %}" method="post">
+                      {% csrf_token %}
+
+                    <div class="card-body">
+                      <input type="hidden" name="period_id" id="period_id" value="{{ selected_period }}">
+                      <table class="table" id="tsEntriesTable-{{ utp.id }}" name="tsEntriesTable">
+                        <tr>
+                          <th scope="col">Appr</th>
+                          <th scope="col">In</th>
+                          <th scope="col">Out</th>
+                          <th scope="col">Duration</th>
+                          <th scope="col">Pay</th>
+                          <th scope="col">Notes</th>
+                          <th></th>
+                        </tr>
+
+                        {% for emp in utp.entries %}
+                        <tr>
+                          <td><input type="checkbox" name="approveCheck" value="{{ emp.id }}" class="form-control" {% if emp.approver_approved %} checked {% endif %}></td>
+                          <td>{{ emp.date_time_in|date:'m-d-Y H:i' }}</td>
+                          <td>{{ emp.date_time_out|date:'m-d-Y H:i' }}</td>
+                          <td>{{ emp.duration }}</td>
+                          <td>{{ emp.user.hourly_rate | multiply:emp.duration }}</td>
+                          <td>{{ emp.notes}}</td>
+                          <td style="visibility:hidden;"><input name="entry_id" value="{{ emp.id }}" type="hidden"</td>
+                          <td style="visibility:hidden;">{{ emp.user.first_name}}</td>
+
+                        </tr>
+                        {% endfor %}
+                        <tr>
 
 
-                  {% load test %}
+                        </tr>
+                      </table>
+                      <input type="hidden" name="utp_id" value="{{ utp.id }}">
+                      <input type="hidden" id="name-{{ utp.id }}" value="{{ utp.user.user.first_name }} {{utp.user.user.last_name}}">
+                      <input type="submit" value="Approve" class="btn btn-block btn-secondary" id="entriesApproveBtn"
+                    </div>
+                    </form>
+                  </div>
+                </div>
+              {% endfor %}
 
-                  {% for emp in time_entries %}
-                  <tr>
-                    <td><input type="checkbox" name="approveCheck" value="{{ emp.id }}" class="form-control" {% if emp.approver_approved %} checked {% endif %}></td>
-                    <td>{{ emp.user.user.first_name }} &nbsp {{ emp.user.user.last_name }}</td>
-                    <td>{{ emp.date_time_in|date:'m-d-Y H:i' }}</td>
-                    <td>{{ emp.date_time_out|date:'m-d-Y H:i' }}</td>
-                    <td>{{ emp.duration }}</td>
-                    <td>{{ emp.user.hourly_rate | multiply:emp.duration }}</td>
-                    <td>{{ emp.notes}}</td>
-                    <td style="visibility:hidden;"><input name="entry_id" value="{{ emp.id }}" type="hidden"</td>
-                  </tr>
-                  {% endfor %}
-
-              </table>
-              <input type="submit" value="Approve" class="btn btn-block btn-secondary" id="entriesApproveBtn" name="entriesApproveBtn">
-              </form>
+              </div>
 
 
-              {% else %}
-                <p>You have not made any inquiries</p>
-              {% endif %}
             </div>
           </div>
         </div>

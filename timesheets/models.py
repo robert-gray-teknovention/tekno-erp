@@ -46,6 +46,7 @@ class UserTimesheetPeriod(models.Model):
     approved = models.BooleanField(default=False)
     date_submitted = models.DateTimeField(auto_now_add=False, auto_now=False, null=True)
     date_approved = models.DateTimeField(auto_now_add=False, auto_now=False, null=True)
+    entries = []
 
     class Meta:
         unique_together = ('user', 'period')
