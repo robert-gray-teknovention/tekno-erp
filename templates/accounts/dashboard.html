@@ -231,9 +231,9 @@ function getHoursBetweenDates(start, end) {
                   {% if not user_period.submitted %}
                   Not Submitted
                   {% elif user_period.submitted and not user_period.approved %}
-                  Submitted. You cannot make changes to any of the entries unless unsubmitted.
+                  Submitted. You can make changes to your entries if your timesheet is not submitted.
                   {% elif user_period.submitted and user_period.approved %}
-                  Submitted and Approved.  You cannot make changes to any of the entries unless unapproved.
+                  Submitted and Approved.  You can make changes to your entries if your timesheet not approved nor submitted.
                   {% else %}
                   Status is undetermined
                   {% endif %}
