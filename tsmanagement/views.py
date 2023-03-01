@@ -9,6 +9,7 @@ from employee.models import TimesheetUser
 from django.contrib.auth.decorators import permission_required
 from datetime import date
 from django.http import FileResponse
+from mailer.forms import MailForm
 import pytz
 
 
@@ -39,14 +40,15 @@ def managedashboard(request):
         if (entry.approvals.filter(approver=user)):
             entry.approver_approved = True
     users = TimesheetUser.objects.all()
+    mailForm = MailForm()
     context = {
         'time_entries': user_time_entries,
         'periods': periods,
         'selected_period': query_period['id'],
         'users': users,
-        'utps': utps
+        'utps': utps,
+        'mailForm': mailForm
     }
-
     return render(request, 'tsmanagement/managedashboard.html', context)
 
 

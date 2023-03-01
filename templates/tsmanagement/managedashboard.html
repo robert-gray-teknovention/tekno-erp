@@ -80,6 +80,10 @@ function getHoursBetweenDates(start, end) {
       const period_id = $("#period_select").val();
       window.open("{% url 'managereport' %}?period_id=" + period_id, "_blank")
     })
+    $("#emailBtn").on("click",function(){
+      //$('#to').val({{ emp.user.email }})
+      $('#mailModal').modal('show');
+    })
   });
 </script>
       <!-- Breadcrumb -->
@@ -159,13 +163,20 @@ function getHoursBetweenDates(start, end) {
                           <label for="notes" class="col-form-label">Entry Notes</label>
                           <textarea id='notes' name="notes" rows="2" cols="80" class="form-control" readonly></textarea>
                         </div>
+                        <div class="form-group">
+                          <input type="button" id ="emailBtn" name="emailBtn" class="btn btn-block btn-secondary" value="Send Email">
+                        </div>
+
+
                         <hr>
+
 
 
                     </div>
                   </div>
                 </div>
               </div>
+              {% include 'mailer/_mailform.html' %}
               {% include 'partials/_confirm.html' %}
               {% load test %}
 

@@ -1,0 +1,53 @@
+{% load crispy_forms_tags %}
+<div class="modal fade" id="mailModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">Mailer Dialog</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="mailerForm" method="POST">
+          {% csrf_token %}
+          {{ mailForm|crispy }}
+
+          <input type="submit" value="Send" class="btn btn-block btn-secondary" name="sendBtn">
+        </form>
+
+        <script type="text/javascript">
+          $(document).on('submit','#mailerForm', function(e){
+            e.preventDefault();
+            var email = {
+              'recipients': [$('#id_recipients').val()],
+              'sender': $('#id_sender').val(),
+              'subject': $('#id_subject').val(),
+              'message': $('#id_message').val()
+            };
+
+            $.ajax({
+              type: 'POST',
+              dataType: 'json',
+              url: '{% url 'email' %}',
+              data: {
+                'email': JSON.stringify(email),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+              },
+              success:function(result) {
+                alert("Mail Sent ");
+                $(':input', '#mailerForm').not(':button, :submit, :hidden').val('')
+                $('#mailModal').modal('hide');
+
+              },
+              error:function(xhr) {
+                alert("I'm sorry but your message failed to send "  + xhr.status)
+              }
+
+            })
+          });
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
