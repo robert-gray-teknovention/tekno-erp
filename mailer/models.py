@@ -16,7 +16,7 @@ class Email(models.Model):
             models.EmailField(max_length=75),
             size=50,
             ),
-        size=50,
+        size=50, null=True,
     )
     subject = models.CharField(max_length=250)
     message = models.CharField(max_length=2500)
