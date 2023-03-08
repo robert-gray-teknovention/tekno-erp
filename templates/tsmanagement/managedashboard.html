@@ -16,14 +16,17 @@ function openTimesheetEntryModal(id, rowIndex) {
   document.getElementById("duration").value=row.cells[3].innerHTML;
   document.getElementById("notes").value=row.cells[5].innerHTML;
   document.getElementById("id").value=row.cells[6].innerHTML;
-  document.getElementById("emp_name").value=document.getElementById("name-"+id).value
+  document.getElementById("emp_name").value=document.getElementById("name-"+id).value;
 
   $('#date_time_in').val(dateTimeToString(time_in));
   $('#date_time_out').val(dateTimeToString(time_out));
-
   $('#inquiryModal').modal('show');
-  $('#submitBtn').val("Update")
+  $('#submitBtn').val("Update");
+  //Load in recipient email address in mailerForm
+  $('#id_recipients').val(row.cells[8].innerHTML);
+  console.log(row.cells[8].innerHTML);
 }
+
 function stringToDateTime(ds) {
   var datetime=ds.split(" ");
   var date=datetime[0];
@@ -233,6 +236,7 @@ function getHoursBetweenDates(start, end) {
                           <td>{{ emp.notes}}</td>
                           <td style="visibility:hidden;"><input name="entry_id" value="{{ emp.id }}" type="hidden"</td>
                           <td style="visibility:hidden;">{{ emp.user.first_name}}</td>
+                          <td style="visibility:hidden;">{{ emp.user.user.email }}</td>
 
                         </tr>
                         {% endfor %}

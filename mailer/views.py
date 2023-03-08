@@ -13,9 +13,11 @@ def email(request):
         if serializer.is_valid():
             # Send email
             recipients = re.split(r'[,;]', data['recipients'][0].replace(' ', ''))
+            reply_tos = re.split(r'[,;]', data['reply_tos'][0].replace(' ', ''))
+
             for r in recipients:
-                email = EmailMessage(data['subject'], data['message'], to=[r],
-                                     reply_to=['mailer@mail.teknovention.com'])
+                email = EmailMessage(data['subject'], data['message'], to=recipients,
+                                     reply_to=reply_tos)
                 # email = EmailMessage(data['subject'], data['message'], to=recipients)
                 email.send()
             serializer.save()

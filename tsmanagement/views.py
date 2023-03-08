@@ -47,6 +47,7 @@ def managedashboard(request):
         'selected_period': query_period['id'],
         'users': users,
         'utps': utps,
+        'organization': user.organization,
         'mailForm': mailForm
     }
     return render(request, 'tsmanagement/managedashboard.html', context)

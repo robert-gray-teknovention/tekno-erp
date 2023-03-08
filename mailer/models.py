@@ -11,6 +11,13 @@ class Email(models.Model):
             ),
         size=50,
     )
+    reply_tos = ArrayField(
+        ArrayField(
+            models.EmailField(max_length=75),
+            size=50,
+            ),
+        size=50,
+    )
     subject = models.CharField(max_length=250)
     message = models.CharField(max_length=2500)
     date_sent = models.DateTimeField(auto_now_add=True)

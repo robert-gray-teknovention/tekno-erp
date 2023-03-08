@@ -19,7 +19,7 @@ class Organization(models.Model):
     zip = models.CharField(max_length=10)
     state = models.CharField(max_length=2)
     phone = models.CharField(max_length=20)
-    email = models.EmailField(max_length=255)
+    mailer_email = models.EmailField(max_length=255)
     timezone = models.CharField(max_length=50, blank=True, null=True, default='America/Los_Angeles',
                                 choices=get_tuple_timezones(pytz.common_timezones)
                                 )
