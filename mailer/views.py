@@ -14,7 +14,6 @@ def email(request):
             # Send email
             recipients = re.split(r'[,;]', data['recipients'][0].replace(' ', ''))
             reply_tos = re.split(r'[,;]', data['reply_tos'][0].replace(' ', ''))
-
             for r in recipients:
                 email = EmailMessage(data['subject'], data['message'], data['sender'], to=recipients,
                                      reply_to=reply_tos)
