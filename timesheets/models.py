@@ -28,6 +28,7 @@ class TimesheetEntry(models.Model):
     is_approved = models.BooleanField(default=False)
     period = models.ForeignKey(TimesheetPeriod, on_delete=models.CASCADE, null=True)
     notes = models.TextField(null=True)
+    hourly_rate = models.DecimalField(default=0.00, null=True, decimal_places=2, max_digits=10)
     approver_approved = False
 
     def __str__(self):

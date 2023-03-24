@@ -38,10 +38,11 @@ def timesheet_entries(request):
                     entry.date_time_out = request.POST['date_time_out']
                     entry.duration = request.POST['duration']
                     entry.notes = request.POST['notes']
+                    entry.hourly_rate = ts_user.hourly_rate
                 else:
                     entry = TimesheetEntry(user=ts_user, date_time_in=request.POST['date_time_in'],
                                            date_time_out=request.POST['date_time_out'], duration=duration,
-                                           notes=request.POST['notes'])
+                                           notes=request.POST['notes'], hourly_rate=ts_user.hourly_rate)
                     entry.period = period
                 if period.id == entry.period.id:
                     entry.save()
@@ -122,12 +123,12 @@ def get_report(user_ids, period_id, show_notes):
         p.line(x1, y1, x1+500, y1)
         y1 -= deltay
         for e in entries:
-            pay = float(e.user.hourly_rate) * float(e.duration)
+            pay = float(e.hourly_rate) * float(e.duration)
             aggregate_data['total_hours'] += float(e.duration)
             aggregate_data['total_pay'] += pay
             x1 = 25
             earray = [datetime.date.strftime(e.date_time_in, "%m-%d-%Y %H:%M"),
-                      datetime.date.strftime(e.date_time_out, "%m-%d-%Y %H:%M"), '{:.2f}'.format(e.user.hourly_rate),
+                      datetime.date.strftime(e.date_time_out, "%m-%d-%Y %H:%M"), '{:.2f}'.format(e.hourly_rate),
                       str(e.duration), '{:.2f}'.format(pay)]
             i = 0
             p.setFont("Courier", 10, leading=None)
@@ -148,7 +149,7 @@ def get_report(user_ids, period_id, show_notes):
         p.drawString(x1, y1, '{:.2f}'.format(aggregate_data['total_hours']))
         x1 += column_headers[3]['width']
         p.drawString(x1, y1, '{:.2f}'.format(aggregate_data['total_pay']))
-        if(show_notes):
+        if (show_notes):
             p.showPage()
             x1 = 25
             y1 = 750
