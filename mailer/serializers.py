@@ -8,4 +8,4 @@ class EmailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Email
-        fields = ['id', 'sender', 'recipients', 'subject', 'message', 'date_sent', 'reply_tos']
+        fields = ['id', 'sender', 'recipients', 'subject', 'message', 'date_sent', 'reply_tos', 'organization']

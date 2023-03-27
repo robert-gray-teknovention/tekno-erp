@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from organizations.models import Organization
 
 
 class Email(models.Model):
@@ -21,6 +22,7 @@ class Email(models.Model):
     subject = models.CharField(max_length=250)
     message = models.CharField(max_length=2500)
     date_sent = models.DateTimeField(auto_now_add=True)
+    organization = models.ForeignKey(Organization, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.recipient
