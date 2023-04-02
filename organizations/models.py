@@ -55,7 +55,7 @@ class PeriodType(models.Model):
         if (self.name == self.types[2][0]):
             date_start = self.seed_date
             date_end = self.seed_date + timedelta(weeks=2)
-            if(datetime.now(timezone) > self.seed_date):
+            if (datetime.now(timezone) > self.seed_date):
                 self.seed_date = date_start + timedelta(weeks=2)
                 self.save()
             return {

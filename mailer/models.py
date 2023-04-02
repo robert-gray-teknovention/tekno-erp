@@ -25,4 +25,4 @@ class Email(models.Model):
     organization = models.ForeignKey(Organization, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.recipient
+        return str(self.recipients)

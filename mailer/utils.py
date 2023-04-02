@@ -1,17 +1,16 @@
 from .models import Email
 from django.core.mail import EmailMessage
-from employee.models import TimesheetUser
-from timesheets.models import UserTimesheetPeriod
 
 
 class Emailer:
-    def send_and_log_mail(self, to, subject, message, **kwargs):
-        pass
-
-
-def email_unsubmitted(org, period):
-    users = TimesheetUser.objects.filter(org=org)
-    for u in users:
-        utp = UserTimesheetPeriod.objects.get(user=u, period=period)
-        if not utp.submitted:
-            recipients = [org.mailer_emai]
+    def send_and_log_mail(self, subject, message, sender, recipients, reply_tos, **kwargs):
+        log_email = Email()
+        log_email.subject = subject
+        log_email.message = message
+        log_email.sender = sender
+        log_email.recipients = recipients
+        log_email.reply_tos = reply_tos
+        log_email.organization = kwargs['organization']
+        email = EmailMessage(subject, message, sender, to=recipients, reply_to=reply_tos)
+        email.send()
+        log_email.save()
