@@ -78,6 +78,10 @@ function getHoursBetweenDates(start, end) {
       if (columnIndex > 0)openTimesheetEntryModal({{ utp.id }},rowIndex)
 
     })
+    $("#reportBtn{{ utp.id }}").on("click",function(){
+      const period_id = $("#period_select").val();
+      window.open("{% url 'reportapprovee' %}?utp_id=" + {{ utp.id }}, "_blank")
+    })
     {% endfor %}
     $("#reportBtn").on("click",function(){
       const period_id = $("#period_select").val();
@@ -125,7 +129,7 @@ function getHoursBetweenDates(start, end) {
               <h2>Welcome {{ user.first_name }}</h2>
               <div>
 
-              <button id="reportBtn" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Report</button>
+              <button id="reportBtn" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Report All</button>
               </div>
               <!-- Time Sheet Model -->
               <div class="modal fade" id="inquiryModal" role="dialog">
@@ -197,8 +201,7 @@ function getHoursBetweenDates(start, end) {
                       {% else %}
                       NOT SUBMITTED
                       {% endif %}
-
-
+                      <button id="reportBtn{{ utp.id }}" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Report</button>
                       </button>
                     </h5>
 

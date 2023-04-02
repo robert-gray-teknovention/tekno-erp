@@ -98,3 +98,11 @@ def report(request):
         user_ids.append(u.user.id)
     buffer = get_report(user_ids, request.GET.get("period_id"), False)
     return FileResponse(buffer, as_attachment=False, filename='report.pdf')
+
+
+@permission_required("timesheets.approve_timesheetentry", raise_exception=True)
+def report_approvee(request):
+    utp = UserTimesheetPeriod.objects.get(id=request.GET.get("utp_id"))
+    print(utp.user.user.first_name, ' ', utp.period.id)
+    buffer = get_report([utp.user.user.id], utp.period.id, False)
+    return FileResponse(buffer, as_attachment=False, filename='report.pdf')
