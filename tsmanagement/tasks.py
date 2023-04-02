@@ -21,10 +21,11 @@ def saying_hello(**kwargs):
 
 
 @shared_task
-def email_unsubmitted(org):
+def email_unsubmitted(org_id):
+    org = Organization.objects.get(id=org_id)
     tsutil = TimesheetUtil()
     period = tsutil.get_timesheet_period(datetime.now(pytz.timezone(org.timezone)), org)
-    users = TimesheetUser.objects.filter(organization=org)
+    users = TimesheetUser.objects.filter(organization_id=org)
     reply_tos = []
     for u in users:
         if u.user.is_active:
