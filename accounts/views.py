@@ -3,7 +3,7 @@ from django.contrib import messages, auth
 from django.contrib.auth.models import User
 from django.utils import timezone
 from timesheets.models import TimesheetEntry, TimesheetPeriod, UserTimesheetPeriod
-from timesheets.utils import TimesheetUtil
+from django.core import cache
 from employee.models import TimesheetUser
 from organizations.models import Organization
 from datetime import date, datetime

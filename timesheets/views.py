@@ -51,7 +51,6 @@ def timesheet_entries(request):
                     messages.error(request, 'This entry was not saved because it is not in the same timesheet period.')
                 return redirect('/accounts/dashboard')
             elif 'deleteBtn' in request.POST:
-                print("We are about to delete")
                 if int(request.POST['id']) > 0:
                     entry = TimesheetEntry.objects.get(id=int(request.POST['id']))
                     entry.delete()
