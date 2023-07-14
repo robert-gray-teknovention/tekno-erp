@@ -28,3 +28,26 @@ class TimesheetUser(models.Model):
     def __str__(self):
         name = self.user.username
         return name
+
+
+class Invitee(models.Model):
+    class Status(models.TextChoices):
+        INVITED = 'INVITED', 'Invited'
+        REGISTERED = 'REGISTERED', 'Registered'
+        ACTIVATED = 'ACTIVATED', 'Activated'
+
+    name = models.CharField(max_length=75, default='')
+    user = models.OneToOneField(TimesheetUser, on_delete=models.CASCADE, null=True)
+    email = models.EmailField(max_length=75)
+    authentication_code = models.CharField(max_length=15)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.INVITED)
+    status_date = models.DateTimeField(auto_now=True)
+    wage = models.DecimalField(decimal_places=2, max_digits=6, default=0.00)
+    inviter = models.ForeignKey(TimesheetUser, on_delete=models.SET_NULL, null=True, related_name='inviter')
+
+    class Meta:
+        permissions = (
+            ('invite', 'Can invite new user'),
+            ('uninvite', 'Can uninvite an invitee')
+        )

@@ -43,60 +43,60 @@
               <h4>
                 <i class="fas fa-user-plus"></i> Register</h4>
             </div>
-            <div class="card-body">
+              <div class="card-body">
               <!-- Alerts -->
               {% include 'partials/_alerts.html' %}
                 <form id="registration-form" action="{% url 'register' %}" method="POST">
                     {% csrf_token %}
                   <div class="form-group">
-                  <label for="first_name">First Name</label>
-                  <input type="text" name="first_name" class="form-control" required>
-                </div>
-                <div class="form-group">
-                  <label for="last_name">Last Name</label>
-                  <input type="text" name="last_name" class="form-control" required>
-                </div>
-                <div class="form-group">
-                  <label for="username">Username</label>
-                  <input type="text" name="username" class="form-control" required>
-                </div>
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input type="email" name="email" class="form-control" required>
-                </div>
-                <div class="form-group">
-                  <label for="phone">Phone</label>
-                  <input type="tel" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" class="form-control" placeholder="###-###-####">
-                </div>
-                <div class="form-group">
-                  <label for="password">Password</label>
-                  <input type="password" name="password" id="password" class="form-control" data-bv-notempty-message="Password cannot be empty" required>
-                </div>
-                <div class="form-group">
-                  <label for="password2">Confirm Password</label>
-                  <input type="password" name="password2" id="password2" class="form-control" required>
-                </div>
-                <div class="form-group">
-                  <label for="organization">Organization</label>
-                  <select class="form-control" name="org_id">
+                    <label for="first_name">First Name</label>
+                    <input type="text" name="first_name" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" name="last_name" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" class="form-control" placeholder="###-###-####">
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" data-bv-notempty-message="Password cannot be empty" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="password2">Confirm Password</label>
+                    <input type="password" name="password2" id="password2" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="authentication_code">Authorization Code</label>
+                    <input type="text" name="authentication_code" value="" class="form-control" placeholder="Authorization code from email">
+                  </div>
+                  <div class="form-group">
+                    <label for="organization_name">Organization</label>
+                    <input type="text" name="organization_name" value="{{ organization.name }} " readonly class="form-control">
+                  </div>
+                  <input type="hidden" name="organization" value="{{ organization.id }}">
+
+                  <!-- <select class="form-control" name="org_id">
                     {% for org in organizations %}
 
                     <option value="{{org.id}}">
                       {{org.name|capfirst}}
                     </option>
                     {% endfor %}
-                  </select>
-                </div>
-
-
+                  </select> -->
 
                 <input type="submit" value="Register" class="btn btn-secondary btn-block">
-
-
-
-
-                </div>
-              </form>
+                </form>
             </div>
           </div>
         </div>

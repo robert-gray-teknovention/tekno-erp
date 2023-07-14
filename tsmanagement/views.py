@@ -5,12 +5,18 @@ from django.utils import timezone
 from timesheets.models import TimesheetEntry, TimesheetPeriod, UserTimesheetPeriod
 from tsmanagement.models import Approval
 from timesheets.views import get_report
-from employee.models import TimesheetUser
+from employee.models import TimesheetUser, Invitee
+from employee.tables import InviteeTable
 from django.contrib.auth.decorators import permission_required
 from datetime import date
 from django.http import FileResponse
 from mailer.forms import MailForm
+from mailer.utils import Emailer
+from .forms import InviteeForm
+import random
+import string
 import pytz
+import environ
 
 
 @permission_required("timesheets.approve_timesheetentry", raise_exception=True)
@@ -106,3 +112,53 @@ def report_approvee(request):
     print(utp.user.user.first_name, ' ', utp.period.id)
     buffer = get_report([utp.user.user.id], utp.period.id, False)
     return FileResponse(buffer, as_attachment=False, filename='report.pdf')
+
+
+@permission_required(["employee.add_invitee"], raise_exception=True)
+def onboarding(request):
+    env = environ.Env()
+    form = InviteeForm()
+
+    if request.method == 'POST':
+        inviter = TimesheetUser.objects.get(user=request.user)
+        mailer = Emailer()
+        invitee = Invitee()
+        invitee.authentication_code = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _
+                                              in range(10))
+        invitee.organization = TimesheetUser.objects.get(user=User.objects.get(id=request.user.id)).organization
+        invitee.status = Invitee.Status.INVITED
+        invitee.inviter = inviter
+
+        f = InviteeForm(request.POST, instance=invitee)
+        if f.is_valid():
+            f.save()
+            # Build email for Invitee
+            subject = invitee.name + ' has been invited to join ' + invitee.organization.name + ' application.'
+            message = 'Dear ' + invitee.name + ',\n\n'
+            message += 'Please click on the link below and use the access code:  ' + invitee.authentication_code + '\n'
+            message += env('BASE_URL') + 'accounts/register?org=' + str(invitee.organization.id)
+            message += '\n Thank you for joining our organization'
+            sender = inviter.user.email
+            send_to = [invitee.email]
+            reply_tos = [inviter.user.email]
+            organization = invitee.organization
+            mailer.send_and_log_mail(subject, message, sender, send_to, reply_tos,
+                                     organization=organization)
+            # Build email for Inviter
+            message = 'Hello ' + inviter.user.first_name + ',\n'
+            message += 'You invited ' + invitee.name + ' to join the timesheet system for ' + invitee.organization.name
+            message += '\nYou will receive another email once ' + invitee.name + ' has registered with the site.\n'
+            message += 'You can also check the status by going to the onboarding site of the application.\n'
+            message += 'Please do not reply to this email.  It will go nowhere'
+            send_to = [inviter.user.email]
+            reply_tos = []
+            mailer.send_and_log_mail(subject, message, sender, send_to, reply_tos,
+                                     organization=organization)
+            messages.success(request, invitee.name + ' has been invited and emailed.')
+
+        else:
+            messages.error(request, 'It looks as if there was an issue inviting this person.  Please check email.')
+    organization = TimesheetUser.objects.get(user=User.objects.get(id=request.user.id)).organization
+    table = InviteeTable(Invitee.objects.filter(organization=organization).order_by('-status_date'))
+    context = {'form': form, 'table': table}
+    return render(request, 'tsmanagement/onboarding.html', context)
