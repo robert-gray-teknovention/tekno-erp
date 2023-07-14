@@ -75,10 +75,11 @@ def register(request):
                     message += 'You are now registered with the ' + invitee[0].organization.name + ' application\n'
                     message += 'Please go to ' + env('BASE_URL') + 'accounts/login/'
                     message += '\n Thank you for joining our organization.'
-                    sender = invitee[0].inviter.user.email
+
                     send_to = [invitee[0].email]
                     reply_tos = []
                     organization = invitee[0].organization
+                    sender = organization.mailer_email
                     mailer.send_and_log_mail(subject, message, sender, send_to, reply_tos,
                                              organization=organization)
                     # Notify inviter that the invitee is registered
@@ -89,7 +90,6 @@ def register(request):
                     message += invitee[0].name + ' has registered with the ' + invitee[0].organization.name + ' application '
                     message += 'with a wage of ' + str(invitee[0].wage) + ' per hour.\n'
                     message += 'Please do not respond to this email.'
-                    sender = invitee[0].inviter.user.email
                     send_to = [inviter.email]
                     reply_tos = []
                     organization = invitee[0].organization
