@@ -138,10 +138,10 @@ def onboarding(request):
             message += 'Please click on the link below and use the access code:  ' + invitee.authentication_code + '\n'
             message += env('BASE_URL') + 'accounts/register?org=' + str(invitee.organization.id)
             message += '\n Thank you for joining our organization'
-            sender = inviter.user.email
             send_to = [invitee.email]
             reply_tos = [inviter.user.email]
             organization = invitee.organization
+            sender = organization.mailer_email
             mailer.send_and_log_mail(subject, message, sender, send_to, reply_tos,
                                      organization=organization)
             # Build email for Inviter
