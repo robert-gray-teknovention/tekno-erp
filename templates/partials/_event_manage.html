@@ -1,0 +1,111 @@
+
+{% load crispy_forms_tags %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#id_event_type').on('change', function(e){
+      $.ajaxSetup({
+        headers: { "X-CSRFToken": '{{ csrf_token }}' }
+      });
+      $.ajax({
+        type: 'GET',
+        dataType: 'json',
+        url: '{% url 'eventtype-list' %}' + $("option:selected", this).val(),
+        success:function(result) {
+          //alert("Color is " + JSON.stringify(result));
+          $('#id_color_event').val(result.color_event);
+
+        },
+        error:function(xhr) {
+          alert("error: "  + xhr.status + ' ' + xhr.statusText + ' ' + xhr.responseText )
+        }
+
+      });
+
+    });
+  });
+</script>
+<div class="modal fade" id="eventManageModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="evenManageModalLabel">Event Dialog</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="eventForm" method="POST">
+          {% csrf_token %}
+          {{ eventForm|crispy }}
+          <input type="submit" value="Add" class="btn btn-block btn-primary" name="sendBtn" id="sendBtn">
+
+        </form>
+        <script type="text/javascript">
+
+          function getUrl(view, id) {
+            var base_url = '{{ request.scheme }}://{{ request.get_host }}'
+            return  '{{ request.scheme }}://{{ request.get_host }}/' + view + id + '/';
+          };
+          $(document).on('submit', '#eventForm', function(e){
+            e.preventDefault();
+            if ($('#id_end').val() > $('#id_start').val()) {
+              var event = {
+                "title": $('#id_title').val(),
+                "description": $('#id_description').val(),
+                "start": $('#id_start').val(),
+                "end": $('#id_end').val(),
+                "rule": $('#id_rule option:selected').val(),
+                "end_recurring_period": $('#id_end_recurring_period').val(),
+                "color_event": $('#id_color_event').val(),
+                "calendar":  $('#id_calendar option:selected').val(),
+                "event_type": $('#id_event_type option:selected').val(),
+                //"calendar":  getUrl('apis/calendars/', $('#id_calendar option:selected').val()),
+                //"event_type": getUrl('apis/event_types/', $('#id_event_type option:selected').val())
+              };
+              $.ajaxSetup({
+                headers: { "X-CSRFToken": '{{ csrf_token }}' }
+              });
+              var ajaxType='POST';
+              var url = '{% url 'customevent-list' %}'
+              if($('#sendBtn').val()!='Add') {
+                ajaxType='PUT';
+                url += $('#event_id').val() + '/';
+                event.id = $('#event_id').val();
+              }
+              $.ajax({
+                type: ajaxType,
+                dataType: 'json',
+                url: url,
+                data: event,
+                success:function(result) {
+                  if(ajaxType=="POST") {
+                    alert("Event added to calendar.");
+                  }
+                  else {
+                    alert("Event has been updated.");
+                  }
+
+                  $('#calendar').fullCalendar('refetchEvents');
+                  //$(':input', '#mailerForm').not(':button, :submit, :hidden').val('')
+                  $('#eventManageModal').modal('hide');
+
+                },
+                error:function(xhr) {
+                  alert("error: "  + xhr.status + ' ' + xhr.statusText + ' ' + xhr.responseText )
+                }
+
+              });
+            }
+            else {
+              alert("Sorry I cannot submit this event.  Your end date is before your start date.")
+            }
+
+          });
+
+
+
+
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
