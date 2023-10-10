@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %} | {{ company_type }} Management {% endblock %}
+
+{% block content %}
+
+
+{% load bootstrap4%}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $("#cancelBtn").on("click", function(){
+      history.back();
+    });
+  });
+
+</script>
+
+<section class="bg-light py-5">
+    <div class="container">
+      <div class="row">
+        <div class="mx-auto">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h4>
+                <i class="fa fa-address-book-o"></i> {{ company_type }}
+              </h4>
+            </div>
+            <div class="card-body">
+              <!-- Alerts -->
+              <!-- {% include 'partials/_alerts.html' %} -->
+              {% include 'purchasing/_companyform.html' %}
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+{% include 'purchasing/_companyfound.html'%}
+
+{% endblock %}

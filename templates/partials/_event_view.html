@@ -1,0 +1,147 @@
+{% load bootstrap_icons %}
+<style media="screen">
+  li::before {
+    content: attr(label);
+    position: relative;
+    left:0;
+    font-weight: bold;
+  }
+
+</style>
+<!--<script type="module">
+  import { createPopper } from '@popperjs/core';
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  });
+
+</script>-->
+<!--<script src='https://cdn.jsdelivr.net/npm/fullcalendar@3.10.5/dist/fullcalendar.min.js'></script>-->
+<div class="modal fade" id="eventViewModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="evenManageModalLabel">Event Occurrence</h5>
+        <ul class="nav">
+          <li class="nav-item">
+            <button id="edit" class="nav-link active" aria-current="page" onclick="edit()" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Edit Event">{% bs_icon 'pencil' %}</button>
+          </li>
+          <li class="nav-item">
+            <button id="email" class="nav-link active" aria-current="page" onclick="email()">{% bs_icon 'envelope' %}</button>
+          </li>
+          <li class="nav-item">
+            <button id="delete" class="nav-link active" aria-current="page" onclick="remove()">{% bs_icon 'trash' %}</button>
+          </li>
+          <li class="nav-item">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+            </button>
+          </li>
+
+        </ul>
+
+      </div>
+
+      <script>
+
+
+        function edit() {
+          $('#sendBtn').val("Update")
+          $('#eventManageModal').modal('show');
+          $('#eventViewModal').modal('hide');
+        };
+        function email() {
+          alert("We are going to email the thing.");
+
+        };
+        function staffing() {
+          $('#staffingModal').modal('show');
+        }
+        function remove() {
+          if (confirm("Are you sure you want to delete this event?")) {
+            $.ajaxSetup({
+              headers: { "X-CSRFToken": '{{ csrf_token }}' }
+            });
+            $.ajax({
+              type: 'DELETE',
+              dataType: 'json',
+              url: '{% url 'customevent-list'%}'+$('#event_id').val(),
+              success:function(result) {
+                alert("Event Deleted");
+                $('#calendar').fullCalendar('refetchEvents');
+              },
+              error:function(xhr) {
+                alert("I'm sorry but your event failed to delete"  + xhr.status)
+              }
+
+            });
+          }
+
+        };
+
+      </script>
+      <div class="modal-body">
+        <!--<input type="hidden" id="id">
+        <input type="hidden" id="event_id">-->
+        <!--<section>
+          <div class="row">
+            <div class="col-xs-12">Title</div>
+            <div class="row">
+              <div id="title" class="col-xs-6">
+              </div>
+            </div>
+            <div class="col-xs-12">Start</div>
+            <div class="row">
+              <div id="start" class="col-xs-6">
+              </div>
+            </div>
+            <div class="col-xs-12">End</div>
+            <div class="row">
+              <div id="end" class="col-xs-6">
+              </div>
+            </div>
+
+
+          </div>
+        </section>-->
+        <input type="hidden" id="event_id" readonly="true">
+        <input type="hidden" id = "id" readonly="true">
+        <input type="hidden" id="existed" readonly="true">
+        <input type="hidden" id="occ_start" readonly="true">
+        <input type="hidden" id="occ_end" readonly="true">
+
+        <ul title="Event Details" class="list-group">
+
+          <li class="list-group-item" id="title" label="Title: "></li>
+          <li class="list-group-item" id="start" label="Start: "></li>
+          <li class="list-group-item" id="end" label="End: "></li>
+          <li class="list-group-item" id="description" label="Description: "></li>
+          <li class="list-group-item" label="Recurring Rule ">{% bs_icon 'arrow-repeat' %}<a id='rule'>No Rule</a></li>
+          <li class="list-group-item" id="end_recurring_period" label="Recurring End: "></li>
+          <li class="list-group-item" id="v_calendar" label="Calendar: "></li>
+          <li class="list-group-item" id="color_event">Event Color</li>
+          <li class="list-group-item" id="event_type" label="Event Type: "></li>
+
+        </ul>
+      </div>
+    </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">Staffing</h6>
+        <ul class="nav">
+          <li class="nav-item">
+            <button id="staffing" class="nav-link active" aria-current="page" onclick="staffing()" data-bs-toggle="tooltip" title="Add Staffing">{% bs_icon 'person-fill-add' %}</button>
+          </li>
+        </ul>
+      </div>
+      <table class="table table-hover" id="staffingTable">
+        <thead>
+          <tr><th>Name</th><th>Start</th><th>End</th><th>{% bs_icon 'trash' %}</th></tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+
+{% block title %} | Approval Dashboard {% endblock %}
+
+{% block content %}
+
+<script type="text/javascript">
+function refreshWithNewPeriod() {
+  window.location.href = window.location.href.split("?")[0] + "?period_id=" + document.getElementById("period_select").value
+}
+
+function openTimesheetEntryModal(id, rowIndex) {
+  row=document.getElementById("tsEntriesTable-"+id).rows[rowIndex];
+  var time_in = new Date(Date.parse(stringToDateTime(row.cells[1].innerHTML)));
+  var time_out = new Date(Date.parse(stringToDateTime(row.cells[2].innerHTML)));
+  document.getElementById("duration").value=row.cells[3].innerHTML;
+  document.getElementById("notes").value=row.cells[5].innerHTML;
+  document.getElementById("id").value=row.cells[6].innerHTML;
+  document.getElementById("emp_name").value=document.getElementById("name-"+id).value;
+
+  $('#date_time_in').val(dateTimeToString(time_in));
+  $('#date_time_out').val(dateTimeToString(time_out));
+  $('#inquiryModal').modal('show');
+  $('#submitBtn').val("Update");
+  //Load in recipient email address in mailerForm
+  $('#id_recipients').val(row.cells[8].innerHTML);
+  console.log(row.cells[8].innerHTML);
+}
+
+function stringToDateTime(ds) {
+  var datetime=ds.split(" ");
+  var date=datetime[0];
+  var time=datetime[1];
+  var dateString=date.slice(6) + "-" + date.slice(0,5) + "T" + time+":00";
+  return dateString;
+}
+function dateTimeToString(date) {
+    return date.getFullYear()+'-'+ (date.getMonth()+1).toString().padStart(2,'0') +'-'+ date.getDate().toString().padStart(2,'0')+'T'+date.getHours().toString().padStart(2,'0')+':'+ date.getMinutes().toString().padStart(2,'0');
+
+}
+
+function getHoursBetweenDates(start, end) {
+  var diff = end.getTime() - start.getTime();
+  return diff/(1000*60*60);
+}
+</script>
+<script>
+  $(document).ready(function(){
+    $("#addBtn").on('click',function(){
+      $('#id').val(0);
+      $('#date_time_in').val(null);
+      $('#date_time_out').val(null);
+      $('#duration').val(null);
+      $('#notes').val('');
+      $('#inquiryModal').modal('show');
+      $('#submitBtn').val("Add");
+    });
+    $("#deleteBtn").on('click',function(){
+      $("#delete_entry_id").val($('#id').val());
+      $("#confirmForm").attr("action",$("#confirmForm").attr("action")+'timesheetentries/')
+      $("#confirmMessage").html("Are you sure you want to delete the entry "+$('#delete_entry_id').val());
+      $('#confirmModal').modal('show');
+    });
+    $("#date_time_out").on("focusout", function(){
+      $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
+    });
+    $("#date_time_in").on("focusout", function(){
+
+      $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
+    });
+    $("#duration").on("focusout", function(){
+      $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
+    });
+    {% for utp in utps%}
+    $("#tsEntriesTable-{{ utp.id }}").on("click","td", function(){
+      const columnIndex=$(this).parent().find('td').index(this);
+      const rowIndex=$(this).parent().parent().find('tr').index($(this).parent());
+      if (columnIndex > 0)openTimesheetEntryModal({{ utp.id }},rowIndex)
+
+    })
+    $("#reportBtn{{ utp.id }}").on("click",function(){
+      const period_id = $("#period_select").val();
+      window.open("{% url 'reportapprovee' %}?utp_id=" + {{ utp.id }}, "_blank")
+    })
+    {% endfor %}
+    $("#reportBtn").on("click",function(){
+      const period_id = $("#period_select").val();
+      window.open("{% url 'managereport' %}?period_id=" + period_id, "_blank")
+    })
+    $("#emailBtn").on("click",function(){
+      //$('#to').val({{ emp.user.email }})
+      $('#mailModal').modal('show');
+    })
+  });
+</script>
+      <!-- Breadcrumb -->
+      <section id="bc" class="mt-3">
+        <div class="container">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a href="{% url 'index' %}">
+                  <i class="fas fa-home"></i> Home</a>
+              </li>
+              <li class="breadcrumb-item active"> Timesheet Approvals</li>
+            </ol>
+          </nav>
+        </div>
+      </section>
+
+      <!--Alerts-->
+      {% include 'partials/_alerts.html' %}
+
+      <section id="dashboard" class="py-4">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12">
+              {% if periods %}
+              <select id="period_select" class="form-control" onchange="refreshWithNewPeriod()">
+                {% for p in periods %}
+                {% if selected_period == p.id%}
+                <option value="{{ p.id }}" selected>{{p.date_start}}-{{p.date_end}}</option>
+                {% else %}
+                <option value="{{ p.id }}">{{p.date_start}}-{{p.date_end}}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+              {% endif %}
+              <div>
+                <h2>Welcome {{ user.first_name }}<button id="reportBtn" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Report All</button></h2>
+
+              </div>
+              <div>
+                <hr>
+              </div>
+
+              {% load test %}
+              <div class="accordion" id="userTimesheetPeriodsAcc">
+              {% for utp in utps %}
+                <div class="card">
+                  <div class="card-header" id="heading-{{ utp.id }}">
+                    <h5 class="mb-0">
+                      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-{{ utp.id }}" aria-expanded="true" aria-controls="collapse-{{ utp.id }}">
+                      {{ utp.user.user.first_name }} &nbsp {{ utp.user.user.last_name}} &nbsp;&nbsp;&nbsp;Timesheet Status:
+                      {% if utp.approved %}
+                      APPROVED
+                      {% elif utp.submitted%}
+                      SUBMITTED
+                      {% else %}
+                      NOT SUBMITTED
+                      {% endif %}
+
+                      <button id="reportBtn{{ utp.id }}" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Report</button>
+
+                      </button>
+                    </h5>
+
+
+                  </div>
+                  <div id="collapse-{{ utp.id }}" class="collapse show" aria-labelledby="heading-{{ utp.id }}" data-parent="#userTimesheetPeriodsAcc">
+                    <form action="{% url 'tsapprovals' %}" method="post">
+                      {% csrf_token %}
+
+                    <div class="card-body">
+                      <input type="hidden" name="period_id" id="period_id" value="{{ selected_period }}">
+                      <table class="table" id="tsEntriesTable-{{ utp.id }}" name="tsEntriesTable">
+                        <tr>
+                          <th scope="col">Appr</th>
+                          <th scope="col">In</th>
+                          <th scope="col">Out</th>
+                          <th scope="col">Duration</th>
+                          <th scope="col">Pay</th>
+                          <th scope="col">Notes</th>
+                          <th></th>
+                        </tr>
+
+                        {% for emp in utp.entries %}
+                        <tr>
+                          <td><input type="checkbox" name="approveCheck" value="{{ emp.id }}" class="form-control"
+                            {% if emp.approver_approved %} checked {% endif %}
+                            {% if not utp.approved and not utp.submitted %}
+                            disabled
+                            {% endif %}
+                          ></td>
+                          <td>{{ emp.date_time_in|date:'m-d-Y H:i' }}</td>
+                          <td>{{ emp.date_time_out|date:'m-d-Y H:i' }}</td>
+                          <td>{{ emp.duration }}</td>
+                          <td>{{ emp.user.hourly_rate | multiply:emp.duration }}</td>
+                          <td>{{ emp.notes}}</td>
+                          <td style="visibility:hidden;"><input name="entry_id" value="{{ emp.id }}" type="hidden"</td>
+                          <td style="visibility:hidden;">{{ emp.user.first_name}}</td>
+                          <td style="visibility:hidden;">{{ emp.user.user.email }}</td>
+
+                        </tr>
+                        {% endfor %}
+                        <tr>
+
+
+                        </tr>
+                      </table>
+                      <input type="hidden" name="utp_id" value="{{ utp.id }}">
+                      <input type="hidden" id="name-{{ utp.id }}" value="{{ utp.user.user.first_name }} {{utp.user.user.last_name}}">
+                      <input type="submit" value="Submit" class="btn btn-block btn-secondary" id="entriesApproveBtn"
+                      {% if not utp.approved and not utp.submitted %}
+                      disabled
+                      {% endif %}
+                      >
+                    </div>
+                    </form>
+                  </div>
+                </div>
+              {% endfor %}
+
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Time Sheet Model -->
+      {% include 'tsmanagement/_approval_modal.html' %}
+      {% include 'partials/_confirm.html' %}
+      {% include 'mailer/_mailform.html' %}
+{% endblock %}

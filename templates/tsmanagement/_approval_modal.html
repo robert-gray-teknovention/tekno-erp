@@ -1,0 +1,51 @@
+<div class="modal fade" id="inquiryModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="inquiryModalLabel">Timesheet Entry</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+
+          {% if user.is_authenticated %}
+            <input type="hidden" name="emp_id" value="{{ user.id }}">
+          {% else %}
+            <input type="hidden" name="emp_id" value="0">
+          {% endif %}
+            <input type="hidden" id="id" name="id" value="0"
+          <div class="form-group">
+            <label for="emp_name" class="col-form-label">Name:</label>
+            <input id="emp_name" type="text" name="emp_name" class="form-control" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="date_time_in" class="col-form-label">DateTime IN:</label>
+            <input id="date_time_in" type="datetime-local" name="date_time_in" class="form-control" value="" readonly>
+          </div>
+          <div class="form-group">
+            <label for="date_time_out" class="col-form-label">DateTime OUT:</label>
+            <input id="date_time_out" type="datetime-local" name="date_time_out" class="form-control" value="" readonly>
+          </div>
+          <div class="form-group">
+            <label for="duration" class="col-form-label">Duration:</label>
+            <input id='duration' type="number" name="duration" step="any" class="form-control" min="0" class="form-control is-invalid" data-error-msg="Your start time is greater that your end time." readonly>
+          </div>
+          <div class="form-group">
+            <label for="notes" class="col-form-label">Entry Notes</label>
+            <textarea id='notes' name="notes" rows="2" cols="80" class="form-control" readonly></textarea>
+          </div>
+          <div class="form-group">
+            <input type="button" id ="emailBtn" name="emailBtn" class="btn btn-block btn-secondary" value="Send Email">
+          </div>
+
+
+          <hr>
+
+
+
+      </div>
+    </div>
+  </div>
+</div>

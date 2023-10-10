@@ -1,0 +1,61 @@
+{% load crispy_forms_tags %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    //console.log('Exist  ' + {{ exist }})
+    {% if exist == False %}
+    $("#id_name").on('focusout',function(){
+      $.get({
+        type: 'GET',
+        dataType: 'JSON',
+        data:{'class':'{{ company_type }}','name':$('#id_name').val()},
+        url:'{% url "api_company" %}',
+        success: function(response){
+          vars = {}
+          for (r in response) {
+            vars[response[r].name] = {
+                                      'id':response[r].id,
+                                      'name':response[r].name,
+                                      'email':response[r].email,
+                                      'website':response[r].website,
+                                      'phone':response[r].phone,
+                                      'notes':response[r].notes,
+                                      'is_active':response[r].is_active
+                                    }
+            var li = $("<li><a>" + response[r].name + "</a></li>").on('click', function () {
+              $("input[name='company_id']").val(vars[$(this).text()]['id']);
+              $("#id_name").val(vars[$(this).text()]['name']);
+              $("#id_email").val(vars[$(this).text()]['email']);
+              $("#id_website").val(vars[$(this).text()]['website']);
+              $("#id_phone").val(vars[$(this).text()]['phone']);
+              $("#id_notes").val(vars[$(this).text()]['notes']);
+              $("#id_is_active").val(vars[$(this).text()]['is_active']);
+              $(this).fadeOut(500);
+              $("#companyFoundModal").modal("hide");
+            });
+
+            $("ul").append(li);
+          }
+          //alert(JSON.stringify(response));
+          $("#companyFoundModal").modal("show");
+        },
+        error: function(xhr) {alert("something went wrong")}
+      });
+    });
+    {% endif %}
+
+    $("#companyFoundModal").on("hidden.bs.modal",function(){
+      $("ul").empty()
+    });
+
+
+  });
+
+</script>
+<form id="companyForm" method="POST">
+  {% csrf_token %}
+  {{ company_form|crispy }}
+  <input type="hidden" name="company_id">
+  <input type="submit" value="Save" class="btn btn-primary btn-block">
+  <input type="button" value="Cancel" class="btn btn-secondary btn-block" id = "cancelBtn">
+
+</form>

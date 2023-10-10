@@ -1,0 +1,63 @@
+{% load crispy_forms_tags %}
+<div class="modal fade" id="mailModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmModalLabel">Mailer Dialog</h5>
+        <button type="button" class="close" data-dismiss="modal">
+          <span>&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="mailerForm" method="POST">
+          {% csrf_token %}
+          {{ mailForm|crispy }}
+          <input type="hidden" id="sender" name="sender" value="{{ organization.mailer_email }}">
+          <input type="submit" value="Send" class="btn btn-block btn-secondary" name="sendBtn">
+        </form>
+
+        <script type="text/javascript">
+          $(document).on('show.bs.modal','#mailModal', function(e){
+            date_time_in = new Date($('#date_time_in').val());
+            date_time_out = new Date($('#date_time_out').val());
+            const subject='Regarding timesheet entry ' + date_time_in.toLocaleString() + ' - ' + date_time_out.toLocaleString() + '  {{  organization.name }}';
+            const boiler_plate_message='Hello ' + $('#emp_name').val() + ',\n\n{{ user.first_name }} {{user.last_name}} has a question about your timesheet entry: \nIN: ' + date_time_in.toLocaleString() + '\nOUT: ' + date_time_out.toLocaleString();
+            $('#id_reply_tos').val('{{ user.email }}');
+            $('#id_subject').val(subject);
+            $('#id_message').val(boiler_plate_message);
+          })
+          $(document).on('submit','#mailerForm', function(e){
+            e.preventDefault();
+            var email = {
+              'recipients': [$('#id_recipients').val()],
+              'reply_tos': [$('#id_reply_tos').val()],
+              'sender': $('#sender').val(),
+              'subject': $('#id_subject').val(),
+              'message': $('#id_message').val(),
+              'date_sent': new Date()
+            };
+            $.ajax({
+              type: 'POST',
+              dataType: 'json',
+              url: '{% url 'email' %}',
+              data: {
+                'email': JSON.stringify(email),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+              },
+              success:function(result) {
+                alert("Mail Sent ");
+                $(':input', '#mailerForm').not(':button, :submit, :hidden').val('')
+                $('#mailModal').modal('hide');
+
+              },
+              error:function(xhr) {
+                alert("I'm sorry but your message failed to send "  + xhr.status)
+              }
+
+            })
+          });
+        </script>
+      </div>
+    </div>
+  </div>
+</div>

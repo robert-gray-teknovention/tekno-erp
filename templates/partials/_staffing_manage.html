@@ -1,0 +1,115 @@
+
+{% load crispy_forms_tags %}
+
+<div class="modal fade" id="staffingModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staffingModalLabel">Staffing Dialog</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="staffingForm">
+          {% csrf_token %}
+          {{ staffingForm|crispy }}
+          <input type="submit" value="Save" class="btn btn-block btn-primary" name="staffingSendBtn" id="staffingSendBtn">
+
+        </form>
+        <script type="text/javascript" method="POST">
+          $(document).on('submit', '#staffingForm', function(e){
+
+            e.preventDefault();
+
+
+            var staffing = {
+              "staff_member": $("#id_staff_staff_member").val(),
+              "start": $('#id_staff_start').val(),
+              "end": $('#id_staff_end').val(),
+              "event": $('#event_id').val(),
+              "occurrence": $('#id').val(),
+              "occ_start": $('#occ_start').val(),
+              "occ_end": $('#occ_end').val()
+              //"calendar":  getUrl('apis/calendars/', $('#id_calendar option:selected').val()),
+              //"event_type": getUrl('apis/event_types/', $('#id_event_type option:selected').val())
+            };
+
+            $.ajaxSetup({
+              headers: { "X-CSRFToken": '{{ csrf_token }}' }
+            });
+            var ajaxType='POST';
+            var url = '{% url 'stafftime-list' %}'
+            /**if($('#sendBtn').val()!='Add') {
+              ajaxType='PUT';
+              url += $('#event_id').val() + '/';
+              event.id = $('#event_id').val();
+              console.log('Event id' + $('#event_id').val());
+            }**/
+            $.ajax({
+              type: ajaxType,
+              dataType: 'json',
+              url: url,
+              data: staffing,
+              success:function(result) {
+                $('#id').val(result.occurrence);
+                if(ajaxType=="POST") {
+                  $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    url: url + result.id,
+                    success: function(result) {
+                      $("#staffingTable > tbody:last-child").append("<tr id='staff_row_" + result.id + "'><td>" + result.staff_member.name + "</td><td>" + new Date(result.start).toLocaleString() + "</td><td>" + new Date(result.end).toLocaleString() + "</td><td><button onclick='removeStaffing(" + result.id + ")'></button></td></tr>");
+                    }
+                  });
+                }
+                else {
+                  alert("Event has been updated.");
+                }
+
+                $('#calendar').fullCalendar('refetchEvents');
+
+                //$(':input', '#mailerForm').not(':button, :submit, :hidden').val('')
+                $('#staffingModal').modal('hide');
+
+              },
+              error:function(xhr) {
+                alert("error: "  + xhr.status + ' ' + xhr.statusText + ' ' + xhr.responseText )
+              }
+
+            });
+
+          });
+          function removeStaffing(id) {
+            if(confirm("Are you sure you want to remove this staff member?")) {
+              $.ajaxSetup({
+                headers: { "X-CSRFToken": '{{ csrf_token }}' }
+              });
+
+              var url = '{% url 'stafftime-list' %}' + id;
+
+              $.ajax({
+                type: 'DELETE',
+                dataType: 'json',
+                url: url,
+                success:function(result) {
+                  $('#staff_row_'+id).remove();
+                  //$('#calendar').fullCalendar('refetchEvents');
+                  //$(':input', '#mailerForm').not(':button, :submit, :hidden').val('')
+                  $('#staffingModal').modal('hide');
+
+                },
+                error:function(xhr) {
+                  alert("error: "  + xhr.status + ' ' + xhr.statusText + ' ' + xhr.responseText )
+                }
+
+              });
+            }
+          }
+
+        </script>
+
+      </div>
+    </div>
+  </div>
+</div>

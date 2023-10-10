@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+
+{% block head_title %}{% trans "Fullcalendar" %}{% endblock %}
+
+{% block tab_id %}id="home_tab"{% endblock %}
+
+{% block extra_head %}
+{% load bootstrap_icons %}
+<link rel='stylesheet' type='text/css' href="{% static 'fullcalendar/dist/fullcalendar.css' %}" />
+<script type='text/javascript' src="{% static 'moment/moment.js' %}"></script>
+
+<!--<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js'></script>-->
+<!--<script type='text/javascript' src="{% static 'fullcalendar/dist/fullcalendar.min.js' %}"></script>-->
+<!--<script type='text/javascript' src="{% static 'fullcalendar/dist/index.global.js' %}"></script> -->
+
+{% endblock %}
+
+{% block content %}
+<script type ='text/javascript' src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+<div id="calendar"></div>
+{% include 'partials/_event_manage.html' %}
+{% include 'partials/_event_view.html' %}
+{% include 'partials/_staffing_manage.html' %}
+<script type='text/javascript'>
+  document.addEventListener('DOMContentLoaded',function(){
+    var calendarEl = document.getElementById('calendar');
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        editable: true,
+        events: '/schedule/api/occurrences?calendar_slug=teknoventiongeneralcalendar',
+      });
+    calendar.render();
+
+  });
+
+/**$(document).ready(function() {
+    $('#id_start_time').on('input', function(e){
+      $('#id_start').val($('#id_start').val().substring(0, 11) + $('#id_start_time').val())
+
+    })
+    $('#id_end_time').on('input', function(e){
+      $('#id_end').val($('#id_end').val().substring(0, 11) + $('#id_end_time').val())
+
+    })
+    // page is now ready, initialize the calendar...
+    $('#calendar').fullCalendar({
+      // put your options and callbacks here
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
+      },
+      editable: true,
+      events: '/schedule/api/occurrences?calendar_slug=teknoventiongeneralcalendar',
+      eventClick: function(event, jsEvent, view) {
+        loadEventViewModal(event)
+      },
+      eventDrop: function(event, delta, revertFunc) {
+        moveOrResizeEvent(event, delta, null, revertFunc)
+      },
+      eventResize: function(event, delta, revertFunc) {
+        moveOrResizeEvent(event, delta, true, revertFunc)
+      },
+      dayClick: function(date) {
+        $('#eventForm').trigger('reset');
+        $('#sendBtn').val('Add');
+        cal_date = date._d.toISOString().substring(0, 11);
+        $('#id_start_time').val('00:00')
+        $('#id_end_time').val('00:00')
+        $('#id_start').val(cal_date + $('#id_start_time').val())
+        $('#id_end').val(cal_date + $('#id_end_time').val())
+        $('#eventManageModal').modal("show");
+
+      }
+    })
+});**/
+function loadEventViewModal(event) {
+  $.ajaxSetup({
+    headers: { "X-CSRFToken": '{{ csrf_token }}' }
+  });
+  $.ajax({
+    type: 'GET',
+    dataType: 'json',
+    url: '{% url 'customevent-list' %}' + event.event_id + '/?format=json',
+    success:function(result) {
+      var rule='No repeat';
+      $('#id').val(event.id);
+      $('#event_id').val(event.event_id);
+      $('#title').text(event.title);
+      $('#description').text(event.description);
+      $('#start').text(new Date(event.start).toLocaleString("en-US",{timeZone:"UTC"}));
+      $('#end').text(new Date(event.end).toLocaleString("en-US",{timeZone:"UTC"}));
+      //Preload the staffing start and end datetimes
+
+      if(event.rule){
+        rule=event.rule;
+      }
+      $('#rule').html(rule);
+      $('#v_calendar').text(result.calendar.name);
+      $('#end_recurring_period').text(new Date(event.end_recurring_period).toLocaleString());
+      $('#color_event').css("background-color", event.color);
+      $('#event_type').text(result.event_type.name);
+      $('#staffingTable > tbody').empty();
+      if(event.existed) {
+        $('#existed').val(event.existed);
+        $.ajax({
+          type: 'GET',
+          dataType: 'json',
+          url: '{% url 'occurrence-list' %}' + event.id + '/?format=json',
+          success: function(result) {
+            for(let x in result.staffing){
+              $("#staffingTable > tbody:last-child").append("<tr id='staff_row_" + result.staffing[x].id + "'><td>" + result.staffing[x].staff_member.name + "</td><td>" + new Date(result.staffing[x].start).toLocaleString() + "</td><td>" + new Date(result.staffing[x].end).toLocaleString() + "</td><td><button onclick='removeStaffing(" + result.staffing[x].id + ")'></button></td></tr>");
+            }
+
+          }
+        });
+      }
+      $('#eventViewModal').modal('show');
+      //Load eventManageModal
+      $('#eventForm').trigger('reset');
+      $('#id_title').val(event.title);
+      $('#id_description').val(event.description);
+      //$('#id_start_time').val(result.start.substring(11, 16));
+      //$('#id_end_time').val(result.end.substring(11, 16));
+      $('#id_start_time').val(new Date(event.start).toISOString().substring(11, 16));
+      $('#id_end_time').val(new Date(event.end).toISOString().substring(11, 16));
+      $('#id_start').val(new Date(event.start).toISOString().substring(0, 16));
+      $('#id_end').val(new Date(event.end).toISOString().substring(0, 16));
+      if (result.rule != null) {
+        $('#id_rule').val(result.rule.id).change();
+      }
+      $('#id_calendar').val(result.calendar.id).change();
+      $('#id_end_recurring_period').val(event.end_recurring_period);
+      $('#id_color_event').val(event.color);
+      $('#id_event_type').val(result.event_type.id).change();
+      //Load staffingModal
+      console.log(new Date(event.start).toISOString().slice(0, -5));
+      $('#id_staff_start').val(new Date(event.start).toISOString().slice(0, -5));
+      $('#id_staff_end').val(new Date(event.end).toISOString().slice(0, -5));
+      $('#occ_start').val(new Date(event.start).toISOString().slice(0, -5));
+      $('#occ_end').val(new Date(event.end).toISOString().slice(0, -5));
+    },
+    error:function(xhr) {
+      alert("I'm sorry but your message failed to send "  + xhr.status)
+    }
+
+  });
+}
+
+
+function moveOrResizeEvent(event, delta, resize, revertFunc) {
+  var create_occurrence = false;
+  if (!event.exists && event.rule != null) {
+    //alert(event.rule);
+    if(confirm("Would you like to move just this one occurrence of this event?  If you choose no or cancel then all the recurring events will be moved except for any modified events.")) {
+      create_occurrence = true
+    }
+    //alert("Create occurrence" + create_occurrence);
+  }
+  $.ajaxSetup({
+    headers: { "X-CSRFToken": '{{ csrf_token }}' }
+  });
+  $.ajax({
+    type: 'POST',
+    dataType: 'json',
+    url: '{% url 'api_move_or_resize_custom' %}',
+    data: {
+      'id': event.id,
+      'event_id': event.event_id,
+      'delta': delta/1000/60,
+      'existed': event.existed,
+      'resize': resize
+      },
+    success:function(result) {
+      alert("Event saved");
+      $('#calendar').fullCalendar('rerenderEvents');
+    },
+    error:function(xhr) {
+      alert("I'm sorry but your message failed to send "  + xhr.status)
+    }
+
+  });
+}
+</script>
+
+<!--<script>
+
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          events: '/schedule/api/occurrences?calendar_slug=bobs-calendar',
+          dateClick: function(info) {
+            alert("Yo you jsut clicked me " + JSON.stringify(info));
+          },
+
+        });
+        calendar.render();
+      });
+
+    </script> -->
+
+{% endblock %}

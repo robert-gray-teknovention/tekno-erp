@@ -1,0 +1,25 @@
+{
+  "name": "django-timesheets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "jquery": "^3.7.1",
+    "moment": "^2.29.4",
+    "popper.js": "^1.16.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robert-gray-teknovention/timesheets.git"
+  },
+  "author": "Robert Gray",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/robert-gray-teknovention/timesheets/issues"
+  },
+  "homepage": "https://github.com/robert-gray-teknovention/timesheets#readme"
+}
