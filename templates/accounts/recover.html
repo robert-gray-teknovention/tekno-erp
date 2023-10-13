@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %} | Account Login {% endblock %}
+
+{% block content %}
+
+<section id="recover_user" class="bg-light py-5">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 mx-auto">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h4>
+                Recover User Information</h4>
+            </div>
+            <div class="card-body">
+              <h5>Please follow the instruction on the email to find your user name and reset password.</h5>
+              <!-- Alerts -->
+              {% include 'partials/_alerts.html' %}
+              <form method="POST">
+                  {% csrf_token %}
+                  {{ form|crispy }}
+                <input type="submit" value="Send Email" class="btn btn-secondary btn-block">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
