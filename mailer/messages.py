@@ -11,7 +11,7 @@ class EmailMessageComposer():
         message = "Dear User with email " + email + ",\n"
         message += "You are getting this email because you requested either a password reset or username information."
         if users.count() > 1:
-            message += "\nIt looks as if you have more that one account with this email.  We will list each account "
+            message += "\nIt looks as if you have more than one account with this email.  We will list each account "
             message += "for you."
         for user in users:
             message += "\n\n Your username: " + user.username
