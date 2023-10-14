@@ -233,7 +233,8 @@ def dashboard(request):
         'time_entries': user_time_entries,
         'periods': periods,
         'selected_period': query_period['id'],
-        'user_period': user_period
+        'user_period': user_period,
+        'alternate_wages': user.alternatewagecode_set.all()
     }
 
     return render(request, 'accounts/dashboard.html', context)

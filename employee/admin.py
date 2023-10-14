@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Employee, TimesheetUser
+from .models import Employee, TimesheetUser, AlternateWageCode
 
 
 class ApproveesInLine(admin.TabularInline):
@@ -19,5 +19,10 @@ class TimesheetUserAdmin(admin.ModelAdmin):
     ]
 
 
+class AlternateWageCodeAdmin(admin.ModelAdmin):
+    list_display = ('hourly_rate', 'description')
+
+
 admin.site.register(Employee, EmployeeAdmin)
 admin.site.register(TimesheetUser, TimesheetUserAdmin)
+admin.site.register(AlternateWageCode, AlternateWageCodeAdmin)

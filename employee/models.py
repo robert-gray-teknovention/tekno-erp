@@ -30,6 +30,16 @@ class TimesheetUser(models.Model):
         return name
 
 
+class AlternateWageCode(models.Model):
+    hourly_rate = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    description = models.CharField(max_length=50)
+    user = models.ForeignKey(TimesheetUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        display = self.description + ": " + str(self.hourly_rate)
+        return display
+
+
 class Invitee(models.Model):
     class Status(models.TextChoices):
         INVITED = 'INVITED', 'Invited'
