@@ -157,6 +157,7 @@ def change_password(request):
 
 def recover(request):
     form = RecoverUserForm()
+    env = environ.Env()
     if request.method == 'POST':
         email = request.POST.get('email')
         composer = EmailMessageComposer()
@@ -171,7 +172,8 @@ def recover(request):
             # Generate Email
             email_message = composer.user_reset_message(email, users, reset.onetime_code)
             emailer = Emailer()
-            emailer.send_and_log_mail(email_message['subject'], email_message['message'], 'mailer@teknovention.com',
+            emailer.send_and_log_mail(email_message['subject'], email_message['message'],
+                                      env('DEFAULT_FROM_EMAIL'),
                                       [email], [], organization=None)
             messages.success(request, "Your reset information has been emailed to you.")
         else:
