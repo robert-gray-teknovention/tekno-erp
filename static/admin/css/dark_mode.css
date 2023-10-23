@@ -31,6 +31,7 @@
       --close-button-hover-bg: #666666;
     }
   }
+<<<<<<< HEAD
 
 
 html[data-theme="dark"] {
@@ -135,3 +136,5 @@ html[data-theme="light"] .theme-toggle svg.theme-icon-when-light {
     color: var(--body-fg);
     background-color: var(--body-bg);
 }
+=======
+>>>>>>> wagecode

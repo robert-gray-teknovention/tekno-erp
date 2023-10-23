@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import TimesheetEntry, TimesheetPeriod, UserTimesheetPeriod
-from employee.models import TimesheetUser
+from employee.models import TimesheetUser, AlternateWageCode
 from .utils import TimesheetUtil
 from django.utils import timezone
 from reportlab.pdfgen import canvas
@@ -31,6 +31,14 @@ def timesheet_entries(request):
                                                   '%Y-%m-%dT%H:%M', ts_user.organization.timezone),
                                                   pytz.timezone(ts_user.organization.timezone))
                 period = util.get_timesheet_period(date_time_in, ts_user.organization)
+                hourly_rate = ts_user.hourly_rate
+                wage_code = int(request.POST['alternate_wage_code'])
+                print("Wage code ", wage_code)
+                if wage_code > 0:
+
+                    hourly_rate = AlternateWageCode.objects.get(id=wage_code).hourly_rate
+                    print("We have a wage code ", hourly_rate)
+
                 if int(request.POST['id']) > 0:
                     entry = TimesheetEntry.objects.get(id=int(request.POST['id']))
                     entry.user = ts_user
@@ -38,11 +46,12 @@ def timesheet_entries(request):
                     entry.date_time_out = request.POST['date_time_out']
                     entry.duration = request.POST['duration']
                     entry.notes = request.POST['notes']
-                    entry.hourly_rate = ts_user.hourly_rate
+                    entry.hourly_rate = hourly_rate
+
                 else:
                     entry = TimesheetEntry(user=ts_user, date_time_in=request.POST['date_time_in'],
                                            date_time_out=request.POST['date_time_out'], duration=duration,
-                                           notes=request.POST['notes'], hourly_rate=ts_user.hourly_rate)
+                                           notes=request.POST['notes'], hourly_rate=hourly_rate)
                     entry.period = period
                 if period.id == entry.period.id:
                     entry.save()

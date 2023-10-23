@@ -1,15 +1,25 @@
 from django.shortcuts import render, redirect, reverse
-from django.contrib import messages, auth
+from django.contrib import messages
+from django.contrib import auth
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import SetPasswordForm
 from django.utils import timezone
+from django.contrib.auth.forms import PasswordChangeForm
 from timesheets.models import TimesheetEntry, TimesheetPeriod, UserTimesheetPeriod
+from mailer.messages import EmailMessageComposer
+# from django.contrib.auth import update_session_auth_hash
 # from django.core import cache
 from employee.models import TimesheetUser, Invitee
 from organizations.models import Organization
 from datetime import date, datetime
 from mailer.utils import Emailer
+from .forms import RecoverUserForm
+from .models import PasswordReset
 import pytz
 import environ
+import random
+import string
 
 
 def register(request):
@@ -87,7 +97,7 @@ def register(request):
                     subject = invitee[0].name + ' has registered with the '
                     subject += invitee[0].organization.name + ' application.'
                     message = 'Dear ' + inviter.first_name + ',\n\n'
-                    message += invitee[0].name + ' has registered with the ' + invitee[0].organization.name + ' application '
+                    message += invitee[0].name + ' has registered with the ' + invitee[0].organization.name + '     application '
                     message += 'with a wage of ' + str(invitee[0].wage) + ' per hour.\n'
                     message += 'Please do not respond to this email.'
                     send_to = [inviter.email]
@@ -128,6 +138,77 @@ def login(request):
         return render(request, 'accounts/login.html')
 
 
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('change_password')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'accounts/change_password.html', {
+        'form': form
+    })
+
+
+def recover(request):
+    form = RecoverUserForm()
+    env = environ.Env()
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        composer = EmailMessageComposer()
+        users = User.objects.filter(email=email)
+        if users.count() > 0:
+            # Add a PasswordReset
+            reset = PasswordReset()
+            reset.onetime_code = ''.join(random.SystemRandom().choice(string.ascii_letters + string.digits) for _
+                                         in range(10))
+            reset.email = email
+            reset.save()
+            # Generate Email
+            email_message = composer.user_reset_message(email, users, reset.onetime_code)
+            emailer = Emailer()
+            emailer.send_and_log_mail(email_message['subject'], email_message['message'],
+                                      env('DEFAULT_FROM_EMAIL'),
+                                      [email], [], organization=None)
+            messages.success(request, "Your reset information has been emailed to you.")
+        else:
+            messages.error(request, 'Sorry but that email is not associated with any account.')
+    return render(request, 'accounts/recover.html', {
+        'form': form
+    })
+
+
+def reset_password(request):
+
+    user = User.objects.get(id=request.GET.get('user_id'))
+    form = SetPasswordForm(user)
+    if request.method == 'POST':
+        form = SetPasswordForm(user, request.POST)
+        code = request.GET.get('code')
+        if PasswordReset.objects.filter(onetime_code=code, used=False, email=user.email).exists():
+            print("Error ", form.errors)
+            if form.is_valid():
+
+                form.save()
+                PasswordReset.objects.filter(email=user.email).update(used=True)
+                messages.success(request, "Your password has been reset!")
+                return redirect('login')
+            else:
+                for error in form.errors:
+                    messages.error(request, form.errors[error])
+        else:
+            messages.error(request, "Your verification code did not work. Resubmit new password request.")
+            return redirect('recover')
+    return render(request, 'accounts/reset_password.html', {
+        'form': form
+    })
+
+
 def logout(request):
     if request.method == 'POST':
         auth.logout(request)
@@ -154,7 +235,8 @@ def dashboard(request):
         'time_entries': user_time_entries,
         'periods': periods,
         'selected_period': query_period['id'],
-        'user_period': user_period
+        'user_period': user_period,
+        'alternate_wages': user.alternatewagecode_set.all()
     }
 
     return render(request, 'accounts/dashboard.html', context)

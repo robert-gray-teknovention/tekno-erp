@@ -173,15 +173,23 @@ STATICFILES_DIRS = [
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+<<<<<<< HEAD:mainapp/settings.py
     'djangobower.finders.BowerFinder',
 )
 
+=======
+)
+>>>>>>> wagecode:timesheet/settings.py
 # messaging
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
+<<<<<<< HEAD:mainapp/settings.py
 # rest rest_framework
+=======
+# rest_framework
+>>>>>>> wagecode:timesheet/settings.py
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.

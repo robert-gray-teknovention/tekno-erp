@@ -11,7 +11,11 @@
     }
 
     Object.entries(filters).forEach(([key, value]) => {
+<<<<<<< HEAD
         const detailElement = document.querySelector(`[data-filter-title='${CSS.escape(key)}']`);
+=======
+        const detailElement = document.querySelector(`[data-filter-title='${key}']`);
+>>>>>>> wagecode
 
         // Check if the filter is present, it could be from other view.
         if (detailElement) {
