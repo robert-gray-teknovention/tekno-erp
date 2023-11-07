@@ -70,7 +70,12 @@ function getHoursBetweenDates(start, end) {
     $("#reportBtn").on("click",function(){
       const period_id = $("#period_select").val();
       window.open("{% url 'report' %}?period_id=" + period_id, "_blank")
-    })
+    });
+    $("#btn-close").on("click",function(){
+      //$("#inquiryModal").hide();
+      console.log("We are closing");
+    });
+
   });
 </script>
       <!-- Breadcrumb -->
@@ -125,9 +130,11 @@ function getHoursBetweenDates(start, end) {
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="inquiryModalLabel">Timesheet Entry</h5>
-                      <button type="button" class="close" data-bs-dismiss="modal">
+                      <button id="btn-close" type="button" class="close" data-bs-dismiss="modal">
                         <span>&times;</span>
                       </button>
+                      <button id="testbutton" type="button" name="button" class="close" data-bs-dismiss="modal">Test</button>
+
                     </div>
                     <div class="modal-body">
                       <form action="{% url 'timesheetentries' %}" method="POST">
