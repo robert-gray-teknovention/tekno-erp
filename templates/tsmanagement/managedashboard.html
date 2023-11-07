@@ -140,7 +140,7 @@ function getHoursBetweenDates(start, end) {
                 <div class="card">
                   <div class="card-header" id="heading-{{ utp.id }}">
                     <h5 class="mb-0">
-                      <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-{{ utp.id }}" aria-expanded="true" aria-controls="collapse-{{ utp.id }}">
+                      <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ utp.id }}" aria-expanded="true" aria-controls="collapse-{{ utp.id }}">
                       {{ utp.user.user.first_name }} &nbsp {{ utp.user.user.last_name}} &nbsp;&nbsp;&nbsp;Timesheet Status:
                       {% if utp.approved %}
                       APPROVED
@@ -157,7 +157,7 @@ function getHoursBetweenDates(start, end) {
 
 
                   </div>
-                  <div id="collapse-{{ utp.id }}" class="collapse show" aria-labelledby="heading-{{ utp.id }}" data-parent="#userTimesheetPeriodsAcc">
+                  <div id="collapse-{{ utp.id }}" class="collapse show" aria-labelledby="heading-{{ utp.id }}" data-bs-parent="#userTimesheetPeriodsAcc">
                     <form action="{% url 'tsapprovals' %}" method="post">
                       {% csrf_token %}
 
