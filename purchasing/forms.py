@@ -11,7 +11,7 @@ class VendorSearchWidget(s2forms.ModelSelect2Widget):
     ]
 
 
-'''class VendorForm(ModelForm):
+class VendorForm(ModelForm):
     class Meta:
         model = Vendor
         fields = ['name', 'email', 'website', 'phone', 'notes', 'is_active', 'organization']
@@ -20,6 +20,7 @@ class VendorSearchWidget(s2forms.ModelSelect2Widget):
         }
 
 
+'''
 class ManufacturerForm(ModelForm):
     class Meta:
         model = Manufacturer
