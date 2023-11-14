@@ -13,9 +13,9 @@ function openTimesheetEntryModal(id, rowIndex) {
   row=document.getElementById("tsEntriesTable-"+id).rows[rowIndex];
   var time_in = new Date(Date.parse(stringToDateTime(row.cells[1].innerHTML)));
   var time_out = new Date(Date.parse(stringToDateTime(row.cells[2].innerHTML)));
-  document.getElementById("duration").value=row.cells[3].innerHTML;
-  document.getElementById("notes").value=row.cells[5].innerHTML;
-  document.getElementById("id").value=row.cells[6].innerHTML;
+  document.getElementById("duration").value=row.cells[4].innerHTML;
+  document.getElementById("notes").value=row.cells[6].innerHTML;
+  document.getElementById("id").value=row.cells[7].innerHTML;
   document.getElementById("emp_name").value=document.getElementById("name-"+id).value;
 
   $('#date_time_in').val(dateTimeToString(time_in));
