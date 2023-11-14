@@ -167,6 +167,7 @@ function getHoursBetweenDates(start, end) {
                           <th scope="col">Appr</th>
                           <th scope="col">In</th>
                           <th scope="col">Out</th>
+                          <th scope-="col">Rate</th>
                           <th scope="col">Duration</th>
                           <th scope="col">Pay</th>
                           <th scope="col">Notes</th>
@@ -183,8 +184,9 @@ function getHoursBetweenDates(start, end) {
                           ></td>
                           <td>{{ emp.date_time_in|date:'m-d-Y H:i' }}</td>
                           <td>{{ emp.date_time_out|date:'m-d-Y H:i' }}</td>
+                          <td>{{ emp.hourly_rate }}</td>
                           <td>{{ emp.duration }}</td>
-                          <td>{{ emp.user.hourly_rate | mul:emp.duration }}</td>
+                          <td>{{ emp.hourly_rate | mul:emp.duration }}</td>
                           <td>{{ emp.notes}}</td>
                           <td style="visibility:hidden;"><input name="entry_id" value="{{ emp.id }}" type="hidden"</td>
                           <td style="visibility:hidden;">{{ emp.user.first_name}}</td>

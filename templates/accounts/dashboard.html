@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}User Dashboard {% endblock %}
-
+{% load mathfilters %}
 {% block content %}
 
 <script type="text/javascript">
@@ -190,6 +190,7 @@ function getHoursBetweenDates(start, end) {
                   <tr>
                     <th scope="col">IN</th>
                     <th scope="col">OUT</th>
+                    <th scope="col">Rate</th>
                     <th scope="col">Duration</th>
                     <th scope="col">Pay</th>
                     <th scope="col">APPROVED</th>
@@ -197,15 +198,13 @@ function getHoursBetweenDates(start, end) {
                     <th></th>
                   </tr>
 
-
-                  {% load test %}
-
                   {% for emp in time_entries %}
                   <tr onclick="tableRowClicked(this)">
                     <td>{{ emp.date_time_in|date:'m-d-Y H:i' }}</td>
                     <td>{{ emp.date_time_out|date:'m-d-Y H:i' }}</td>
+                    <td>{{ emp.hourly_rate}}
                     <td>{{ emp.duration }}</td>
-                    <td>{{ emp.hourly_rate | multiply:emp.duration }}</td>
+                    <td>{{ emp.hourly_rate | mul:emp.duration }}</td>
                     <td><input type="checkbox" onclick="return false;" {% if emp.is_approved %} checked {% endif %}></td>
                     <td>{{ emp.notes}}</td>
                     <td style="visibility:hidden;">{{ emp.id }}</td>
