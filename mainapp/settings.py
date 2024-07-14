@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'organizations.apps.OrganizationsConfig',
     'timesheets.apps.TimesheetsConfig',
     'tsmanagement.apps.TsmanagementConfig',
+    'projects.apps.ProjectsConfig',
     'mailer.apps.MailerConfig',
     'custom_scheduler.apps.CustomSchedulerConfig',
     'invoice.apps.InvoiceConfig',
