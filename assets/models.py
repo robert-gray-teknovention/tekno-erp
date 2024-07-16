@@ -3,11 +3,11 @@ from inventory.models import Equipment
 
 
 class Asset(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.TextField(null=True)
+    name = models.CharField(max_length=50, blank=True)
+    description = models.TextField(null=True, blank=True)
     equipment = models.OneToOneField(Equipment, null=True, on_delete=models.SET_NULL)
     date_acquired = models.DateTimeField()
-    date_retired = models.DateTimeField(null=True)
+    date_retired = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if self.equipment is not None:
