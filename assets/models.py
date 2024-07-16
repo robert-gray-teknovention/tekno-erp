@@ -12,6 +12,7 @@ class Asset(models.Model):
     def save(self, *args, **kwargs):
         if self.equipment is not None:
             self.name = self.equipment.part.name
+            self.description = self.equipment.part.description
         super(Asset, self).save(*args, **kwargs)
 
 
