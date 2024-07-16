@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'invoice.apps.InvoiceConfig',
     'purchasing.apps.PurchasingConfig',
     'inventory.apps.InventoryConfig',
+    'assets.apps.AssetsConfig',
     'debug_toolbar',
     'djangobower',
     'schedule',
