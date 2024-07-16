@@ -38,8 +38,8 @@ class SerialPart(PolymorphicModel):
     part = models.ForeignKey(Part, on_delete=models.CASCADE)
     parent_serial_part = models.ForeignKey('self', on_delete=models.CASCADE, related_name='serial_children',
                                            null=True, blank=True)
-    serial_description = models.CharField(max_length=255, null=True)
-    man_serial_number = models.CharField(max_length=50, null=True, unique=True)
+    serial_description = models.CharField(max_length=255, null=True, blank=True)
+    man_serial_number = models.CharField(max_length=50, null=True, blank=True, unique=True)
     type = models.CharField(max_length=20, choices=SerialPartType.choices, default=SerialPartType.STANDARD)
     name = part.name
 
