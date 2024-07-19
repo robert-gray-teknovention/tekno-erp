@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from .models import TimesheetEntry, TimesheetPeriod, UserTimesheetPeriod
 from employee.models import TimesheetUser, AlternateWageCode
+from projects.models import Project
 from .utils import TimesheetUtil
 from django.utils import timezone
 from reportlab.pdfgen import canvas
@@ -33,12 +34,14 @@ def timesheet_entries(request):
                 period = util.get_timesheet_period(date_time_in, ts_user.organization)
                 hourly_rate = ts_user.hourly_rate
                 wage_code = int(request.POST['alternate_wage_code'])
-                print("Wage code ", wage_code)
                 if wage_code > 0:
 
                     hourly_rate = AlternateWageCode.objects.get(id=wage_code).hourly_rate
-                    print("We have a wage code ", hourly_rate)
-
+                    # print("We have a wage code ", hourly_rate)
+                print(list(request.POST.items()))
+                project = None
+                if int(request.POST['project_id']) > 0:
+                    project = Project.objects.get(id=request.POST['project_id'])
                 if int(request.POST['id']) > 0:
                     entry = TimesheetEntry.objects.get(id=int(request.POST['id']))
                     entry.user = ts_user
@@ -47,18 +50,19 @@ def timesheet_entries(request):
                     entry.duration = request.POST['duration']
                     entry.notes = request.POST['notes']
                     entry.hourly_rate = hourly_rate
-
+                    entry.project = project
                 else:
                     entry = TimesheetEntry(user=ts_user, date_time_in=request.POST['date_time_in'],
                                            date_time_out=request.POST['date_time_out'], duration=duration,
-                                           notes=request.POST['notes'], hourly_rate=hourly_rate)
+                                           notes=request.POST['notes'], hourly_rate=hourly_rate,
+                                           project=project)
                     entry.period = period
                 if period.id == entry.period.id:
                     entry.save()
                     messages.success(request, 'Time Sheet Entry was saved successfully')
                 else:
                     messages.error(request, 'This entry was not saved because it is not in the same timesheet period.')
-                return redirect('/accounts/dashboard')
+                redirect('/accounts/dashboard?project_id=' + request.POST['project_id'])
             elif 'deleteBtn' in request.POST:
                 if int(request.POST['id']) > 0:
                     entry = TimesheetEntry.objects.get(id=int(request.POST['id']))
@@ -69,7 +73,7 @@ def timesheet_entries(request):
         else:
             messages.error(request,
                            'No changes to the timesheet has been made. Timesheet is either submitted or approved')
-    return redirect('/accounts/dashboard')
+    return redirect('/accounts/dashboard?project_id=' + request.POST['project_id'])
 
 
 def submit_timesheet(request):

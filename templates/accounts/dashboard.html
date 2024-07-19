@@ -6,7 +6,8 @@
 
 <script type="text/javascript">
 function refreshWithNewPeriod() {
-  window.location.href = window.location.href.split("?")[0] + "?period_id=" + document.getElementById("period_select").value
+  window.location.href = window.location.href.split("?")[0] + "?period_id=" +  document.getElementById("period_select").value + "&project_id=" + document.getElementById("project_select").value;
+  $('#form_project_select').val($('#project_select').val);
 }
 
 function tableRowClicked(e) {
@@ -96,15 +97,45 @@ function getHoursBetweenDates(start, end) {
           <div class="row">
             <div class="col-md-12">
               {% if periods %}
-              <select id="period_select" class="form-control" onchange="refreshWithNewPeriod()">
-                {% for p in periods %}
-                {% if selected_period == p.id%}
-                <option value="{{ p.id }}" selected>{{p.date_start}}-{{p.date_end}}</option>
-                {% else %}
-                <option value="{{ p.id }}">{{p.date_start}}-{{p.date_end}}</option>
-                {% endif %}
-                {% endfor %}
-              </select>
+              <div class="row">
+                <div class="col-2">
+                  <label for="period_select"><h5>Timesheet Period</h5></label>
+                </div>
+
+                <div class="col">
+                  <select id="period_select" class="form-control" onchange="refreshWithNewPeriod()">
+
+                    {% for p in periods %}
+                    {% if selected_period == p.id%}
+                    <option value="{{ p.id }}" selected>{{p.date_start}}-{{p.date_end}}</option>
+                    {% else %}
+                    <option value="{{ p.id }}">{{p.date_start}}-{{p.date_end}}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="row">
+
+                <div class="col-2">
+                  <label for="project_select"><h5>Project</h5></label>
+                </div>
+                <div class="col">
+                  <select id="project_select" class="form-control" onchange="refreshWithNewPeriod()">
+                    <option value=0>All</option>
+                    {% for p in projects %}
+                    {% if selected_project == p.id%}
+                    <option value="{{ p.id }}" selected>{{ p.name }}</option>
+                    {% else %}
+                    <option value="{{ p.id }}">{{ p.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+
               {% endif %}
               <h2>Welcome {{ user.first_name }}</h2>
 
@@ -140,7 +171,19 @@ function getHoursBetweenDates(start, end) {
                           <input type="hidden" id="id" name="id" value="0">
                           <input type="hidden" id="utp_submitted" name="utp_submitted" value="{{ user_period.submitted }}">
                           <input type="hidden" id="utp_approved" name="utp_approved" value="{{ user_period.approved }}">
-
+                        <div class="form-group">
+                          <label for="form_project_select" class="col-form-label">Project:</label>
+                          <select id="form_project_select" name="project_id" class="form-control">
+                            <option value=0>----------</option>
+                            {% for p in projects %}
+                            {% if selected_project == p.id%}
+                            <option value="{{ p.id }}" selected>{{ p.name }}</option>
+                            {% else %}
+                            <option value="{{ p.id }}">{{ p.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                          </select>
+                        </div>
                         <div class="form-group">
                           <label for="emp_name" class="col-form-label">Name:</label>
                           <input type="text" name="emp_name" class="form-control" {% if user.is_authenticated %} value="{{ user.first_name}} {{ user.last_name}}" {% endif %} required>

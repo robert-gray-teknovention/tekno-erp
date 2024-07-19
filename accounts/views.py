@@ -6,12 +6,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import SetPasswordForm
 from django.utils import timezone
 from django.contrib.auth.forms import PasswordChangeForm
+from django.db.models import Q
 from timesheets.models import TimesheetEntry, TimesheetPeriod, UserTimesheetPeriod
 from mailer.messages import EmailMessageComposer
 # from django.contrib.auth import update_session_auth_hash
 # from django.core import cache
 from employee.models import TimesheetUser, Invitee
 from organizations.models import Organization
+from projects.models import Project
 from datetime import date, datetime
 from mailer.utils import Emailer
 from .forms import RecoverUserForm
@@ -220,6 +222,7 @@ def dashboard(request):
     periods = []
     user = TimesheetUser.objects.get(user=User.objects.get(id=request.user.id))
     tz = pytz.timezone(user.organization.timezone)
+    project_id = 0
     for p in TimesheetPeriod.objects.filter(org=user.organization).order_by('-date_end')[0:12]:
         periods.append({'id': p.id, 'date_start': date.strftime(timezone.localtime(p.date_start, tz), '%m/%d/%Y'),
                        'date_end': date.strftime(timezone.localtime(p.date_end, tz), '%m/%d/%Y')})
@@ -228,15 +231,29 @@ def dashboard(request):
         p = TimesheetPeriod.objects.get(id=request.GET.get('period_id'))
         query_period = {'id': p.id, 'date_start': date.strftime(timezone.localtime(p.date_start, tz), '%m/%d/%Y'),
                         'date_end': date.strftime(timezone.localtime(p.date_end, tz), '%m/%d/%Y')}
-    user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(period_id=query_period['id'],
-                                                                                 user=user)
+    user_time_entries = None
+    if request.GET.get('project_id') and int(request.GET.get('project_id')) != 0:
+        print('project', request.GET.get('project_id'))
+        project_id = int(request.GET.get('project_id'))
+
+        user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(period_id=query_period['id'],
+                                                                                     user=user,
+                                                                                     project_id=project_id)
+
+    else:
+        user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(period_id=query_period['id'],
+                                                                                     user=user)
+
     user_period = UserTimesheetPeriod.objects.get(user=user, period_id=query_period['id'])
+    user_projects = Project.objects.filter(Q(contributors=user.user) | Q(owner=user.user))
     context = {
         'time_entries': user_time_entries,
         'periods': periods,
         'selected_period': query_period['id'],
+        'selected_project': project_id,
         'user_period': user_period,
-        'alternate_wages': user.alternatewagecode_set.all()
+        'alternate_wages': user.alternatewagecode_set.all(),
+        'projects': user_projects
     }
 
     return render(request, 'accounts/dashboard.html', context)

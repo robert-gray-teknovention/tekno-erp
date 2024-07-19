@@ -1,7 +1,7 @@
 from django.db import models
 from employee.models import TimesheetUser
 from organizations.models import Organization
-
+from projects.models import Project
 
 class TimesheetPeriod(models.Model):
     org = models.ForeignKey(Organization, on_delete=models.CASCADE, null=False)
@@ -30,6 +30,7 @@ class TimesheetEntry(models.Model):
     notes = models.TextField(null=True)
     hourly_rate = models.DecimalField(default=0.00, null=True, decimal_places=2, max_digits=10)
     approver_approved = False
+    project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         #        name = self.user.first_name + ' ' + self.user.last_name
