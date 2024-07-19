@@ -11,12 +11,19 @@ function refreshWithNewPeriod() {
 }
 
 function tableRowClicked(e) {
+
   row=document.getElementById("tsEntriesTable").rows[e.rowIndex];
   var time_in = new Date(Date.parse(stringToDateTime(row.cells[0].innerHTML)));
   var time_out = new Date(Date.parse(stringToDateTime(row.cells[1].innerHTML)));
   document.getElementById("duration").value=row.cells[3].innerHTML;
   document.getElementById("notes").value=row.cells[6].innerHTML;
   document.getElementById("id").value=row.cells[7].innerHTML;
+  if(row.cells[8].innerHTML=="None") {
+    document.getElementById("form_project_select").value=0;
+  }
+  else {
+    document.getElementById("form_project_select").value=row.cells[8].innerHTML;
+  }
 
   $('#date_time_in').val(dateTimeToString(time_in));
   $('#date_time_out').val(dateTimeToString(time_out));
@@ -57,6 +64,8 @@ function getHoursBetweenDates(start, end) {
       $("#confirmForm").attr("action",$("#confirmForm").attr("action")+'timesheetentries/')
       $("#confirmMessage").html("Are you sure you want to delete the entry "+$('#delete_entry_id').val());
       $('#confirmModal').modal('show');
+      $("#confirm_project_id").val($("#project_select").val());
+
     });
     $("#date_time_out").on("focusout", function(){
       $("#duration").val(getHoursBetweenDates(new Date(Date.parse($("#date_time_in").val()+":00")), new Date(Date.parse($("#date_time_out").val()+":00"))));
@@ -251,6 +260,7 @@ function getHoursBetweenDates(start, end) {
                     <td><input type="checkbox" onclick="return false;" {% if emp.is_approved %} checked {% endif %}></td>
                     <td>{{ emp.notes}}</td>
                     <td style="visibility:hidden;">{{ emp.id }}</td>
+                    <td style="visibility:hidden;">{{ emp.project_id }}</td>
                   </tr>
                   {% endfor %}
 

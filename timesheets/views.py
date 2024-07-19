@@ -23,6 +23,9 @@ def index(request):
 def timesheet_entries(request):
     if request.method == 'POST':
         if str(request.POST['utp_approved']) == 'False' and str(request.POST['utp_submitted'] == 'False'):
+            project = None
+            if int(request.POST['project_id']) > 0:
+                project = Project.objects.get(id=request.POST['project_id'])
             if 'addOrUpdateBtn' in request.POST:
                 entry = {}
                 util = TimesheetUtil()
@@ -38,10 +41,7 @@ def timesheet_entries(request):
 
                     hourly_rate = AlternateWageCode.objects.get(id=wage_code).hourly_rate
                     # print("We have a wage code ", hourly_rate)
-                print(list(request.POST.items()))
-                project = None
-                if int(request.POST['project_id']) > 0:
-                    project = Project.objects.get(id=request.POST['project_id'])
+
                 if int(request.POST['id']) > 0:
                     entry = TimesheetEntry.objects.get(id=int(request.POST['id']))
                     entry.user = ts_user
