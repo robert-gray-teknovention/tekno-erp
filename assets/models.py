@@ -21,4 +21,4 @@ class Vehicle(Asset):
 
 
 class Building(Asset):
-    year_built = models.IntegerField(max_length=4)
+    year_built = models.IntegerField()

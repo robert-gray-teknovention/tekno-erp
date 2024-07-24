@@ -3,6 +3,7 @@ from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModel
 from .models import Vendor, Manufacturer, Item, PurchaseItem
 from .models import PurchaseOrderItem, PurchaseOrder, PurchaseOrderItemHistory, PurchaseOrderHistory
 from .models import Part, Service, Subscription
+from .models import PaymentAccount, Payment
 
 
 # class OrganizationsInline(admin.TabularInline):
@@ -30,6 +31,16 @@ class ItemChildAdmin(PolymorphicChildModelAdmin):
           'fields': ('name', 'description')
           }),
     )
+
+
+@admin.register(PaymentAccount)
+class PaymentAccountAdmin(admin.ModelAdmin):
+    list_display = ('name', 'type', 'active')
+
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ('payment_date', 'amount')
 
 
 @admin.register(Part)

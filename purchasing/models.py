@@ -76,6 +76,23 @@ class Service(Item):
         return 'Service: ' + self.name
 
 
+class PaymentAccount(models.Model):
+    class AccountType(models.TextChoices):
+        SAVINGS = 'SAVINGS', 'Savings'
+        CHECKING = 'CHECKING', 'Checking'
+        CREDIT = 'CREDIT', 'Credit'
+        CASH = 'CASH', 'Cash'
+
+    name = models.CharField(max_length=50)
+    type = models.CharField(max_length=20, choices=AccountType.choices, default=AccountType.CASH)
+    last_four = models.CharField(null=True, max_length=4, blank=True)
+    active = models.BooleanField(default=True)
+    '''Implement in the future expiration, expired, account number after implementing encryption on these fields'''
+
+    def __str__(self):
+        return self.name
+
+
 class PurchaseOrder(models.Model):
     class OrderStatus(models.TextChoices):
         CREATED = 'CREATED', 'Created'
@@ -84,6 +101,7 @@ class PurchaseOrder(models.Model):
         ORDERED = 'ORDERED', 'Ordered'
         CLOSED = 'CLOSED', 'Closed'
         CANCELED = 'CANCELED', 'Canceled'
+        IN_PERSON = 'IN_PERSON', 'In Person Purchase'
 
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
@@ -98,7 +116,17 @@ class PurchaseOrder(models.Model):
     orderer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orderer_pos', null=True)
 
     def __str__(self):
-        return self.vendor.name + ' ' + str(self.create_date) + ' ' + self.purchaser.first_name
+        return self.vendor.name + ' ' + str(self.create_date) + ' ' + self.purchaser.first_name + ' ' + self.purchaser.last_name
+
+
+class Payment(models.Model):
+    payment_date = models.DateTimeField()
+    account = models.ForeignKey(PaymentAccount, null=True, on_delete=models.SET_NULL)
+    amount = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
+    order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.payment_date + ' ' + self.account.name)
 
 
 class PurchaseItem(models.Model):
