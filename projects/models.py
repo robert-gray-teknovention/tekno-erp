@@ -12,3 +12,6 @@ class Project(models.Model):
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     contributors = models.ManyToManyField(User, related_name='projects')
     organizations = models.ManyToManyField(Organization, related_name='projects')
+
+    def __str__(self):
+        return self.name
