@@ -1,5 +1,5 @@
 from django.db import models
-from timesheets.models import TimesheetEntry
+from timesheets.models import TimesheetEntry, TimesheetUser
 from projects.models import Project
 from inventory.models import Equipment
 from datetime import datetime
@@ -23,13 +23,14 @@ class Expense(models.Model):
     accrue_date = models.DateField(default=datetime.now())
     total_cost = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     type = models.CharField(max_length=20, choices=ExpenseType.choices, default=ExpenseType.MISC)
+    user = models.ForeignKey(TimesheetUser, on_delete=models.CASCADE, null=True, blank=True)
+    entry = models.ForeignKey(TimesheetEntry, on_delete=models.CASCADE, null=True, blank=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class Mileage(Expense):
     miles = models.DecimalField(max_digits=5, decimal_places=1, default=0.0)
     rate = models.ForeignKey(Rate, on_delete=models.CASCADE)
-    entry = models.ForeignKey(TimesheetEntry, on_delete=models.CASCADE, null=True, blank=True)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True)
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, null=True)
 
     def save(self, *args, **kwargs):
