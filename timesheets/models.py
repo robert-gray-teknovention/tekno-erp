@@ -34,7 +34,7 @@ class TimesheetEntry(models.Model):
 
     def __str__(self):
         #        name = self.user.first_name + ' ' + self.user.last_name
-        name = str(self.date_time_in)
+        name = str(self.date_time_in) + str(self.project)
         return name
 
     class Meta:
