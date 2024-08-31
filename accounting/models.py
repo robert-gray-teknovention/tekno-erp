@@ -21,11 +21,11 @@ class Expense(models.Model):
         LODGING = 'LODGING', 'Lodging'
         MISC = 'MISC', 'Miscellaneous'
     accrue_date = models.DateField(default=datetime.now())
-    total_cost = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
     type = models.CharField(max_length=20, choices=ExpenseType.choices, default=ExpenseType.MISC)
     user = models.ForeignKey(TimesheetUser, on_delete=models.CASCADE, null=True, blank=True)
     entry = models.ForeignKey(TimesheetEntry, on_delete=models.CASCADE, null=True, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True)
+    total_cost = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
 
 
 class Mileage(Expense):
@@ -36,6 +36,18 @@ class Mileage(Expense):
     def save(self, *args, **kwargs):
         self.total_cost = self.miles * self.rate.value
         self.type = Expense.ExpenseType.MILEAGE
+        if self.entry:
+            self.project = self.entry.project
+        super().save(*args, **kwargs)
+
+
+class Lodging(Expense):
+    nightly_rate = models.DecimalField(max_digits=5, decimal_places=2)
+    nights = models.IntegerField(default=1)
+
+    def save(self, *args, **kwargs):
+        self.total_cost = self.nightly_rate * self.nights
+        self.type = Expense.ExpenseType.LODGING
         if self.entry:
             self.project = self.entry.project
         super().save(*args, **kwargs)

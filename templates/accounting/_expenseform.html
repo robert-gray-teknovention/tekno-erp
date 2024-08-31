@@ -1,0 +1,49 @@
+{% load crispy_forms_tags %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#expenseForm').on('submit', function(event){
+      event.preventDefault();
+      $.ajax({
+        url: '{% url "expense" type=expense_type id=expense_id %}',
+        type: 'POST',
+        data: $(this).serialize(),
+        success: function(response){
+          if (response.success){
+            if(document.getElementById("expenseModal")) {
+              $('body').addClass('modal-open');
+              $("#expenseModal").modal("hide");
+              $("#expenses").load("../../accounting/expenses/entry/" + $('#id').val() + "/partial/")
+
+            }
+          }
+        },
+      });
+
+    });
+  });
+
+</script>
+<div class="row">
+  <div class="mx-auto">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h4>
+          <i class="fa fa-address-book-o"></i> {{ expense_type }}
+        </h4>
+      </div>
+      <div class="card-body">
+        <!-- Alerts -->
+        <!-- {% include 'partials/_alerts.html' %} -->
+
+          <form id="expenseForm" method="POST">
+            {% csrf_token %}
+            {{ expense_form|crispy }}
+            <input type="hidden" name="expense_id" value="{{ expense_id }}">
+            <input type="submit" value="Save" class="btn btn-primary btn-block">
+            <input type="button" value="Cancel" class="btn btn-secondary btn-block" id = "cancelBtn">
+
+          </form>
+      </div>
+    </div>
+  </div>
+</div>

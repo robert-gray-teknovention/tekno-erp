@@ -79,8 +79,17 @@ function getHoursBetweenDates(start, end) {
     });
     $("#reportBtn").on("click",function(){
       const period_id = $("#period_select").val();
-      window.open("{% url 'report' %}?period_id=" + period_id, "_blank")
+      window.open("{% url 'report' %}?period_id=" + period_id, "_blank");
+    });
+    $("#expensePane").on("show.bs.collapse", function(){
+      $("#expenses").load("../accounting/expenses/entry/" + $('#id').val() + "/partial/")
     })
+
+
+
+
+    //$("#expenses").load("../accounting/expenses/entry/" + $('#id').val() + "/partial/")
+
   });
 </script>
       <!-- Breadcrumb -->
@@ -223,19 +232,24 @@ function getHoursBetweenDates(start, end) {
                             {% endfor %}
                           </select>
                         </div>
+
                         <p>
                           <a class="btn btn-primary" data-bs-toggle="collapse" href="#expensePane" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Expenses</a>
                         </p>
                         <div class="row">
                           <div class="col">
                             <div class="collapse multi-collapse" id="expensePane">
-                              <div class="card card-body">
-                                Some placeholder content for the first collapse component of this multi-collapse example. This panel is hidden by default but revealed when the user activates the relevant trigger.
+                              <div class="" id="expenses">
+
                               </div>
+
                             </div>
                           </div>
 
                         </div>
+
+
+
 
                         <hr>
                         {% if not user_period.submitted and not user_period.approved %}
@@ -247,6 +261,8 @@ function getHoursBetweenDates(start, end) {
                   </div>
                 </div>
               </div>
+
+
               {% include 'partials/_confirm.html' %}
               {% if time_entries %}
               <p>Here are your time sheet entries</p>

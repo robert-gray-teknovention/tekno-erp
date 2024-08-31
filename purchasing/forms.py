@@ -36,10 +36,12 @@ def get_company_form(mymodel, *args, **kwargs):
     class CompanyForm(ModelForm):
         class Meta:
             model = mymodel
-            fields = ['name', 'email', 'website', 'phone', 'notes', 'is_active', 'organization']
+            # fields = ['name', 'email', 'website', 'phone', 'notes', 'is_active', 'organization']
+            exclude = []
             widgets = {
                 'organization': HiddenInput(),
             }
+        # delete_check = ModelForm.
 
         def __init__(self):
             super(CompanyForm, self).__init__(*args, **kwargs)

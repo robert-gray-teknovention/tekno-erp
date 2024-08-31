@@ -16,6 +16,7 @@ from organizations.models import Organization
 from projects.models import Project
 from datetime import date, datetime
 from mailer.utils import Emailer
+from accounting.models import Expense
 from .forms import RecoverUserForm
 from .models import PasswordReset
 import pytz
@@ -253,7 +254,8 @@ def dashboard(request):
         'selected_project': project_id,
         'user_period': user_period,
         'alternate_wages': user.alternatewagecode_set.all(),
-        'projects': user_projects
+        'projects': user_projects,
+        'expense_types': dict(Expense.ExpenseType.choices),
     }
 
     return render(request, 'accounts/dashboard.html', context)
