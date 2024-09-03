@@ -1,12 +1,22 @@
 <script type="text/javascript">
   $(document).ready(function(){
-    $("#expenseSelect").on("change", function(){
-      $("#expense_form").load("../../accounting/expense/"+ $(this).val().toLowerCase() + "?entry_id=" + $('#id').val() + "&project_id=" + $('#form_project_select').val());
-      $("#expenseModal").modal("show");
-    });
     $("#expenseModal").on("hidden.bs.modal", function(){
+      $("#expenses").load("../../accounting/expenses/entry/" + $('#id').val() + "/partial/")
       $('body').addClass('modal-open');
-    })
+
+    });
+    $("#addExpenseBtn").on("click", function(){
+      if($("#expenseSelect").val()){
+        $("#expense_form").load("../../accounting/expense/"+ $("#expenseSelect").val().toLowerCase() + "?entry_id=" + $('#id').val() + "&project_id=" + $('#form_project_select').val());
+        $("#expenseModal").modal("show");
+      }
+      else {
+        alert("Please select an expense type.");
+      }
+
+
+    });
+
     $(".rows").click(function(e){
       $("#expense_form").load("../../accounting/expense/"+ $(this).find('td')[1].innerHTML.toLowerCase() + "/" + $(this).find('td')[3].innerHTML);
       $("#expenseModal").modal("show");
@@ -17,12 +27,21 @@
 </script>
 
 <div class="card card-body">
-  <select id="expenseSelect" class="form-select form-select-sm" aria-label=".form-select-sm example">
-    <option selected>Add an expense</option>
-    {% for key, value in expense_types.items %}
-      <option value="{{ value }}">{{ key }}</option>
-    {% endfor %}
-  </select>
+<div class="row align-items-center">
+  <div class="col">
+    <select id="expenseSelect" class="form-select form-select-md" aria-label=".form-select-sm example">
+      <option selected value=0>Select an expense</option>
+      {% for key, value in expense_types.items %}
+        <option value="{{ value }}">{{ key }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col">
+    <button type="button" name="button" class="btn btn-secondary" id="addExpenseBtn">Add Expense</button>
+
+  </div>
+</div>
+<div class="row">
   <table class="table">
     <thead>
       <th scope="col">Date</th>
@@ -33,18 +52,16 @@
       {% for e in object_list %}
       <tr class="rows" id="e-id{{ e.id }}">
         <td>{{ e.accrue_date }}</td>
-        <td>{{e.type}}</td>
-        <td>$ {{e.total_cost}}</td>
+        <td>{{ e.type }}</td>
+        <td>$ {{ e.total_cost }}</td>
         <td style="visibility: hidden">{{ e.id }}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
+
+
 </div>
-<div class="row">
-
-
-
 </div>
 
 <div class="modal fade" id="expenseModal" role="dialog">

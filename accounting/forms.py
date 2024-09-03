@@ -1,4 +1,4 @@
-from django.forms import ModelForm, HiddenInput, Select
+from django.forms import ModelForm, HiddenInput, Select, BooleanField
 from django_select2 import forms as s2forms
 from .models import Expense, Mileage, Lodging
 from . import forms
@@ -11,6 +11,8 @@ from . import forms
 
 
 class ExpenseForm(ModelForm):
+    delete = BooleanField(label='Delete Expense', required=False)
+
     class Meta:
         model = Expense
         fields = '__all__'
@@ -21,6 +23,7 @@ class ExpenseForm(ModelForm):
             # 'entry': HiddenInput(),
             'user': HiddenInput(),
             'type': HiddenInput(),
+
         }
 
 

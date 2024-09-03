@@ -9,13 +9,15 @@ from . import models
 from .forms import get_expense_form
 import json
 
+
 @login_required
-def expense(request, type, id=0):
+def expense(request, type='', id=0):
     # class_name = request.GET.get("type").capitalize()
     class_name = type.capitalize()
     my_class = getattr(models, class_name)
     user = TimesheetUser.objects.get(user_id=request.user.id)
     # org = TimesheetUser.objects.get(user_id=request.user.id).organization
+    print('Method ', request.method)
     if request.method == 'POST':
         if id > 0:
             form = get_expense_form(class_name, request.POST, instance=my_class.objects.get(id=id))
@@ -35,6 +37,10 @@ def expense(request, type, id=0):
         else:
             messages.error(request, "I can't add this expense.  There was an error")
             return JsonResponse({'success': False})
+    elif request.method == 'DELETE':
+        my_class.objects.get(id=id).delete()
+        messages.success(request, "We just deleted the expense " + str(id))
+        return JsonResponse({'success': True})
     else:
         print("project id ", request.GET.get('project_id'))
         form = get_expense_form(class_name, initial={'project': request.GET.get('project_id'), 'entry':

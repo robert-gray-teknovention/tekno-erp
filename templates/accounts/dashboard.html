@@ -50,6 +50,7 @@ function getHoursBetweenDates(start, end) {
 </script>
 <script>
   $(document).ready(function(){
+
     $("#addBtn").on('click',function(){
       $('#id').val(0);
       $('#date_time_in').val(null);
@@ -60,9 +61,9 @@ function getHoursBetweenDates(start, end) {
       $('#submitBtn').val("Add");
     });
     $("#deleteBtn").on('click',function(){
-      $("#delete_entry_id").val($('#id').val());
+      $("#confirm_delete_id").val($('#id').val());
       $("#confirmForm").attr("action",$("#confirmForm").attr("action")+'timesheetentries/')
-      $("#confirmMessage").html("Are you sure you want to delete the entry "+$('#delete_entry_id').val());
+      $("#confirmMessage").html("Are you sure you want to delete the entry "+$('#confirm_delete_id').val());
       $('#confirmModal').modal('show');
       $("#confirm_project_id").val($("#project_select").val());
 
@@ -83,7 +84,12 @@ function getHoursBetweenDates(start, end) {
     });
     $("#expensePane").on("show.bs.collapse", function(){
       $("#expenses").load("../accounting/expenses/entry/" + $('#id').val() + "/partial/")
-    })
+    });
+    $("#inquiryModal").on("hidden.bs.modal", function(){
+      $('body').addClass('modal-open');
+    });
+
+
 
 
 
@@ -253,7 +259,7 @@ function getHoursBetweenDates(start, end) {
 
                         <hr>
                         {% if not user_period.submitted and not user_period.approved %}
-                        <input type="submit" value="Add" class="btn btn-block btn-secondary" id="submitBtn" name="addOrUpdateBtn">
+                        <input type="submit" value="Add" class="btn btn-block btn-primary" id="submitBtn" name="addOrUpdateBtn">
                         <input type="button" value="Delete" class="btn btn-block btn-secondary" id="deleteBtn">
                         {% endif %}
                       </form>

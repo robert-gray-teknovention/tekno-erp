@@ -3,22 +3,28 @@
   $(document).ready(function(){
     $('#expenseForm').on('submit', function(event){
       event.preventDefault();
-      $.ajax({
-        url: '{% url "expense" type=expense_type id=expense_id %}',
-        type: 'POST',
-        data: $(this).serialize(),
-        success: function(response){
-          if (response.success){
-            if(document.getElementById("expenseModal")) {
-              $('body').addClass('modal-open');
-              $("#expenseModal").modal("hide");
-              $("#expenses").load("../../accounting/expenses/entry/" + $('#id').val() + "/partial/")
+      var method = 'POST';
+      if ($('#id_delete').is(':checked')){
+        if(confirm("Are you sure you want to delete this expense")){
+          method='DELETE';
+        }
+        else {
+          method='PASS';
+        }
+      }
+      if(method!='PASS') {
+        $.ajax({
+          headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+          url: '{% url "expense" type=expense_type id=expense_id %}',
+          type: method,
+          data: $(this).serialize(),
+          success: function(response){
+            if (response.success){
 
             }
-          }
-        },
-      });
-
+          },
+        });
+      };
     });
   });
 
@@ -39,8 +45,8 @@
             {% csrf_token %}
             {{ expense_form|crispy }}
             <input type="hidden" name="expense_id" value="{{ expense_id }}">
-            <input type="submit" value="Save" class="btn btn-primary btn-block">
-            <input type="button" value="Cancel" class="btn btn-secondary btn-block" id = "cancelBtn">
+            <input type="submit" value="Save" class="btn btn-primary btn-block" data-bs-dismiss="modal">
+            <input type="button" value="Cancel" class="btn btn-secondary btn-block" data-bs-dismiss="modal">
 
           </form>
       </div>
