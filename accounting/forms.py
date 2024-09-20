@@ -51,7 +51,7 @@ class LodgingForm(VendorExpenseForm):
                               widget=Select(attrs={'class': 'form-control'}))
 
 
-class TransportationForm(ExpenseForm):
+class TransportationForm(VendorExpenseForm):
     class Meta:
         model = Transportation
         fields = ExpenseForm.Meta.fields
@@ -63,7 +63,7 @@ class TransportationForm(ExpenseForm):
                               widget=Select(attrs={'class': 'form-control'}))
 
 
-class MealsForm(ExpenseForm):
+class MealsForm(VendorExpenseForm):
     class Meta:
         model = Meals
         fields = ExpenseForm.Meta.fields
@@ -72,7 +72,7 @@ class MealsForm(ExpenseForm):
     vendor = ModelChoiceField(queryset=Vendor.objects.filter(type__name__in=list(zip(*Meals.MealType.choices))[1]).order_by('name'), widget=Select(attrs={'class': 'form-control'}))
 
 
-class MiscForm(ExpenseForm):
+class MiscForm(VendorExpenseForm):
     class Meta:
         model = Misc
         fields = ExpenseForm.Meta.fields

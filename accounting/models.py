@@ -62,7 +62,7 @@ class Lodging(VendorExpense):
         super().save(*args, **kwargs)
 
 
-class Transportation(Expense):
+class Transportation(VendorExpense):
     class TransportationType(models.TextChoices):
         BUS = 'BUS', 'Bus'
         AIR = 'AIR', 'Airfare'
@@ -79,7 +79,7 @@ class Transportation(Expense):
         super().save(*args, **kwargs)
 
 
-class Meals(Expense):
+class Meals(VendorExpense):
     class MealType(models.TextChoices):
         RESTAURANT = 'RESTAURANT', 'Restaurant'
         GROCERIES = 'GROCERIES', 'Groceries'
@@ -95,7 +95,7 @@ class Meals(Expense):
         super().save(*args, **kwargs)
 
 
-class Misc(Expense):
+class Misc(VendorExpense):
 
     def save(self, *args, **kwargs):
         self.type = Expense.ExpenseType.MISC
@@ -104,7 +104,7 @@ class Misc(Expense):
         super().save(*args, **kwargs)
 
 
-class ServiceExpense(Expense):
+class ServiceExpense(VendorExpense):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
