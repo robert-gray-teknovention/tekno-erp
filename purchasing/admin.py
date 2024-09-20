@@ -12,8 +12,12 @@ from .models import PaymentAccount, Payment
 
 @admin.register(Vendor)
 class VendorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'website', 'phone', 'is_active')
+    list_display = ('name', 'email', 'website', 'phone', 'type', 'is_active')
     # inlines = [OrganizationsInline,]
+
+    @admin.register(Vendor.VendorType)
+    class VendorTypeAdmin(admin.ModelAdmin):
+        pass
 
 
 @admin.register(Manufacturer)

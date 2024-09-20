@@ -1,4 +1,4 @@
-from django.forms import ModelForm, HiddenInput
+from django.forms import ModelForm, HiddenInput, Select
 from .models import Vendor, Manufacturer, PurchaseItem
 from django_select2 import forms as s2forms
 from searchableselect.widgets import SearchableSelect

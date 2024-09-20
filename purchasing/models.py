@@ -7,6 +7,11 @@ from django.dispatch import receiver
 
 
 class Vendor(models.Model):
+    class VendorType(models.Model):
+        name = models.CharField(max_length=20)
+
+        def __str__(self):
+            return self.name
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=100, null=True, blank=True)
     website = models.CharField(max_length=100, null=True, blank=True)
@@ -15,6 +20,7 @@ class Vendor(models.Model):
     # organizations = models.ManyToManyField(Organization, through='VendorOrganization')
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     notes = models.TextField(null=True)
+    type = models.ForeignKey(VendorType, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.name
@@ -76,6 +82,11 @@ class Service(Item):
         return 'Service: ' + self.name
 
 
+class Material(Item):
+    def __str__(self):
+        return 'Material ' + self.name
+
+
 class PaymentAccount(models.Model):
     class AccountType(models.TextChoices):
         SAVINGS = 'SAVINGS', 'Savings'
@@ -134,6 +145,7 @@ class PurchaseItem(models.Model):
         SUBSCRIPTION = 'SUBS', 'Subscription'
         PART = 'PART', 'Part'
         SERVICE = 'SERV', 'Service'
+        MATERIAL = 'MATERIAL', 'Material'
 
     class Units(models.TextChoices):
         EACH = 'EACH', 'Each'

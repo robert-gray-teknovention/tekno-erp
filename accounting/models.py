@@ -3,6 +3,7 @@ from timesheets.models import TimesheetEntry, TimesheetUser
 from projects.models import Project
 from inventory.models import Equipment
 from datetime import datetime
+from purchasing.models import Vendor
 
 
 class Rate(models.Model):
@@ -19,13 +20,19 @@ class Expense(models.Model):
         MEALS = 'MEALS', 'Meals'
         TRANSPORTATION = 'TRANSPORTATION', 'Transportation'
         LODGING = 'LODGING', 'Lodging'
-        MISC = 'MISC', 'Miscellaneous'
+        MISC = 'MISC', 'Misc'
     accrue_date = models.DateField(default=datetime.now())
     type = models.CharField(max_length=20, choices=ExpenseType.choices, default=ExpenseType.MISC)
     user = models.ForeignKey(TimesheetUser, on_delete=models.CASCADE, null=True, blank=True)
     entry = models.ForeignKey(TimesheetEntry, on_delete=models.CASCADE, null=True, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True)
     total_cost = models.DecimalField(decimal_places=2, max_digits=10, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+
+
+class VendorExpense(Expense):
+    vendor = models.ForeignKey(Vendor, null=True, on_delete=models.SET_NULL)
+    receipt = models.URLField(null=True, blank=True)
 
 
 class Mileage(Expense):
@@ -41,13 +48,54 @@ class Mileage(Expense):
         super().save(*args, **kwargs)
 
 
-class Lodging(Expense):
+class Lodging(VendorExpense):
     nightly_rate = models.DecimalField(max_digits=5, decimal_places=2)
     nights = models.IntegerField(default=1)
 
     def save(self, *args, **kwargs):
         self.total_cost = self.nightly_rate * self.nights
         self.type = Expense.ExpenseType.LODGING
+        if self.entry:
+            self.project = self.entry.project
+        super().save(*args, **kwargs)
+
+
+class Transportation(VendorExpense):
+    class TransportationType(models.TextChoices):
+        BUS = 'BUS', 'Bus'
+        AIR = 'AIR', 'Airfare'
+        TAXI = 'TAXI', 'Taxi'
+        RIDE = 'RIDE', 'Rideshare'
+
+    transportation_type = models.CharField(max_length=10, choices=TransportationType.choices, null=True)
+
+    def save(self, *args, **kwargs):
+        self.type = Expense.ExpenseType.TRANSPORTATION
+        if self.entry:
+            self.project = self.entry.project
+        super().save(*args, **kwargs)
+
+
+class Meals(VendorExpense):
+    class MealType(models.TextChoices):
+        RESTAURANT = 'RESTAURANT', 'Restaurant'
+        GROCERIES = 'GROCERIES', 'Groceries'
+    meal_type = models.CharField(max_length=20, choices=MealType.choices, null=True)
+    cost = models.DecimalField(decimal_places=2, max_digits=5)
+    tip = models.DecimalField(decimal_places=2, max_digits=5, default=0.00)
+
+    def save(self, *args, **kwargs):
+        self.total_cost = self.cost + self.tip
+        self.type = Expense.ExpenseType.MEALS
+        if self.entry:
+            self.project = self.entry.project
+        super().save(*args, **kwargs)
+
+
+class Misc(VendorExpense):
+
+    def save(self, *args, **kwargs):
+        self.type = Expense.ExpenseType.MISC
         if self.entry:
             self.project = self.entry.project
         super().save(*args, **kwargs)
