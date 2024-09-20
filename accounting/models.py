@@ -3,7 +3,7 @@ from timesheets.models import TimesheetEntry, TimesheetUser
 from projects.models import Project
 from inventory.models import Equipment
 from datetime import datetime
-from purchasing.models import Vendor, Service, PaymentAccount
+from purchasing.models import Vendor, Service as ServiceModel, PaymentAccount
 
 
 class Rate(models.Model):
@@ -104,8 +104,8 @@ class Misc(VendorExpense):
         super().save(*args, **kwargs)
 
 
-class ServiceExpense(VendorExpense):
-    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+class Service(VendorExpense):
+    serv = models.ForeignKey(ServiceModel, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         self.type = Expense.ExpenseType.SERVICE

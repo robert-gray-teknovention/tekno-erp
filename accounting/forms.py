@@ -1,6 +1,6 @@
 from django.forms import ModelForm, HiddenInput, Select, BooleanField, ModelChoiceField
 from django_select2 import forms as s2forms
-from .models import Expense, Mileage, Lodging, Transportation, Meals, Misc
+from .models import Expense, Mileage, Lodging, Transportation, Meals, Misc, Service
 # from .models import Expense, Mileage
 from purchasing.models import Vendor, PaymentAccount
 from . import forms
@@ -70,6 +70,17 @@ class MealsForm(VendorExpenseForm):
         widgets = ExpenseForm.Meta.widgets
         widgets['meal_type'] = Select(attrs={'class': 'form-control'})
     vendor = ModelChoiceField(queryset=Vendor.objects.filter(type__name__in=list(zip(*Meals.MealType.choices))[1]).order_by('name'), widget=Select(attrs={'class': 'form-control'}))
+
+
+class ServiceForm(VendorExpenseForm):
+    class Meta:
+        model = Service
+        fields = ExpenseForm.Meta.fields
+        widgets = ExpenseForm.Meta.widgets
+        labels = {'serv': 'Service'}
+        widgets['serv'] = Select(attrs={'class': 'form-control'})
+    vendor = ModelChoiceField(queryset=Vendor.objects.filter(type__name__icontains='service').order_by('name'),
+                              widget=Select(attrs={'class': 'form-control'}))
 
 
 class MiscForm(VendorExpenseForm):

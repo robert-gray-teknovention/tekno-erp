@@ -59,7 +59,7 @@ class SubscriptionAdmin(ItemChildAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(ItemChildAdmin):
-    pass
+    list_display = ('name', 'description')
 
 
 @admin.register(PurchaseItem)
