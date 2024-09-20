@@ -66,6 +66,7 @@ class Transportation(VendorExpense):
         AIR = 'AIR', 'Airfare'
         TAXI = 'TAXI', 'Taxi'
         RIDE = 'RIDE', 'Rideshare'
+        TRAIN = 'TRAIN', 'Train'
 
     transportation_type = models.CharField(max_length=10, choices=TransportationType.choices, null=True)
 
