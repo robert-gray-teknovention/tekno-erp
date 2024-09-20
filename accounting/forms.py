@@ -1,7 +1,8 @@
 from django.forms import ModelForm, HiddenInput, Select, BooleanField, ModelChoiceField
 from django_select2 import forms as s2forms
 from .models import Expense, Mileage, Lodging, Transportation, Meals, Misc
-from purchasing.models import Vendor
+# from .models import Expense, Mileage
+from purchasing.models import Vendor, PaymentAccount
 from . import forms
 '''class ExpenseSearchWidget(s2forms.ModelSelect2Widget):
     model = Expense
@@ -28,6 +29,10 @@ class ExpenseForm(ModelForm):
         }
 
 
+class VendorExpenseForm(ExpenseForm):
+    payment = ModelChoiceField(queryset=PaymentAccount.objects.filter(active=True), widget=Select(attrs={'class': 'form-control'}), blank=True, required=False)
+
+
 class MileageForm(ExpenseForm):
     class Meta:
         model = Mileage
@@ -36,12 +41,12 @@ class MileageForm(ExpenseForm):
         widgets['rate'] = Select(attrs={'class': 'form-control'})
 
 
-class LodgingForm(ExpenseForm):
+class LodgingForm(VendorExpenseForm):
     class Meta:
         model = Lodging
         fields = ExpenseForm.Meta.fields
         widgets = ExpenseForm.Meta.widgets
-        widgets['vendor'] = Select(attrs={'class': 'form-control'})
+        # widgets['vendor'] = Select(attrs={'class': 'form-control'})
     vendor = ModelChoiceField(queryset=Vendor.objects.filter(type__name__icontains='lodging').order_by('name'),
                               widget=Select(attrs={'class': 'form-control'}))
 

@@ -3,7 +3,7 @@ from timesheets.models import TimesheetEntry, TimesheetUser
 from projects.models import Project
 from inventory.models import Equipment
 from datetime import datetime
-from purchasing.models import Vendor
+from purchasing.models import Vendor, Service, PaymentAccount
 
 
 class Rate(models.Model):
@@ -20,6 +20,7 @@ class Expense(models.Model):
         MEALS = 'MEALS', 'Meals'
         TRANSPORTATION = 'TRANSPORTATION', 'Transportation'
         LODGING = 'LODGING', 'Lodging'
+        SERVICE = 'SERVICE', 'Service'
         MISC = 'MISC', 'Misc'
     accrue_date = models.DateField(default=datetime.now())
     type = models.CharField(max_length=20, choices=ExpenseType.choices, default=ExpenseType.MISC)
@@ -33,6 +34,7 @@ class Expense(models.Model):
 class VendorExpense(Expense):
     vendor = models.ForeignKey(Vendor, null=True, on_delete=models.SET_NULL)
     receipt = models.URLField(null=True, blank=True)
+    payment = models.ForeignKey(PaymentAccount, null=True, on_delete=models.SET_NULL, blank=True)
 
 
 class Mileage(Expense):
@@ -60,7 +62,7 @@ class Lodging(VendorExpense):
         super().save(*args, **kwargs)
 
 
-class Transportation(VendorExpense):
+class Transportation(Expense):
     class TransportationType(models.TextChoices):
         BUS = 'BUS', 'Bus'
         AIR = 'AIR', 'Airfare'
@@ -77,7 +79,7 @@ class Transportation(VendorExpense):
         super().save(*args, **kwargs)
 
 
-class Meals(VendorExpense):
+class Meals(Expense):
     class MealType(models.TextChoices):
         RESTAURANT = 'RESTAURANT', 'Restaurant'
         GROCERIES = 'GROCERIES', 'Groceries'
@@ -93,10 +95,20 @@ class Meals(VendorExpense):
         super().save(*args, **kwargs)
 
 
-class Misc(VendorExpense):
+class Misc(Expense):
 
     def save(self, *args, **kwargs):
         self.type = Expense.ExpenseType.MISC
+        if self.entry:
+            self.project = self.entry.project
+        super().save(*args, **kwargs)
+
+
+class ServiceExpense(Expense):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        self.type = Expense.ExpenseType.SERVICE
         if self.entry:
             self.project = self.entry.project
         super().save(*args, **kwargs)
