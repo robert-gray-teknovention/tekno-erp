@@ -1,5 +1,5 @@
-from django.forms import ModelForm, HiddenInput, Select
-from .models import Vendor, Manufacturer, PurchaseItem
+from django.forms import ModelForm, HiddenInput, Select, ModelChoiceField
+from .models import Vendor, Manufacturer, PurchaseItem, PurchaseOrder, PurchaseOrderItem, Item
 from django_select2 import forms as s2forms
 from searchableselect.widgets import SearchableSelect
 
@@ -48,8 +48,57 @@ def get_company_form(mymodel, *args, **kwargs):
     return CompanyForm()
 
 
-"""class PurchaseItemForm(ModelForm):
+def get_item_form(mymodel, *args, **kwargs):
+    class ItemForm(ModelForm):
+        class Meta:
+            model = mymodel
+            exclude = []
+            widgets = {
+                'organization': HiddenInput(),
+            }
+
+        def __init__(self):
+            super(ItemForm, self).__init__(*args, **kwargs)
+
+    return ItemForm()
+
+
+class PurchaseOrderForm(ModelForm):
+    vendor = ModelChoiceField(queryset=Vendor.objects.filter(is_active=True).order_by('name'), widget=Select(attrs={'class': 'form-control'}), required=True)
+
+    class Meta:
+        model = PurchaseOrder
+        exclude = []
+        widgets = {
+            'organization': HiddenInput(),
+            'purchaser': HiddenInput(),
+            'orderer': HiddenInput(),
+            'status_change_date': HiddenInput(),
+            'status': Select(attrs={'class': 'form-control'}),
+
+        }
+
+
+class PurchaseItemForm(ModelForm):
     class Meta:
         model = PurchaseItem
-        fields = ['item_name', 'vendor', 'manufacturer', 'type']
-"""
+        exclude = []
+        fields = ['item', 'vendor', 'manufacturer', 'type']
+        widgets = {
+            'vendor': HiddenInput(),
+            'manufacturer': HiddenInput(),
+        }
+
+
+class PurchaseOrderItemForm(ModelForm):
+    class Meta:
+        model = PurchaseOrderItem
+        exclude = []
+        widgets = {
+            'purchase_order': HiddenInput(),
+            'status_change_date': HiddenInput()
+        }
+
+    '''def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.action = '/purchaseorderitem/create/'''

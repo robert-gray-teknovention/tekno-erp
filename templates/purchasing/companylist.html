@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'purchasing/base.html' %}
 
 {% block title %} | Vendor Management {% endblock %}
 
-{% block content %}
+{% block purchasing_content %}
 
 {% load render_table from django_tables2%}
 {% load django_bootstrap5%}
@@ -17,11 +17,9 @@
 
 </script>
 
-<section class="bg-light py-5">
-    <div class="container">
       <div class="row">
         <div class="mx-auto">
-          <div class="card">
+
             <div class="card-header bg-primary text-white">
               <h4>
                 <i class="fa fa-address-book-o"></i> {{ model_name }}
@@ -40,9 +38,7 @@
               {% render_table table %}
 
             </div>
-          </div>
+          
         </div>
       </div>
-    </div>
-  </section>
 {% endblock %}

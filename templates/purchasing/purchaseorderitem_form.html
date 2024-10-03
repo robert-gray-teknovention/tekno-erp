@@ -1,0 +1,13 @@
+{% load crispy_forms_tags %}
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Purchase order form</h5>
+    <form method="post" action = "{% url 'poi-create' %}">
+      {% csrf_token %}
+      {{ poi_form|crispy }}
+      <input type="submit" class="btn primary-btn">
+    </form>
+
+  </div>
+
+</div>

@@ -62,27 +62,72 @@ class Item(PolymorphicModel):
         return self.name + ': ' + self.organization.name
 
 
+def default_itemtype_data():
+    return []
+
+
+def default_itemdetails_data():
+    return {}
+
+
+class ItemType(models.Model):
+    type_name = models.CharField(max_length=75, unique=True)
+    type_description = models.CharField(max_length=255)
+    details_list = models.JSONField(default=default_itemtype_data)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.name
+
+
+class PartType(ItemType):
+    pass
+
+
 class Part(Item):
+    type = models.ForeignKey(PartType, null=True, on_delete=models.SET_NULL)
+    details = models.JSONField(default=default_itemdetails_data)
 
     def __str__(self):
         return 'Part: '+self.name
 
 
+class SubscriptionType(ItemType):
+    pass
+
+
 class Subscription(Item):
     is_recurring = models.BooleanField(default=True)
+    type = models.ForeignKey(SubscriptionType, null=True, on_delete=models.SET_NULL)
+    details = models.JSONField(default=default_itemdetails_data)
 
     def __str__(self):
         return 'Subscription: '+self.name
 
 
+class ServiceType(ItemType):
+    pass
+
+
 class Service(Item):
     is_recurring = models.BooleanField(default=False)
+    type = models.ForeignKey(ServiceType, null=True, on_delete=models.SET_NULL)
+    details = models.JSONField(default=default_itemdetails_data)
 
     def __str__(self):
         return 'Service: ' + self.name
 
 
+class MaterialType(ItemType):
+    pass
+
+
 class Material(Item):
+    type = models.ForeignKey(MaterialType, null=True, on_delete=models.SET_NULL)
+    details = models.JSONField(default=default_itemdetails_data)
+
     def __str__(self):
         return 'Material ' + self.name
 
@@ -123,7 +168,7 @@ class PurchaseOrder(models.Model):
     create_date = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20, choices=OrderStatus.choices, default=OrderStatus.CREATED)
     status_change_date = models.DateTimeField(auto_now=True)
-    purchaser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchaser_pos', null=True)
+    purchaser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchaser_pos', null=True, blank=True)
     orderer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orderer_pos', null=True)
 
     def __str__(self):

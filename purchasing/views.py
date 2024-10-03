@@ -1,12 +1,15 @@
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from timesheets.models import TimesheetUser
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect, JsonResponse
-from .forms import get_company_form
-from .tables import VendorTable, ManufacturerTable
-from .models import Vendor, Manufacturer
+from .forms import get_company_form, get_item_form, PurchaseOrderForm, PurchaseItemForm, PurchaseOrderItemForm
+from .tables import ManufacturerTable, PurchaseOrderTable, PurchaseOrderItemTable
+from .models import Vendor, Manufacturer, PurchaseOrder, PurchaseOrderItem
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django_filters.views import FilterView
-from django_tables2.views import SingleTableMixin
+from django_tables2.views import SingleTableMixin, SingleTableView
 from django_filters import FilterSet
 from employee.models import TimesheetUser
 from django.core.exceptions import ImproperlyConfigured
@@ -15,6 +18,8 @@ from . import tables
 from . import models
 from . import serializers
 from . import views
+from django.urls import reverse
+from django.contrib import messages
 import re
 
 
@@ -73,6 +78,76 @@ class FilteredCompanyListView(LoginRequiredMixin, SingleTableMixin, FilterView):
         return context
 
 
+class PurchaseOrderListView(LoginRequiredMixin, SingleTableView):
+    model = PurchaseOrder
+    table_class = PurchaseOrderTable
+    template_name = 'purchasing/purchaseorderlist.html'
+
+
+class PurchaseOrderCreateView(LoginRequiredMixin, CreateView):
+    model = PurchaseOrder
+    form_class = PurchaseOrderForm
+    template_name = 'purchasing/purchaseordercreate.html'
+    user = None
+    org = None
+
+    def get(self, request, *args, **kwargs):
+        self.user = User.objects.get(id=request.user.id)
+        self.org = TimesheetUser.objects.get(user=self.user).organization
+        return super().get(request, *args, **kwargs)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['orderer'] = self.user
+        initial['organization'] = self.org
+        return initial
+
+    def get_success_url(self):
+        return reverse('po-update', kwargs={'pk': self.object.pk})
+
+
+class PurchaseOrderUpdateView(LoginRequiredMixin, SingleTableMixin, UpdateView):
+    model = PurchaseOrder
+    form_class = PurchaseOrderForm
+    template_name = 'purchasing/purchaseorderupdate.html'
+    table_class = PurchaseOrderItemTable
+    po_id = None
+
+    def get(self, *args, **kwargs):
+        self.po_id = kwargs['pk']
+        return super().get(self.request, *args, **kwargs)
+
+    def get_table_data(self):
+        return self.table_class.Meta.model.objects.filter(purchase_order=self.po_id)
+
+    def get_success_url(self):
+        return self.request.path
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['pi_form'] = PurchaseItemForm()
+        context['poi_form'] = PurchaseOrderItemForm(initial={'purchase_order': self.get_object()})
+        return context
+
+
+class PurchaseOrderItemCreateView(LoginRequiredMixin, CreateView):
+    model = PurchaseOrderItem
+    form_class = PurchaseOrderItemForm
+    # template_name = 'purchasing/purchaseorderupdate.html'
+    table_class = PurchaseOrderItemTable
+    # success_url = 'purchasing/purchaseorderupdate.html'
+
+    def form_invalid(self, form):
+        print("We have an invalid form!!!!!", form.data['purchase_order'])
+        messages.error(self.request, "We have an issue with your item.  It did not get saved")
+        return redirect(reverse('po-update', kwargs={'pk': form.data['purchase_order']}))
+        # return super().form_invalid(form)
+
+    def get_success_url(self):
+        print(str(self.object.purchase_order.id))
+        return reverse('po-update', kwargs={'pk': self.object.purchase_order.id})
+
+
 @login_required
 def company(request):
     class_name = request.GET.get("type").capitalize()
@@ -115,3 +190,12 @@ def CompanyApiView(request):
         return JsonResponse(serializer.data, safe=False)
     else:
         return JsonResponse(status=400)
+
+
+@login_required
+def dashboard(request):
+    if request.method == 'GET':
+        context = {
+            'test': 'test',
+        }
+        return render(request, 'purchasing/dashboard.html', context)

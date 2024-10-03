@@ -1,0 +1,41 @@
+{% extends 'purchasing/base.html' %}
+{% block purchasing_content%}
+{% load crispy_forms_tags %}
+{% load render_table from django_tables2%}
+<div class="row position-relative">
+<div class="col">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Purchase Order</h5>
+      <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+
+
+        <input class="btn primary-btn"  type="submit" name="">
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+<div class="col">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Purchase Items</h5>
+      {% render_table table %}
+    </div>
+
+  </div>
+
+</div>
+
+<div class="col">
+  {% include 'purchasing/purchaseorderitem_form.html' %}
+
+</div>
+
+</div>
+
+{% endblock%}

@@ -2,7 +2,7 @@ from django.contrib import admin
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin, PolymorphicChildModelFilter
 from .models import Vendor, Manufacturer, Item, PurchaseItem
 from .models import PurchaseOrderItem, PurchaseOrder, PurchaseOrderItemHistory, PurchaseOrderHistory
-from .models import Part, Service, Subscription
+from .models import Part, Service, Subscription, Material
 from .models import PaymentAccount, Payment
 
 
@@ -62,6 +62,11 @@ class ServiceAdmin(ItemChildAdmin):
     list_display = ('name', 'description')
 
 
+@admin.register(Material)
+class MaterialAdmin(ItemChildAdmin):
+    pass
+
+
 @admin.register(PurchaseItem)
 class PurchaseItemAdmin(admin.ModelAdmin):
     pass
@@ -90,5 +95,5 @@ class PurchaseOrderHistory(admin.ModelAdmin):
 @admin.register(Item)
 class ItemParentAdmin(PolymorphicParentModelAdmin):
     base_model = Item  # Optional, explicitly set here.
-    child_models = (Part, Subscription, Service)
+    child_models = (Part, Subscription, Service, Material)
     list_filter = (PolymorphicChildModelFilter,)  # This is optional.
