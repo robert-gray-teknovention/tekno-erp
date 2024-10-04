@@ -29,17 +29,6 @@ class Vendor(models.Model):
         unique_together = ('name', 'organization')
 
 
-'''class VendorOrganization(models.Model):
-    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    notes = models.TextField(null=True, blank=True)
-
-    class Meta:
-        unique_together = ('vendor', 'organization')
-    # contacts = models.JSONField(default=dict, null=True)
-'''
-
-
 class Manufacturer(models.Model):
     name = models.CharField(max_length=100, unique=True)
     email = models.CharField(max_length=100, null=True, blank=True)
