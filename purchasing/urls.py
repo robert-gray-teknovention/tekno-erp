@@ -9,7 +9,7 @@ urlpatterns = [
     path('manufacturers', views.FilteredCompanyListView.as_view()),
     path('api/company', views.CompanyApiView, name='api_company'),
     path('dashboard/', views.dashboard, name='purchasing-dashboard'),
-    path('purchaseorders/', views.PurchaseOrderListView.as_view()),
+    path('purchaseorders/', views.PurchaseOrderListView.as_view(), name='po-list'),
     path('purchaseorder/create/', views.PurchaseOrderCreateView.as_view(), name='po-create'),
     path('purchaseorder/<int:pk>/update/', views.PurchaseOrderUpdateView.as_view(), name='po-update'),
     path('purchaseorderitem/create/', views.PurchaseOrderItemCreateView.as_view(), name='poi-create'),

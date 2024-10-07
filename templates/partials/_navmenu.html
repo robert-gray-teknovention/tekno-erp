@@ -5,6 +5,7 @@
         Site Navigation
     </a>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+      <a class="dropdown-item" href="{% url 'po-list' %}">Purchasing</a>
       {% if perms.timesheets.approve_timesheetentry %}
         <a class="dropdown-item" href="{% url 'managedashboard' %}">
           Timesheet Approvals
