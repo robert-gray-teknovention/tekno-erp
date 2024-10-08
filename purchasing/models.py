@@ -190,8 +190,8 @@ class PurchaseItem(models.Model):
         YEAR = 'YEAR', 'Yearly'
 
     item = models.ForeignKey(Item, on_delete=models.CASCADE, null=True)
-    vendor = models.ManyToManyField(Vendor)
-    manufacturer = models.ManyToManyField(Manufacturer)
+    vendor = models.ManyToManyField(Vendor, null=True, blank=True)
+    manufacturer = models.ManyToManyField(Manufacturer, null=True, blank=True)
     type = models.CharField(max_length=25, default=ItemType.PART, choices=ItemType.choices)
     units = models.CharField(max_length=10, default=Units.EACH, choices=Units.choices)
 
