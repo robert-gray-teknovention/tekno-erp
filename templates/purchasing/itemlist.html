@@ -1,6 +1,6 @@
 {% extends 'purchasing/base.html' %}
 
-{% block title %} | Vendor Management {% endblock %}
+{% block title %} | Item Management {% endblock %}
 
 {% block purchasing_content %}
 
@@ -9,8 +9,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $('#add_{{ item_type }}_btn').on('click', function(){
-      window.location = '{% url "company" %}' + '?type={{ item_type }}';
-
+      window.location = "{% url 'item-create-form' item_type=item_type %}" + '?url=list';
     });
 
   });
@@ -27,11 +26,9 @@
               </h4>
             </div>
             <div class="card-body">
-              <!-- Alerts -->
-              {% include 'partials/_alerts.html' %}
               {% if filter %}
-                <form action="" method="get" class="form form-inline">
-                  {% bootstrap_form filter.form layout='inline' %}
+                <form method="get" class="form form-inline">
+                  <input type="text" name="search" placeholder="Search...">
                   {% bootstrap_button 'filter' %}
                 </form>
               {% endif %}

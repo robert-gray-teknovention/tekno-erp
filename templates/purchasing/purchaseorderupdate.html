@@ -2,6 +2,24 @@
 {% block purchasing_content%}
 {% load crispy_forms_tags %}
 {% load render_table from django_tables2%}
+
+<script type="text/javascript">
+  function loadPurchaseOrderForm(pk) {
+
+    $.ajax({
+      url: '{% url "poi-form" %}' + pk,
+      //url: '../purchaseorderitem/'+pk,
+      method: 'GET',
+      success: function(data){
+        $('#poi_form').html(data);
+        if(pk){
+          $('#id_delete').prop('disabled', false);
+        }
+
+      },
+    });
+  }
+</script>
 <div class="row position-relative">
 <div class="col">
   <div class="card">
@@ -32,9 +50,8 @@
 
 </div>
 
-<div class="col">
+<div id="poi_form" class="col">
   {% include 'purchasing/purchaseorderitem_form.html' %}
-
 </div>
 
 </div>

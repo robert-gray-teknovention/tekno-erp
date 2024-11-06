@@ -1,4 +1,11 @@
-from django.forms import ModelForm, HiddenInput, Select, ModelChoiceField
+from django.forms import (
+    Form,
+    ModelForm,
+    HiddenInput,
+    Select,
+    ModelChoiceField,
+    ChoiceField,
+    ModelMultipleChoiceField, CheckboxSelectMultiple, BooleanField, CheckboxInput, NumberInput)
 from .models import Vendor, Manufacturer, PurchaseItem, PurchaseOrder, PurchaseOrderItem, Item
 from django_select2 import forms as s2forms
 from searchableselect.widgets import SearchableSelect
@@ -55,12 +62,22 @@ def get_item_form(mymodel, *args, **kwargs):
             exclude = []
             widgets = {
                 'organization': HiddenInput(),
+                'type': Select(attrs={'class': 'form-control'}),
             }
 
-        def __init__(self):
-            super(ItemForm, self).__init__(*args, **kwargs)
+        # def __init__(self):
+        #    super(ItemForm, self).__init__(*args, **kwargs)
+    return ItemForm
 
-    return ItemForm()
+
+class ItemTypeForm(Form):
+    type_choices = (
+        ('Part', 'PART'),
+        ('Material', 'MATERIAL'),
+        ('Service', 'SERVICE'),
+        ('Subscription', 'SUBSCRIPTION'),
+    )
+    item_type = ChoiceField(choices=type_choices)
 
 
 class PurchaseOrderForm(ModelForm):
@@ -80,24 +97,40 @@ class PurchaseOrderForm(ModelForm):
 
 
 class PurchaseItemForm(ModelForm):
+    manufacturer = ModelMultipleChoiceField(
+        queryset=Manufacturer.objects.all(),
+        required=False,
+        widget=CheckboxSelectMultiple,
+        # widget=HiddenInput()
+        )
+
     class Meta:
         model = PurchaseItem
         exclude = []
-        fields = ['item', 'vendor', 'manufacturer', 'type']
+        # fields = ['item', 'vendor', 'manufacturer', 'type']
         widgets = {
-            'vendor': HiddenInput(),
-            'manufacturer': HiddenInput(),
+            # 'vendor': HiddenInput(),
+            # 'manufacturer': HiddenInput(),
+            'item': Select(attrs={'class': 'form-control'}),
+            'type': Select(attrs={'class': 'form-control'}),
+            # 'type': HiddenInput(),
         }
 
 
 class PurchaseOrderItemForm(ModelForm):
+    delete = BooleanField(label='Remove', required=False, disabled=True, widget=CheckboxInput(attrs={'class': 'form-control'}))
+
     class Meta:
         model = PurchaseOrderItem
         exclude = []
         widgets = {
-            'purchase_order': HiddenInput(),
-            'status_change_date': HiddenInput()
+
+            'purchase_item': Select(attrs={'class': 'form-control'}),
+            'status': Select(attrs={'class': 'form-control'}),
+            # 'unit_cost': MoneyWidget(amount_widget=NumberInput(attrs={'class': 'form-control'}))
         }
+
+
 
     '''def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

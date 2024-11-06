@@ -1,11 +1,38 @@
 import django_tables2 as tables
-from .models import Vendor, Manufacturer, PurchaseOrder, PurchaseOrderItem
+from .models import (Vendor, Manufacturer, PurchaseOrder, PurchaseOrderItem,
+                     Item)
 from django.utils.html import format_html
+
+
+class ItemTable(tables.Table):
+    def render_name(self, value, record):
+        return format_html("<b><a href='../item/update/{}/{}?url=list'>{}</a></b>", record.__class__.__name__, record.id, value)
+
+    class Meta:
+        model = Item
+        sequence = ("name", "description")
+        exclude = ("id", "organization", "polymorphic_ctype")
+
+
+class PartTable(ItemTable):
+    pass
+
+
+class MaterialTable(ItemTable):
+    pass
+
+
+class ServiceTable(ItemTable):
+    pass
+
+
+class SubscriptionTable(ItemTable):
+    pass
 
 
 class VendorTable(tables.Table):
     def render_name(self, value, record):
-        return format_html("<b><a href='company?v_id={}&type=vendor'>{}</a></b>", record.id, value)
+        return format_html("<b><a href='../company?v_id={}&type=vendor'>{}</a></b>", record.id, value)
 
     class Meta:
         model = Vendor
@@ -15,7 +42,7 @@ class VendorTable(tables.Table):
 
 class ManufacturerTable(tables.Table):
     def render_name(self, value, record):
-        return format_html("<b><a href='company?v_id={}&type=manufacturer'>{}</a></b>", record.id, value)
+        return format_html("<b><a href='../company?v_id={}&type=manufacturer'>{}</a></b>", record.id, value)
 
     class Meta:
         model = Manufacturer
@@ -34,6 +61,8 @@ class PurchaseOrderTable(tables.Table):
 
 
 class PurchaseOrderItemTable(tables.Table):
+    def render_purchase_item(self, value, record):
+        return format_html("<b><a onclick='loadPurchaseOrderForm({})' href='#'>{}</a></b>", record.id, value)
 
     class Meta:
         model = PurchaseOrderItem

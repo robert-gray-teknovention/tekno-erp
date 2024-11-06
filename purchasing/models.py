@@ -76,8 +76,8 @@ class PartType(ItemType):
 
 
 class Part(Item):
-    type = models.ForeignKey(PartType, null=True, on_delete=models.SET_NULL)
-    details = models.JSONField(default=default_itemdetails_data)
+    type = models.ForeignKey(PartType, null=True, on_delete=models.SET_NULL, blank=True)
+    details = models.JSONField(default=default_itemdetails_data, blank=True)
 
     def __str__(self):
         return 'Part: '+self.name
@@ -89,8 +89,8 @@ class SubscriptionType(ItemType):
 
 class Subscription(Item):
     is_recurring = models.BooleanField(default=True)
-    type = models.ForeignKey(SubscriptionType, null=True, on_delete=models.SET_NULL)
-    details = models.JSONField(default=default_itemdetails_data)
+    type = models.ForeignKey(SubscriptionType, null=True, on_delete=models.SET_NULL, blank=True)
+    details = models.JSONField(default=default_itemdetails_data, blank=True)
 
     def __str__(self):
         return 'Subscription: '+self.name
@@ -102,8 +102,8 @@ class ServiceType(ItemType):
 
 class Service(Item):
     is_recurring = models.BooleanField(default=False)
-    type = models.ForeignKey(ServiceType, null=True, on_delete=models.SET_NULL)
-    details = models.JSONField(default=default_itemdetails_data)
+    type = models.ForeignKey(ServiceType, null=True, on_delete=models.SET_NULL, blank=True)
+    details = models.JSONField(default=default_itemdetails_data, blank=True)
 
     def __str__(self):
         return 'Service: ' + self.name
@@ -114,8 +114,8 @@ class MaterialType(ItemType):
 
 
 class Material(Item):
-    type = models.ForeignKey(MaterialType, null=True, on_delete=models.SET_NULL)
-    details = models.JSONField(default=default_itemdetails_data)
+    type = models.ForeignKey(MaterialType, null=True, on_delete=models.SET_NULL, blank=True)
+    details = models.JSONField(default=default_itemdetails_data, blank=True)
 
     def __str__(self):
         return 'Material ' + self.name
@@ -161,7 +161,8 @@ class PurchaseOrder(models.Model):
     orderer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orderer_pos', null=True)
 
     def __str__(self):
-        return self.vendor.name + ' ' + str(self.create_date) + ' ' + self.purchaser.first_name + ' ' + self.purchaser.last_name
+        # return self.vendor.name + ' ' + str(self.create_date) + ' ' + self.purchaser.first_name + ' ' + self.purchaser.last_name
+        return self.vendor.name + ' ' + str(self.create_date)
 
 
 class Payment(models.Model):
@@ -190,8 +191,8 @@ class PurchaseItem(models.Model):
         YEAR = 'YEAR', 'Yearly'
 
     item = models.ForeignKey(Item, on_delete=models.CASCADE, null=True)
-    vendor = models.ManyToManyField(Vendor, null=True, blank=True)
-    manufacturer = models.ManyToManyField(Manufacturer, null=True, blank=True)
+    vendor = models.ManyToManyField(Vendor, blank=True)
+    manufacturer = models.ManyToManyField(Manufacturer, blank=True)
     type = models.CharField(max_length=25, default=ItemType.PART, choices=ItemType.choices)
     units = models.CharField(max_length=10, default=Units.EACH, choices=Units.choices)
 
@@ -199,7 +200,7 @@ class PurchaseItem(models.Model):
         return self.item.name
 
     class Meta:
-        unique_together = ('item', 'units')
+        unique_together = ('item', 'units', 'type')
 
 
 class PurchaseOrderItem(models.Model):
@@ -210,9 +211,9 @@ class PurchaseOrderItem(models.Model):
 
     purchase_item = models.ForeignKey(PurchaseItem, on_delete=models.CASCADE)
     purchase_order = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=10, decimal_places=2)
-    unit_cost = models.DecimalField(max_digits=10, decimal_places=2)
-    total_cost = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    unit_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     status = models.CharField(max_length=15, choices=ItemStatus.choices, default=ItemStatus.ENTERED)
     status_change_date = models.DateTimeField(auto_now=True)
 

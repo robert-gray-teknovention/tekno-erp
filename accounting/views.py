@@ -17,8 +17,6 @@ def expense(request, type='', id=0):
     my_class = getattr(models, class_name)
     user = TimesheetUser.objects.get(user_id=request.user.id)
     # org = TimesheetUser.objects.get(user_id=request.user.id).organization
-    print('Method ', request.method)
-    print('Class name ', class_name)
     if request.method == 'POST':
         if id > 0:
             form = get_expense_form(class_name, request.POST, instance=my_class.objects.get(id=id))
@@ -27,7 +25,6 @@ def expense(request, type='', id=0):
         if form.is_valid():
             expense = form.save()
             messages.success(request, "We just added an expense")
-            print(expense.__dict__)
             # return json.dumps(dict(expense), many=False)
             e = {
                 'id': expense.id,
