@@ -299,11 +299,6 @@ class PurchaseOrderItemCreateView(LoginRequiredMixin, CreateView):
     def get_purchase_item(self, item, units):
         print("Item ", item)
         pi, create = PurchaseItem.objects.get_or_create(item_id=item, units=units)
-        if create:
-            print("yay created this object ", pi.id)
-
-        else:
-            print("We already have this object ", pi.id)
         return pi
 
 
@@ -329,7 +324,7 @@ class ItemCreateView(LoginRequiredMixin, OrganizationMixin, CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data()
-        item_type = self.kwargs.get('item_type', 'Part')
+        item_type = self.kwargs.get('item_type', 'Part').capitalize()
         item_type_form = ItemTypeForm(initial={'item_type': item_type})
         context['item_type'] = item_type
         context['item_type_form'] = item_type_form

@@ -12,10 +12,18 @@
 </script>
 <div class="card">
   <div class="card-body">
-    <h5 class="card-title">Purchase order form</h5>
+    <h5 class="card-title">
+
+    </h5>
     {% if update %}
+    <h5 class="card-title">
+      Update {{ item_type }} Form
+    </h5>
       <form method="post" action = "{% url form_url item_type=item_type pk=object.pk %}">
     {% else %}
+    <h5 class="card-title">
+      New {{ item_type }} Form
+    </h5>
       <form method="post" action = "{% url form_url item_type=item_type %}">
     {% endif %}
       {% csrf_token %}
