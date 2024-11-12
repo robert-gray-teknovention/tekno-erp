@@ -223,3 +223,6 @@ CACHES = {
 SELECT2_CACHE_BACKEND = "select2"
 
 DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap5.html"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

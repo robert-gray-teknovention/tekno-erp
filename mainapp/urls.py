@@ -5,6 +5,7 @@ from custom_scheduler.views import CalendarView
 from django.conf.urls import include
 from django.urls import path, re_path
 from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', include('employee.urls')),
@@ -28,4 +29,4 @@ if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [
         re_path(r'^__debug__/', include(debug_toolbar.urls)),
-    ]
+    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

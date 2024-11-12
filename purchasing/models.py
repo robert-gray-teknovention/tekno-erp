@@ -4,6 +4,7 @@ from polymorphic.models import PolymorphicModel
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 
 class Vendor(models.Model):
@@ -155,10 +156,12 @@ class PurchaseOrder(models.Model):
     tax = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
     create_date = models.DateTimeField(auto_now=True)
+    purchase_date = models.DateField(default=timezone.now)
     status = models.CharField(max_length=20, choices=OrderStatus.choices, default=OrderStatus.CREATED)
     status_change_date = models.DateTimeField(auto_now=True)
     purchaser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchaser_pos', null=True, blank=True)
     orderer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orderer_pos', null=True)
+    invoice = models.FileField(upload_to='invoices/', null=True, blank=True)
 
     def __str__(self):
         # return self.vendor.name + ' ' + str(self.create_date) + ' ' + self.purchaser.first_name + ' ' + self.purchaser.last_name

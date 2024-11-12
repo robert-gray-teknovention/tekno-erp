@@ -5,10 +5,15 @@ from django.forms import (
     Select,
     ModelChoiceField,
     ChoiceField,
-    ModelMultipleChoiceField, CheckboxSelectMultiple, BooleanField, CheckboxInput, NumberInput)
+    ModelMultipleChoiceField, CheckboxSelectMultiple, BooleanField, CheckboxInput,
+    NumberInput, DateField, DateInput)
 from .models import Vendor, Manufacturer, PurchaseItem, PurchaseOrder, PurchaseOrderItem, Item
 from django_select2 import forms as s2forms
 from searchableselect.widgets import SearchableSelect
+from django.core.exceptions import ValidationError
+from datetime import datetime
+from django.utils.safestring import mark_safe
+import os
 
 
 class VendorSearchWidget(s2forms.ModelSelect2Widget):
@@ -57,6 +62,7 @@ def get_company_form(mymodel, *args, **kwargs):
 
 def get_item_form(mymodel, *args, **kwargs):
     class ItemForm(ModelForm):
+
         class Meta:
             model = mymodel
             exclude = []
@@ -92,8 +98,23 @@ class PurchaseOrderForm(ModelForm):
             'orderer': HiddenInput(),
             'status_change_date': HiddenInput(),
             'status': Select(attrs={'class': 'form-control'}),
-
+            'purchase_date': DateInput(attrs={'type': 'date'}),
         }
+
+    def clean_invoice(self):
+        uploaded_file = self.cleaned_data.get('invoice')
+        if uploaded_file:
+            # Check file size (in bytes)
+            max_size = 6 * 1024 * 1024  # 2 MB
+            if uploaded_file.size > max_size:
+                print("Error File is too big ")
+                raise ValidationError("File size must be less than " + str(max_size) + " MB.")
+            # Rename file
+            original_name, ext = os.path.splitext(uploaded_file.name)
+            new_name = f"po-inv-{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"  # Customize the new name as needed
+            uploaded_file.name = new_name
+            print("We are going to upload the file! " + uploaded_file.name)
+        return uploaded_file
 
 
 class PurchaseItemForm(ModelForm):
@@ -129,7 +150,6 @@ class PurchaseOrderItemForm(ModelForm):
             'status': Select(attrs={'class': 'form-control'}),
             # 'unit_cost': MoneyWidget(amount_widget=NumberInput(attrs={'class': 'form-control'}))
         }
-
 
 
     '''def __init__(self, *args, **kwargs):

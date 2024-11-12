@@ -356,6 +356,20 @@ class ItemUpdateView(LoginRequiredMixin, OrganizationMixin, UpdateView):
         initial['organization'] = self.get_organization(self.request)
         return initial
 
+    def post(self, request, *args, **kwargs):
+        if 'delete' in request.POST and request.POST['delete']:
+            item = self.get_object()
+            try:
+                item.delete()
+                messages.success(request, "Your item has been deleted")
+                return redirect(reverse(kwargs['item_type'].lower()+'s', kwargs={'template': 'item'}))
+
+            except Exception as e:
+                print("exception ", e)
+                messages.error(request, "Sorry your item was not deleted.")
+            return redirect(reverse(kwargs['item_type'].lower()+'s', kwargs={'template': 'item'}))
+        return super().post(request, args, kwargs)
+
     def get_form_class(self):
         # Use dynamically set model to generate form class
         return get_item_form(self.model)
