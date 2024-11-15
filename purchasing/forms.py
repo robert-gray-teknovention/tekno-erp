@@ -5,6 +5,7 @@ from django.forms import (
     Select,
     ModelChoiceField,
     ChoiceField,
+    SelectMultiple,
     ModelMultipleChoiceField, CheckboxSelectMultiple, BooleanField, CheckboxInput,
     NumberInput, DateField, DateInput)
 from .models import Vendor, Manufacturer, PurchaseItem, PurchaseOrder, PurchaseOrderItem, Item
@@ -62,6 +63,7 @@ def get_company_form(mymodel, *args, **kwargs):
 
 def get_item_form(mymodel, *args, **kwargs):
     class ItemForm(ModelForm):
+        # child_parts = MultipleChoiceField(widget=HiddenInput(), required=False, default=[])
 
         class Meta:
             model = mymodel
@@ -69,6 +71,7 @@ def get_item_form(mymodel, *args, **kwargs):
             widgets = {
                 'organization': HiddenInput(),
                 'type': Select(attrs={'class': 'form-control'}),
+                'child_parts': SelectMultiple(attrs={'class': 'form-control'}),
             }
 
         # def __init__(self):

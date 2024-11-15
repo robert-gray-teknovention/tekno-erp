@@ -1,5 +1,6 @@
 from django.db import models
 from purchasing.models import Part as BasePart
+from purchasing.models import Material
 from polymorphic.models import PolymorphicModel
 
 
@@ -22,9 +23,22 @@ class ChildPart(models.Model):
         ]
 
 
-class InventoryPart(models.Model):
-    part = models.OneToOneField(Part, on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=10, decimal_places=2, default=1.0)
+class InventoryItem(models.Model):
+    quantity = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+
+    class Meta:
+        abstract = True
+
+
+class InventoryPart(InventoryItem):
+    part = models.ForeignKey(Part, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.part.name + " " + str(self.quantity)
+
+
+class InventoryMaterial(InventoryItem):
+    material = models.ForeignKey(Material, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

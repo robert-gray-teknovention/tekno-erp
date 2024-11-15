@@ -15,6 +15,7 @@ from .forms import (
 from .tables import ManufacturerTable, PurchaseOrderTable, PurchaseOrderItemTable
 from .models import Vendor, Manufacturer, PurchaseOrder, PurchaseOrderItem, Item, Part, Service, Material, Subscription
 from .models import PurchaseItem
+from inventory.models import Part as InvPart
 from django.views.generic.edit import CreateView, UpdateView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin, SingleTableView
@@ -318,8 +319,10 @@ class ItemCreateView(LoginRequiredMixin, OrganizationMixin, CreateView):
 
     def get_form_class(self):
         item_type = self.kwargs.get('item_type', 'Part')
-        item_model = getattr(models, item_type, Part)
-        print("we are about to change the model to ", item_model)
+        if item_type.capitalize() == 'Part':
+            item_model = InvPart
+        else:
+            item_model = getattr(models, item_type)
         return get_item_form(item_model)
 
     def get_context_data(self, *args, **kwargs):
@@ -348,7 +351,10 @@ class ItemUpdateView(LoginRequiredMixin, OrganizationMixin, UpdateView):
     def dispatch(self, request, *args, **kwargs):
         # Dynamically set model based on 'item_type' in kwargs
         item_type = self.kwargs.get('item_type', 'Part')
-        self.model = getattr(models, item_type, models.Part)
+        if item_type.capitalize() == 'Part':
+            self.model = InvPart
+        else:
+            self.model = getattr(models, item_type)
         return super().dispatch(request, *args, **kwargs)
 
     def get_initial(self):
@@ -374,6 +380,9 @@ class ItemUpdateView(LoginRequiredMixin, OrganizationMixin, UpdateView):
         # Use dynamically set model to generate form class
         return get_item_form(self.model)
 
+    def form_invalid(self, form):
+        print("you got error ", form.errors)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         item_type = self.kwargs.get('item_type', 'Part')
@@ -390,11 +399,13 @@ class ItemUpdateView(LoginRequiredMixin, OrganizationMixin, UpdateView):
 
     def get_success_url(self):
         item_type = self.kwargs.get('item_type', 'Part')
+        print("We are returning from Form")
         return reverse('item-update-form', kwargs={'item_type': item_type, 'pk': self.object.pk})
 
 
 class ItemUpdateViewList(ItemUpdateView):
     def get_success_url(self):
+        print("We are returning from ViewList")
         return reverse(self.kwargs.get('item_type', 'part').lower() + 's', kwargs={'template': 'item'})
 
 
