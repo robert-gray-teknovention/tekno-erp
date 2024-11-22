@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
+from projects.models import Project
 
 
 class Vendor(models.Model):
@@ -151,6 +152,7 @@ class PurchaseOrder(models.Model):
 
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL, blank=True)
     sub_total = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
     shipping = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
     tax = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)

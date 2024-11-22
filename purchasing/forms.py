@@ -9,6 +9,7 @@ from django.forms import (
     ModelMultipleChoiceField, CheckboxSelectMultiple, BooleanField, CheckboxInput,
     NumberInput, DateField, DateInput)
 from .models import Vendor, Manufacturer, PurchaseItem, PurchaseOrder, PurchaseOrderItem, Item
+from projects.models import Project
 from django_select2 import forms as s2forms
 from searchableselect.widgets import SearchableSelect
 from django.core.exceptions import ValidationError
@@ -91,6 +92,7 @@ class ItemTypeForm(Form):
 
 class PurchaseOrderForm(ModelForm):
     vendor = ModelChoiceField(queryset=Vendor.objects.filter(is_active=True).order_by('name'), widget=Select(attrs={'class': 'form-control'}), required=True)
+    # project = ModelChoiceField(queryset=Project.objects.filter(active=True, ).order_by('name'), widget=Select(attrs={'class': 'form-control'}), required=False)
 
     class Meta:
         model = PurchaseOrder
@@ -102,7 +104,15 @@ class PurchaseOrderForm(ModelForm):
             'status_change_date': HiddenInput(),
             'status': Select(attrs={'class': 'form-control'}),
             'purchase_date': DateInput(attrs={'type': 'date'}),
+            'project': Select(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+        if 'organization' in self.initial:
+            org = self.initial['organization']
+            self.fields['project'].queryset = Project.objects.filter(active=True, organizations__in=[org]).order_by('name')
 
     def clean_invoice(self):
         uploaded_file = self.cleaned_data.get('invoice')
