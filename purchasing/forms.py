@@ -92,7 +92,7 @@ class ItemTypeForm(Form):
 
 class PurchaseOrderForm(ModelForm):
     vendor = ModelChoiceField(queryset=Vendor.objects.filter(is_active=True).order_by('name'), widget=Select(attrs={'class': 'form-control'}), required=True)
-    # project = ModelChoiceField(queryset=Project.objects.filter(active=True, ).order_by('name'), widget=Select(attrs={'class': 'form-control'}), required=False)
+    project = ModelChoiceField(queryset=Project.objects.filter(active=True, ).order_by('name'), widget=Select(attrs={'class': 'form-control'}), required=False)
 
     class Meta:
         model = PurchaseOrder
@@ -110,6 +110,7 @@ class PurchaseOrderForm(ModelForm):
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
+        print("Here are the initial variables ", str(self.initial))
         if 'organization' in self.initial:
             org = self.initial['organization']
             self.fields['project'].queryset = Project.objects.filter(active=True, organizations__in=[org]).order_by('name')

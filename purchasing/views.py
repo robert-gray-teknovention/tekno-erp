@@ -191,7 +191,7 @@ class PurchaseOrderCreateView(LoginRequiredMixin, CreateView):
     user = None
     org = None
 
-    def get(self, request, *args, **kwargs):
+    def dispatch(self, request, *args, **kwargs):
         self.user = User.objects.get(id=request.user.id)
         self.org = TimesheetUser.objects.get(user=self.user).organization
         return super().get(request, *args, **kwargs)
