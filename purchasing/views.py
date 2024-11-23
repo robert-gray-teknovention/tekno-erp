@@ -211,12 +211,16 @@ class PurchaseOrderUpdateView(LoginRequiredMixin, SingleTableMixin, ModelFormFie
     form_class = PurchaseOrderForm
     template_name = 'purchasing/purchaseorderupdate.html'
     table_class = PurchaseOrderItemTable
-    # filterset_class = ItemFilter
     po_id = None
 
     def get(self, *args, **kwargs):
         self.po_id = kwargs['pk']
         return super().get(self.request, *args, **kwargs)
+
+    def get_initial(self):
+        initial = super().get_initial()
+        self.object.calculate_total()
+        return initial
 
     def get_table_data(self):
         return self.table_class.Meta.model.objects.filter(purchase_order=self.po_id)

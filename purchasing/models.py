@@ -169,6 +169,16 @@ class PurchaseOrder(models.Model):
         # return self.vendor.name + ' ' + str(self.create_date) + ' ' + self.purchaser.first_name + ' ' + self.purchaser.last_name
         return self.vendor.name + ' ' + str(self.create_date)
 
+    def calculate_sub_total(self):
+        sub_total = 0
+        for item in self.purchaseorderitem_set.all():
+            sub_total += item.total_cost
+        self.sub_total = sub_total
+
+    def calculate_total(self):
+        self.calculate_sub_total()
+        self.total = self.sub_total + self.shipping + self.tax
+
 
 class Payment(models.Model):
     payment_date = models.DateTimeField()

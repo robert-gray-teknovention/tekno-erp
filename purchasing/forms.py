@@ -108,9 +108,7 @@ class PurchaseOrderForm(ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-
         super().__init__(*args, **kwargs)
-        print("Here are the initial variables ", str(self.initial))
         if 'organization' in self.initial:
             org = self.initial['organization']
             self.fields['project'].queryset = Project.objects.filter(active=True, organizations__in=[org]).order_by('name')
