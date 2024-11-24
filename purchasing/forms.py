@@ -14,7 +14,7 @@ from django_select2 import forms as s2forms
 from searchableselect.widgets import SearchableSelect
 from django.core.exceptions import ValidationError
 from datetime import datetime
-from django.utils.safestring import mark_safe
+from django.conf import settings
 import os
 
 
@@ -115,17 +115,21 @@ class PurchaseOrderForm(ModelForm):
 
     def clean_invoice(self):
         uploaded_file = self.cleaned_data.get('invoice')
+        print("uploaded file name ", uploaded_file)
         if uploaded_file:
-            # Check file size (in bytes)
-            max_size = 6 * 1024 * 1024  # 2 MB
-            if uploaded_file.size > max_size:
-                print("Error File is too big ")
-                raise ValidationError("File size must be less than " + str(max_size) + " MB.")
-            # Rename file
-            original_name, ext = os.path.splitext(uploaded_file.name)
-            new_name = f"po-inv-{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"  # Customize the new name as needed
-            uploaded_file.name = new_name
-            print("We are going to upload the file! " + uploaded_file.name)
+            file_path = os.path.join(settings.MEDIA_ROOT, str(uploaded_file))
+            print("File Path ", file_path)
+            if not os.path.exists(file_path):
+                # Check file size (in bytes)
+                max_size = 6 * 1024 * 1024  # 2 MB
+                if uploaded_file.size > max_size:
+                    print("Error File is too big ")
+                    raise ValidationError("File size must be less than " + str(max_size) + " MB.")
+                # Rename file
+                original_name, ext = os.path.splitext(uploaded_file.name)
+                new_name = f"po-inv-{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"  # Customize the new name as needed
+                uploaded_file.name = new_name
+                print("We are going to upload the file! " + uploaded_file.name)
         return uploaded_file
 
 
