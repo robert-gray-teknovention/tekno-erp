@@ -115,7 +115,6 @@ class PurchaseOrderForm(ModelForm):
 
     def clean_invoice(self):
         uploaded_file = self.cleaned_data.get('invoice')
-        print("uploaded file name ", uploaded_file)
         if uploaded_file:
             file_path = os.path.join(settings.MEDIA_ROOT, str(uploaded_file))
             print("File Path ", file_path)
@@ -130,6 +129,7 @@ class PurchaseOrderForm(ModelForm):
                 new_name = f"po-inv-{datetime.now().strftime('%Y%m%d%H%M%S')}.{ext}"  # Customize the new name as needed
                 uploaded_file.name = new_name
                 print("We are going to upload the file! " + uploaded_file.name)
+        print("We have cleaned the invoice!!")
         return uploaded_file
 
 
