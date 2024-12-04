@@ -191,15 +191,6 @@ class PurchaseOrderCreateView(LoginRequiredMixin, CreateView):
     user = None
     org = None
 
-    '''def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            print("our form is valid")
-            return self.form_valid(form)
-        else:
-            print("our form is invalid mofo")
-            return self.form_invalid(form)'''
-
     def dispatch(self, request, *args, **kwargs):
         self.user = User.objects.get(id=request.user.id)
         self.org = TimesheetUser.objects.get(user=self.user).organization
@@ -212,15 +203,7 @@ class PurchaseOrderCreateView(LoginRequiredMixin, CreateView):
         return initial
 
     def get_success_url(self):
-        print("We have saved")
         return reverse('po-update', kwargs={'pk': self.object.pk})
-
-    def form_invalid(self, form):
-        print("Form Errors ", form.errors)
-
-    def form_valid(self, form):
-        print("The form is valid!!")
-        return super().form_valid(form)
 
 
 class PurchaseOrderUpdateView(LoginRequiredMixin, SingleTableMixin, ModelFormFieldsHelperMixin, UpdateView):
