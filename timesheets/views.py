@@ -40,12 +40,6 @@ def timesheet_entries(request):
                 if wage_code > 0:
 
                     hourly_rate = AlternateWageCode.objects.get(id=wage_code).hourly_rate
-
-                docs = request.FILES.getlist('documentation')
-                print("Here are the docs ", request.FILES)
-                for d in docs:
-                    print("Doc ", d)
-
                 if int(request.POST['id']) > 0:
                     entry = TimesheetEntry.objects.get(id=int(request.POST['id']))
                     entry.user = ts_user
