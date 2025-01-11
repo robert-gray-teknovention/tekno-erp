@@ -256,6 +256,8 @@ def dashboard(request):
         'alternate_wages': user.alternatewagecode_set.all(),
         'projects': user_projects,
         'expense_types': dict(Expense.ExpenseType.choices),
+        'class_name': TimesheetEntry.__name__,
+        'class_module': TimesheetEntry.__module__,
     }
 
     return render(request, 'accounts/dashboard.html', context)

@@ -17,6 +17,7 @@ urlpatterns = [
     path('message/', include('mailer.urls')),
     path('purchasing/', include('purchasing.urls')),
     path('projects/', include('projects.urls')),
+    path('documentation/', include('documentation.urls')),
     path('demo', TemplateView.as_view(template_name="bootstrap_base.html"), name='demo'),
     path('popovers', TemplateView.as_view(template_name="bootstrap_popovers.html"), name="popovers"),
     re_path(r'^schedule/', include('schedule.urls')),

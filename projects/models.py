@@ -20,6 +20,7 @@ class Project(models.Model):
 class ProjectDocumentation(models.Model):
     project = models.ForeignKey(Project, related_name='documentation', on_delete=models.CASCADE)
     file = models.FileField(upload_to="documentation/")
+    description = models.CharField(max_length=200, blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

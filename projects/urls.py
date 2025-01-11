@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = [
     path('project/create/', views.ProjectCreateView.as_view(), name='project_create'),
-    path('projects/', ListView.as_view(model=Project, template_name="projects/Proje"), name='project_list'),
-
+    path('project/<int:pk>/update/', views.ProjectUpdateView.as_view(), name='project_update'),
+    path('projects/', ListView.as_view(model=Project, template_name="projects/projectlist.html"), name='project_list'),
+    path('delete-documentation/', views.delete_project_documentation, name='delete_project_documentation'),
     ]

@@ -5,6 +5,7 @@ from searchableselect.widgets import SearchableSelect
 from django.core.exceptions import ValidationError
 from datetime import datetime
 from django.conf import settings
+from django.forms import modelformset_factory
 import os
 
 
@@ -20,11 +21,20 @@ class ProjectForm(forms.ModelForm):
         model = Project
         fields = '__all__'
         widgets = {
-            # 'organizations': forms.HiddenInput(),
+            'owner': forms.Select(attrs={'class': 'form-control'}),
+            'contributors': forms.CheckboxSelectMultiple(),
+            'organizations': forms.CheckboxSelectMultiple(),
         }
 
 
 class ProjectDocumentationForm(forms.ModelForm):
     class Meta:
         model = Documentation
-        fields = ['file']
+        fields = ['file', 'description']
+
+
+ProjectDocumentationFormSet = modelformset_factory(
+    Documentation,
+    form=ProjectDocumentationForm,
+    can_delete=True,
+    extra=0)
