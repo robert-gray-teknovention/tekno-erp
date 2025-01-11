@@ -37,6 +37,11 @@ def timesheet_entries(request):
                 period = util.get_timesheet_period(date_time_in, ts_user.organization)
                 hourly_rate = ts_user.hourly_rate
                 wage_code = int(request.POST['alternate_wage_code'])
+                docs = request.FILES.getlist('documentation')
+                print("Here are the docs ", request.FILES)
+                for d in docs:
+                    print("Doc ", d.name)
+
                 if wage_code > 0:
 
                     hourly_rate = AlternateWageCode.objects.get(id=wage_code).hourly_rate

@@ -34,6 +34,13 @@ class TimesheetEntry(models.Model):
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
     docs = models.FileField(upload_to='documentation/', null=True, blank=True)
 
+    def __getattr__(self, name):
+        name_lower = name.lower()
+        for field in self._meta.get_fields():
+            if field.name.lower() == name_lower:
+                return getattr(self, field.name)
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+
     def __str__(self):
         #        name = self.user.first_name + ' ' + self.user.last_name
         name = str(self.date_time_in) + str(self.project)
