@@ -1,97 +1,89 @@
-{% extends 'base.html' %}
-{% block content%}
 {% load crispy_forms_tags %}
+{% load mathfilters %}
 <script type="text/javascript">
   $(document).ready(function(){
-    let formIndex = {{ formset.total_form_count }};
+    let formIndex = {{ formset.total_form_count }}-1;
     $('#add_file_btn').click(function(){
-
-      const newForm = `
-        <div class="form-row">
-          <div id="div_id_form-${formIndex}-file" class="mb-3">
-          <label for ="id_form-${formIndex}-file">File:</label>
-          <div>
-          <input type="file" name="form-${formIndex}-file" id="id_form-${formIndex}-file" class="form-control">
-          </div></div>
-          <input type="hidden" name="form-${formIndex}-id" id="id_form-${formIndex}-id">
-
-        </div>
-        <div class="form-row">
-          <label for="id_form-${formIndex}-description">Desc:</label>
-          <input type="text" class="form-control" name="form-${formIndex}-description" id="id_form-${formIndex}-description" value="">
-        </div>
-
-      `;
-      $('#formset_container').append(newForm);
+      const form = $('#formset_container_form-' +
+        formIndex).prop('outerHTML').replaceAll('form-'+ formIndex.toString(), 'form-' + (formIndex+1).toString());
+      $('#formset_container_form-' + formIndex).after(form);
+      console.log(form);
+      $('#id_form-' + (formIndex+1).toString() + '-parent').val($('#id_form-' + (formIndex).toString() + '-parent').val())
       const totalForms = $('#id_form-TOTAL_FORMS');
       totalForms.val(parseInt(totalForms.val(), 10) + 1);
       formIndex++;
 
     });
-
-  });
-  $(document).on('click', '.delete-doc', function(){
-    if(confirm('Are you sure you want to delete this file?')){
-      const docId=$(this).data('doc_id');
+    $('#doc_form').submit(function(event){
+    event.preventDefault();
+      var formData = new FormData($('#doc_form')[0]);
       $.ajax({
-        url: '/documentation/delete/',
+        url: '{% url 'doc_create' model=model %}',
+        type:'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(result){
+          $('#doc_form_content').html(result);
+        },
+        error: function(er){
+          alert("We have an error " + er);
+        }
+
+      });
+    });
+  });
+
+  function deleteDoc(id) {
+    if(confirm('Are you sure you want to delete this file?')){
+      $.ajax({
+        url: '/documentation/doc/delete/{{ model }}/' + id,
         type: 'POST',
         data: {
-          'doc_id': docId,
+          'doc_id': id,
           'csrfmiddlewaretoken': '{{ csrf_token }}',
 
         },
         success: function(response) {
-          alert(response.message);
-          location.reload();
+          $('#li_'+response.id).remove();
         },
         error: function(xhr){
           alert('An error occurred ' + xhr.responseText)
         },
       });
     }
-  });
+  }
 </script>
-<div class="row position-relative">
-  <div class="col">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Documentation</h5>
-        <div class="row">
-          {% if existing_files %}
-          <h3>Existing Documentation</h3>
-            <ul>
-              {% for doc in existing_files %}
-              <li>
-                  <button type="button" class="btn btn-danger btn-sm delete-doc" data-doc_id="{{ doc.id }}">Delete</button>
-                  <a href="{{ doc.file.url }}" target="_blank">{{ doc.file.name }}</a>
+{% if existing_files %}
+<h4>Existing Documentation</h4>
+<div class="row">
 
-              </li>
-              {% endfor %}
-            </ul>
-          {% endif %}
-        </div>
-        <div class="row">
-          <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ formset.management_form }}
-            {{ formset.as_p}}
+    <ul>
+      {% for doc in existing_files %}
+      <li id="li_{{ doc.id }}">
+          <button type="button" class="btn btn-danger btn-sm delete-doc" data-doc_id="{{ doc.id }}" onclick="deleteDoc({{ doc.id }})">Delete</button>
+          <a href="{{ doc.file.url }}" target="_blank">{{ doc.file.name }}</a>
 
-            <div class="" id="formset_container">
-
-            </div>
-            <button type="button" name="button" class="btn secondary-btn" id="add_file_btn">Add Doc</button>
-            <button class="btn primary-btn"  type="submit" name="">Submit</button>
-          </form>
-        </div>
+      </li>
+      {% endfor %}
+    </ul>
 
 
-      </div>
-
-    </div>
-
-  </div>
 </div>
+{% endif %}
+<div class="row">
+
+  <form id="doc_form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ formset.management_form }}
 
 
-{% endblock%}
+    <div id="formset_container_form-{{ formset.total_form_count|sub:1 }}">
+      {% for f in formset %}
+        {{ f | crispy}}
+      {% endfor %}
+    </div>
+    <button type="button" name="button" class="btn secondary-btn" id="add_file_btn">Add Doc</button>
+    <button id="doc_submit_btn" class="btn primary-btn"  type="submit" name="">Submit</button>
+  </form>
+</div>

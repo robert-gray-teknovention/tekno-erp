@@ -6,6 +6,8 @@ from . import views
 
 urlpatterns = [
     path('doc/create/<str:model>/', views.DocumentationCreateView.as_view(), name='doc_create'),
+    path('doc/create/<str:model>/<int:parent_id>', views.DocumentationCreateView.as_view(), name='doc_create'),
+    path('doc/delete/<str:model>/<int:id>', views.delete_doc, name='doc_delete'),
     # path('documentation/<int:pk>/update/', views.DocumentationUpdateView.as_view(), name='doc_update'),
     path(
         'docs/',

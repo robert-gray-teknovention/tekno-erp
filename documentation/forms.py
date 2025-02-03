@@ -1,6 +1,5 @@
 from django import forms
 from .models import ItemDocumentation, TimesheetEntryDocumentation
-from django.forms import modelformset_factory
 from django.apps import apps
 import inspect
 
@@ -24,28 +23,22 @@ class ClassContainingDocumentsForm(forms.Form):
             required=True)
 
 
-class ItemDocumentationForm(forms.ModelForm):
+class DocFormInitMixin():
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['parent'].empty_label = None
+        if 'parent' in self.initial:
+            model = self.Meta.model._meta.get_field('parent').related_model
+            self.fields['parent'].queryset = model.objects.filter(id=self.initial['parent'])
+
+
+class ItemDocumentationForm(DocFormInitMixin, forms.ModelForm):
     class Meta:
         model = ItemDocumentation
         fields = ['parent', 'file', 'description']
 
 
-class TimesheetEntryDocumentationForm(forms.ModelForm):
+class TimesheetEntryDocumentationForm(DocFormInitMixin, forms.ModelForm):
     class Meta:
         model = TimesheetEntryDocumentation
         fields = ['parent', 'file', 'description']
-
-
-ItemDocumentationFormSet = modelformset_factory(
-    ItemDocumentation,
-    form=ItemDocumentationForm,
-    can_delete=True,
-    extra=1
-    )
-
-TimesheetEntryDocumentationFormSet = modelformset_factory(
-    TimesheetEntryDocumentation,
-    form=TimesheetEntryDocumentationForm,
-    can_delete=True,
-    extra=1
-)
