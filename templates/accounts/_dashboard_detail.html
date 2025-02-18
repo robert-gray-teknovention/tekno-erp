@@ -1,0 +1,99 @@
+{% extends 'accounts/dashboard_base.html'%}
+{% block dashboard_content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 bg-light text-right">
+        <a href="{%url 'dashboard'%}?project_id={{selected_project}}&period_id={{selected_period}}" class="btn btn-primary">Back</a>
+
+    </div>
+
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <form action="{% url 'timesheetentries' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+          <input type="hidden" name="emp_id" value="{{ user.id }}">
+        {% else %}
+          <input type="hidden" name="emp_id" value="0">
+        {% endif %}
+          <input type="hidden" id="id" name="id" value="{{ entry.id }}">
+          <input type="hidden" id="utp_submitted" name="utp_submitted" value="{{ user_period.submitted }}">
+          <input type="hidden" id="utp_approved" name="utp_approved" value="{{ user_period.approved }}">
+        <div class="form-group">
+          <label for="form_project_select" class="col-form-label">Project:</label>
+          <select id="form_project_select" name="project_id" class="form-control">
+            <option value=0>----------</option>
+            {% for p in projects %}
+            {% if selected_project == p.id%}
+            <option value="{{ p.id }}" selected>{{ p.name }}</option>
+            {% else %}
+            <option value="{{ p.id }}">{{ p.name }}</option>
+            {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="emp_name" class="col-form-label">Name:</label>
+          <input type="text" name="emp_name" class="form-control" {% if user.is_authenticated %} value="{{ user.first_name}} {{ user.last_name}}" {% endif %} required>
+        </div>
+        <div class="form-group">
+          <label for="date_time_in" class="col-form-label">DateTime IN:</label>
+          <input id="date_time_in" type="datetime-local" name="date_time_in" class="form-control" value="{{entry.date_time_in|date:'Y-m-d'}}T{{entry.date_time_in|time:'H:i:s'}}">
+        </div>
+        <div class="form-group">
+          <label for="date_time_out" class="col-form-label">DateTime OUT:</label>
+          <input id="date_time_out" type="datetime-local" name="date_time_out" class="form-control" value="{{entry.date_time_out|date:'Y-m-d'}}T{{entry.date_time_out|time:'H:i:s'}}">
+        </div>
+        <div class="form-group">
+          <label for="duration" class="col-form-label">Duration:</label>
+          <input id='duration' type="number" name="duration" step="any" class="form-control" min="0" class="form-control is-invalid" data-error-msg="Your start time is greater that your end time.">
+        </div>
+
+
+        <div class="form-group">
+          <label for="alternate_wage_code" class="col-form-label">Alternate Wage Code</label>
+          <select id='alternate_wage_code' name="alternate_wage_code" class="form-control">
+            <option value="0" selected=true>-----------</option>
+            {% for code in alternate_wages %}
+            <option value="{{ code.id }}">{{ code.description }}: {{ code.hourly_rate }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="notes" class="col-form-label">Entry Notes</label>
+          <textarea id='notes' name="notes" rows="2" cols="80" class="form-control">{{ entry.notes }}</textarea>
+        </div>
+
+        <p>
+          <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#doc_modal" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Documentation</a>
+        </p>
+
+        <p>
+          <a class="btn btn-primary" data-bs-toggle="collapse" href="#expensePane" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Expenses</a>
+        </p>
+        <div class="row">
+          <div class="col">
+            <div class="collapse multi-collapse" id="expensePane">
+              <div class="" id="expenses">
+
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+        <hr>
+        {% if not user_period.submitted and not user_period.approved %}
+        <input type="submit" value="Submit" class="btn btn-block btn-primary" id="submitBtn" name="addOrUpdateBtn">
+        <input type="button" value="Delete" class="btn btn-block btn-secondary" id="deleteBtn">
+        {% endif %}
+      </form>
+
+    </div>
+  </div>
+</div>
+{% include 'documentation/doc_modal.html'%}
+{% include 'partials/_confirm.html' %}
+{% endblock %}

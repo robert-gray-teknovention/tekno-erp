@@ -2,8 +2,6 @@
   $(document).ready(function(){
     $("#expenseModal").on("hidden.bs.modal", function(){
       $("#expenses").load("../../accounting/expenses/entry/" + $('#id').val() + "/partial/")
-      $('body').addClass('modal-open');
-
     });
     $("#addExpenseBtn").on("click", function(){
       if($("#expenseSelect").val()){
@@ -13,10 +11,7 @@
       else {
         alert("Please select an expense type.");
       }
-
-
     });
-
     $(".rows").click(function(e){
       $("#expense_form").load("../../accounting/expense/"+ $(this).find('td')[1].innerHTML.toLowerCase() + "/" + $(this).find('td')[3].innerHTML);
       $("#expenseModal").modal("show");

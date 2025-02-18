@@ -1,0 +1,137 @@
+{% extends 'accounts/dashboard_base.html'%}
+{% load mathfilters %}
+{% block dashboard_content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      {% if periods %}
+      <div class="row">
+        <div class="col-2">
+          <label for="period_select"><h5>Timesheet Period</h5></label>
+        </div>
+
+        <div class="col">
+          <select id="period_select" class="form-control" onchange="refreshWithNewPeriod()">
+
+            {% for p in periods %}
+            {% if selected_period == p.id%}
+            <option value="{{ p.id }}" selected>{{p.date_start}}-{{p.date_end}}</option>
+            {% else %}
+            <option value="{{ p.id }}">{{p.date_start}}-{{p.date_end}}</option>
+            {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-2">
+          <label for="project_select"><h5>Project</h5></label>
+        </div>
+        <div class="col">
+          <select id="project_select" class="form-control" onchange="refreshWithNewPeriod()">
+            <option value=0>All</option>
+            {% for p in projects %}
+            {% if selected_project == p.id%}
+            <option value="{{ p.id }}" selected>{{ p.name }}</option>
+            {% else %}
+            <option value="{{ p.id }}">{{ p.name }}</option>
+            {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+
+      {% endif %}
+      <h2>Welcome {{ user.first_name }}</h2>
+
+      <div>
+
+      <button id="reportBtn" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Report</button>
+      </div>
+      {% if not user_period.submitted and not user_period.approved %}
+      <div>
+      <!--<button class="btn-primary btn-block btn-lg" data-toggle="modal" style="float: right; width:200px;" data-target="#inquiryModal">Add Time</button> -->
+
+      <button id="addBtn" class="btn-primary btn-block btn-lg" style="float: right; width:200px;">Add Time</button>
+      </div>
+      {% endif %}
+      {% if time_entries %}
+      <p>Here are your time sheet entries</p>
+
+      <table class="table" id="tsEntriesTable">
+
+          <tr>
+            <th scope="col">IN</th>
+            <th scope="col">OUT</th>
+            <th scope="col">Rate</th>
+            <th scope="col">Duration</th>
+            <th scope="col">Pay</th>
+            <th scope="col">APPROVED</th>
+            <th scope="col">Notes</th>
+            <th></th>
+          </tr>
+
+          {% for emp in time_entries %}
+          <tr onclick="tableRowClicked(this)">
+            <td>{{ emp.date_time_in|date:'m-d-Y H:i' }}</td>
+            <td>{{ emp.date_time_out|date:'m-d-Y H:i' }}</td>
+            <td>{{ emp.hourly_rate}}
+            <td>{{ emp.duration }}</td>
+            <td>{{ emp.hourly_rate | mul:emp.duration | floatformat:2 }}</td>
+            <td><input type="checkbox" onclick="return false;" {% if emp.is_approved %} checked {% endif %}></td>
+            <td>{{ emp.notes}}</td>
+            <td style="visibility:hidden;">{{ emp.id }}</td>
+            <td style="visibility:hidden;">{{ emp.project_id }}</td>
+          </tr>
+          {% endfor %}
+
+      </table>
+      {% endif %}
+      <div class="container">
+        {% if not user_period.approved %}
+        <div class="row">
+        <form action="{% url 'submitutp' %}" method="POST">
+          {% csrf_token %}
+          <input id="utp_id" type="hidden" name="utp_id" value="{{ user_period.id }}">
+
+           <button type= "submit" id="submitTimesheetBtn" class="btn-primary btn-block btn-lg" style="float: right; width:250px;">
+
+             {% if not user_period.submitted %}
+             Submit Timesheet
+             {% else %}
+             (Un)submit Timesheet
+             {% endif %}
+
+           </button>
+        </form>
+
+
+        </div>
+        {% endif %}
+        <div class="row">
+
+        <p><b>Timesheet Status:
+          {% if not user_period.submitted %}
+          Not Submitted
+          {% elif user_period.submitted and not user_period.approved %}
+          Submitted. You can make changes to your entries if your timesheet is not submitted.
+          {% elif user_period.submitted and user_period.approved %}
+          Submitted and Approved.  You can make changes to your entries if your timesheet is not approved nor submitted.
+          {% else %}
+          Status is undetermined
+          {% endif %}
+
+          </b>
+        </p>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -261,3 +261,82 @@ def dashboard(request):
     }
 
     return render(request, 'accounts/dashboard.html', context)
+
+
+def dashboard_main(request):
+    periods = []
+    user = TimesheetUser.objects.get(user=User.objects.get(id=request.user.id))
+    tz = pytz.timezone(user.organization.timezone)
+    project_id = 0
+    for p in TimesheetPeriod.objects.filter(org=user.organization).order_by('-date_end')[0:12]:
+        periods.append({'id': p.id, 'date_start': date.strftime(timezone.localtime(p.date_start, tz), '%m/%d/%Y'),
+                       'date_end': date.strftime(timezone.localtime(p.date_end, tz), '%m/%d/%Y')})
+    query_period = periods[0]
+    if request.GET.get('period_id'):
+        p = TimesheetPeriod.objects.get(id=request.GET.get('period_id'))
+        query_period = {'id': p.id, 'date_start': date.strftime(timezone.localtime(p.date_start, tz), '%m/%d/%Y'),
+                        'date_end': date.strftime(timezone.localtime(p.date_end, tz), '%m/%d/%Y')}
+    user_time_entries = None
+    if request.GET.get('project_id') and int(request.GET.get('project_id')) != 0:
+        print('project', request.GET.get('project_id'))
+        project_id = int(request.GET.get('project_id'))
+
+        user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(period_id=query_period['id'],
+                                                                                     user=user,
+                                                                                     project_id=project_id)
+
+    else:
+        user_time_entries = TimesheetEntry.objects.order_by('-date_time_out').filter(period_id=query_period['id'],
+                                                                                     user=user)
+
+    user_period = UserTimesheetPeriod.objects.get(user=user, period_id=query_period['id'])
+    user_projects = Project.objects.filter(Q(contributors=user.user) | Q(owner=user.user))
+    context = {
+        'time_entries': user_time_entries,
+        'periods': periods,
+        'selected_period': query_period['id'],
+        'selected_project': project_id,
+        'user_period': user_period,
+        'alternate_wages': user.alternatewagecode_set.all(),
+        'projects': user_projects,
+        'expense_types': dict(Expense.ExpenseType.choices),
+        'class_name': TimesheetEntry.__name__,
+        'class_module': TimesheetEntry.__module__,
+    }
+
+    return render(request, 'accounts/_dashboard_main.html', context)
+
+
+def dashboard_detail(request):
+    periods = []
+    user = TimesheetUser.objects.get(user=User.objects.get(id=request.user.id))
+    tz = pytz.timezone(user.organization.timezone)
+    project_id = 0
+    for p in TimesheetPeriod.objects.filter(org=user.organization).order_by('-date_end')[0:12]:
+        periods.append({'id': p.id, 'date_start': date.strftime(timezone.localtime(p.date_start, tz), '%m/%d/%Y'),
+                       'date_end': date.strftime(timezone.localtime(p.date_end, tz), '%m/%d/%Y')})
+    query_period = periods[0]
+
+    if request.GET.get('project_id') and int(request.GET.get('project_id')) != 0:
+        project_id = int(request.GET.get('project_id'))
+
+    user_period = UserTimesheetPeriod.objects.get(user=user, period_id=query_period['id'])
+    user_projects = Project.objects.filter(Q(contributors=user.user) | Q(owner=user.user))
+    entry = TimesheetEntry(id=0, notes='')
+    if request.GET.get('entry_id') and int(request.GET.get('entry_id')) != 0:
+        entry = TimesheetEntry.objects.get(id=request.GET.get('entry_id'))
+    context = {
+        # 'time_entries': user_time_entries,
+        'entry': entry,
+        'periods': periods,
+        'selected_period': request.GET.get('period_id'),
+        'selected_project': project_id,
+        'user_period': user_period,
+        'alternate_wages': user.alternatewagecode_set.all(),
+        'projects': user_projects,
+        'expense_types': dict(Expense.ExpenseType.choices),
+        'class_name': TimesheetEntry.__name__,
+        'class_module': TimesheetEntry.__module__,
+    }
+
+    return render(request, 'accounts/_dashboard_detail.html', context)
