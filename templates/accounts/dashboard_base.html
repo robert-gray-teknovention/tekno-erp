@@ -58,7 +58,8 @@ function getHoursBetweenDates(start, end) {
     });
     $("#reportBtn").on("click",function(){
       const period_id = $("#period_select").val();
-      window.open("{% url 'report' %}?period_id=" + period_id, "_blank");
+      const project_id = $("#project_select").val();
+      window.open("{% url 'report' %}?period_id=" + period_id + "&project_id=" + project_id, "_blank");
     });
     $("#expensePane").on("show.bs.collapse", function(){
       $("#expenses").load("../accounting/expenses/entry/" + $('#id').val() + "/partial/");

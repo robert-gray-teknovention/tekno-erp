@@ -99,11 +99,14 @@ def submit_timesheet(request):
 
 def report(request):
     user_ids = [request.user.id]
-    buffer = get_report(user_ids, request.GET.get("period_id"), True)
+    if "project_id" in request.GET and int(request.GET.get("project_id")) > 0:
+        buffer = get_report(user_ids, request.GET.get("period_id"), True, project_id=request.GET.get("project_id"))
+    else:
+        buffer = get_report(user_ids, request.GET.get("period_id"), True)
     return FileResponse(buffer, as_attachment=False, filename='report.pdf')
 
 
-def get_report(user_ids, period_id, show_notes):
+def get_report(user_ids, period_id, show_notes, project_id=0):
     period = TimesheetPeriod.objects.get(id=period_id)
     buffer = io.BytesIO()
     deltay = 15
@@ -112,7 +115,10 @@ def get_report(user_ids, period_id, show_notes):
         x1 = 20
         y1 = 750
         user = TimesheetUser.objects.get(user=User.objects.get(id=user_id))
-        entries = TimesheetEntry.objects.filter(user=user, period=period)
+        if project_id == 0:
+            entries = TimesheetEntry.objects.filter(user=user, period=period)
+        else:
+            entries = TimesheetEntry.objects.filter(user=user, period=period, project_id=project_id)
         aggregate_data = {'total_hours': 0.00, 'total_pay': 0.00}
         p.setPageSize(portrait(letter))
         p.setFont("Helvetica", 15, leading=None)
