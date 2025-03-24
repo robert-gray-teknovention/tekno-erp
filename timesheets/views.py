@@ -24,7 +24,7 @@ def timesheet_entries(request):
     if request.method == 'POST':
         if str(request.POST['utp_approved']) == 'False' and str(request.POST['utp_submitted'] == 'False'):
             project = None
-            if int(request.POST['project_id']) > 0:
+            if request.POST['project_id'] and int(request.POST['project_id']) > 0:
                 project = Project.objects.get(id=request.POST['project_id'])
             if 'addOrUpdateBtn' in request.POST:
                 entry = {}
