@@ -15,6 +15,9 @@ class Asset(models.Model):
             self.description = self.equipment.part.description
         super(Asset, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return self.name
+
 
 class Vehicle(Asset):
     total_mileage = models.DecimalField(decimal_places=1, max_digits=10)
