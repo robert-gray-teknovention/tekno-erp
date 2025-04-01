@@ -326,7 +326,7 @@ class ItemCreateView(LoginRequiredMixin, OrganizationMixin, CreateView):
         if item_type.capitalize() == 'Part':
             item_model = InvPart
         else:
-            item_model = getattr(models, item_type)
+            item_model = getattr(models, item_type.capitalize())
         return get_item_form(item_model)
 
     def get_context_data(self, *args, **kwargs):
