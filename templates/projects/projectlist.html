@@ -1,13 +1,41 @@
 {% extends 'base.html' %}
-{% block content%}
 
-{% load crispy_forms_tags %}
-<h1>Projects</h1>
-<ul>
-  {% for p in object_list %}
-    <li>{{ p.id }}: {{ p.name }}</li>
-  {% endfor %}
-</ul>
+{% block title %} | Project Management {% endblock %}
 
+{% block content %}
 
-{% endblock%}
+{% load render_table from django_tables2%}
+{% load django_bootstrap5%}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#add_project_btn').on('click', function(){
+      window.location = "{% url 'project_create' %}";
+    });
+
+  });
+
+</script>
+
+      <div class="row">
+        <div class="mx-auto">
+
+            <div class="card-header bg-primary text-white">
+              <h4>
+                <i class="fa fa-address-book-o"></i> Project List
+                <button id='add_project_btn' type="button" name="button" class="btn btn-light pull-right">Add {{ model_name }}</button>
+              </h4>
+            </div>
+            <div class="card-body">
+              {% if filter %}
+                <form method="get" class="form form-inline">
+                  <input type="text" name="search" placeholder="Search...">
+                  {% bootstrap_button 'filter' %}
+                </form>
+              {% endif %}
+              {% render_table table %}
+
+            </div>
+
+        </div>
+      </div>
+{% endblock %}

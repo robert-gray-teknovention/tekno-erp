@@ -1,5 +1,7 @@
 from .models import Project, ProjectDocumentation
+from django_tables2.views import SingleTableView
 from .forms import ProjectForm, ProjectDocumentationFormSet
+from .tables import ProjectTable
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
@@ -7,6 +9,13 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 # Create your views here.
+
+
+class ProjectListView(LoginRequiredMixin, SingleTableView):
+    table_class = ProjectTable
+    model = Project
+    # filterset_class = ProjectFilter
+    template_name = 'projects/projectlist.html'
 
 
 class ProjectCreateView(CreateView):
