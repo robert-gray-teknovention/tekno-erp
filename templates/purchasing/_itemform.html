@@ -8,17 +8,24 @@
     $("#id_item_type").change(function(){
       window.location.replace('{% url "item-form" %}' + $(this).val())
     });
+    $("#doc_modal").on("shown.bs.modal", function(){
+      $("#doc_modal_body").load(`/documentation/doc/create/item/{{ object.pk}}`);
+    });
   });
+
+  
 </script>
 <div class="card">
   <div class="card-body">
     <h5 class="card-title">
 
     </h5>
+    <input type="hidden" id="id" value="{{ object.pk }}">
     {% if update %}
     <h5 class="card-title">
       Update {{ item_type }} Form
     </h5>
+
       <form method="post" action = "{% url form_url item_type=item_type pk=object.pk %}">
     {% else %}
     <h5 class="card-title">
@@ -29,10 +36,16 @@
       {% csrf_token %}
       {{ item_type_form|crispy }}
       {{ form|crispy }}
+      
       <input type="submit" class="btn primary-btn">
     </form>
+    <p>
+      <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#doc_modal" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Documentation</a>
+    </p>
+
 
   </div>
+  {% include 'documentation/doc_modal.html'%}
 
 </div>
 {% endblock %}
