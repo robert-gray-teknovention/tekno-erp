@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Part, SerialPart, Equipment
+from .models import Part, SerialPart, Equipment, InventoryPart
 
 
 class ChildPartsInline(admin.TabularInline):
@@ -24,4 +24,9 @@ class SerialPartAdmin(admin.ModelAdmin):
 
 @admin.register(Equipment)
 class Equipment(admin.ModelAdmin):
+    list_display = ['id']
+
+
+@admin.register(InventoryPart)
+class InventoryPart(admin.ModelAdmin):
     list_display = ['id']
