@@ -1,0 +1,18 @@
+
+<li>
+  {% if location.children.all %}
+    <span class="toggle" onclick="toggleChildren(this)">[+]</span>
+  {% else %}
+    <span class="toggle-placeholder"></span>
+  {% endif %}
+  <a href="{% url 'location_detail' location.pk %}" id="{{ location.id }}" onclick="locationClicked(this)">{{ location.name }}</a> 
+
+  {% if location.children.all %}
+    <ul class="nested" style="display: none;">
+      {% for child in location.children.all %}
+        {% include "locations/_location_node.html" with location=child %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+</li>
+

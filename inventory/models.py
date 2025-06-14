@@ -1,6 +1,7 @@
 from django.db import models
 from purchasing.models import Part as BasePart
 from purchasing.models import Material
+from locations.models import Location
 from polymorphic.models import PolymorphicModel
 
 
@@ -25,23 +26,21 @@ class ChildPart(models.Model):
 
 class InventoryItem(models.Model):
     quantity = models.DecimalField(decimal_places=2, max_digits=10, default=0)
-
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
     class Meta:
         abstract = True
 
 
 class InventoryPart(InventoryItem):
     part = models.ForeignKey(Part, on_delete=models.CASCADE)
-
     def __str__(self):
         return self.part.name + " " + str(self.quantity)
 
 
 class InventoryMaterial(InventoryItem):
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
-
     def __str__(self):
-        return self.name
+        return self.material.name + " " + str(self.quantity)
 
 
 class SerialPart(PolymorphicModel):
@@ -66,3 +65,5 @@ class Equipment(SerialPart):
 
     def __str__(self):
         return self.part.name
+
+    

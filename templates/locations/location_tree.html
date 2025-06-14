@@ -1,0 +1,63 @@
+{% extends "locations/base.html" %}
+
+{% block location_content %}
+<style>
+    .toggle {
+      cursor: pointer;
+      font-weight: bold;
+      margin-right: 5px;
+      color: #555;
+    }
+    .toggle-placeholder {
+      display: inline-block;
+      width: 10px;
+    }
+    ul.nested {
+      margin-left: 5px;
+      list-style-type: none;
+    }
+    .location-link {
+      text-decoration: none;
+      color: #0366d6;
+    }
+    .location-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+  
+<script>
+    function toggleChildren(el) {
+      
+      //const ul = el.nextElementSibling;
+      const ul = el.parentElement.querySelector("ul.nested");
+      if (!ul) return;
+      
+      if (ul.style.display === "none") {
+        ul.style.display = "block";
+        el.textContent = "[-]";
+      } else {
+        ul.style.display = "none";
+        el.textContent = "[+]";
+      }
+    }
+    function locationClicked(e) {
+        console.log(e.id);
+    }
+  </script>
+    <div class="row">
+        <div class="col-lg">
+            <h2>Location Hierarchy</h2>
+            <ul>
+            {% for location in locations %}
+            {% include "locations/_location_node.html" with location=location %}
+            {% endfor %}
+            </ul>
+            <a href="{% url 'location_add' %}">Add New Location</a>
+        </div>
+        <div class="col-lg">
+            hello
+        </div>
+    </div>
+</div>
+  
+{% endblock %}
