@@ -1,5 +1,5 @@
-{% extends "locations/base.html" %}
-{% block location_content %}
+{% extends "main_base.html" %}
+{% block main_content %}
 <script>
   function deleteLocation() {
     {% if inventory_items or children %}
@@ -14,61 +14,79 @@
       window.location.replace("{% url 'location_delete' location.id %}");
     {% endif %}
   }
+
+  function addInventory(itemType) {
+    $('#inv_item_div').load("{% url 'inventory_add' %}" + itemType + "/location/{{ location.id }}/location_detail/");
+  }
 </script>
  
-
-  <!-- 🧭 Breadcrumbs -->
-  <p>
-    <strong>Path:</strong>
-    {% for crumb in breadcrumbs %}
+<div class="row">
+  <div class="col">
+    <!-- 🧭 Breadcrumbs -->
+    <p>
+      <strong>Path:</strong>
+      {% for crumb in breadcrumbs %}
       {% if forloop.last %}
       <strong><a href="{% url 'location_detail' crumb.pk %}">{{ crumb.name }}</a></strong>
       {% else %}
       <a href="{% url 'location_detail' crumb.pk %}">{{ crumb.name }}</a>&gt;
       {% endif %}
-      
-    {% endfor %}
-    <br>
-    <a href="{% url 'location_edit' location.id %}">(Update | </a><a href="#" onclick="deleteLocation()"> Delete)</a>
-     <h5>Downstream Locations</h5>
-     
-     {% if children %}
-     <ul>
+
+      {% endfor %}
+      <br>
+      <a href="{% url 'location_edit' location.id %}">(Update | </a><a href="#" onclick="deleteLocation()"> Delete)</a>
+    <h5>Downstream Locations</h5>
+
+    {% if children %}
+    <ul>
       {% for child in children %}
       <li>
-        <a href="{% url 'location_detail' child.pk %}"> {{ child.name}}</a> 
+        <a href="{% url 'location_detail' child.pk %}"> {{ child.name}}</a>
       </li>
-      
+
 
       {% endfor %}
-     </ul>
-     
-      
+    </ul>
+
+
     {% endif %}
-    <a href="{% url 'location_add' location.id %}">Add Location</a>
+    <strong><a href="{% url 'location_add' location.id %}">Add Location</a></strong>
 
 
-  </p>
+    </p>
 
-  <!-- 📦 Inventory Items -->
-  <h5>Inventory at this Location</h5>
-  {% if inventory_items %}
-    <ul>
+    <!-- 📦 Inventory Items -->
+    <h5>Inventory at this Location</h5>
+    {% if inventory_items %}
+    <ul id="parts_list">
       <h6>Parts</h6>
       {% for item in inventory_items.parts %}
-        <li>{{ item.part.name }} — Quantity: {{ item.quantity }}</li>
+      <li>{{ item.item.name }} — Quantity: {{ item.quantity }}</li>
       {% endfor %}
     </ul>
-    <ul>
+    <ul id="materials_list">
       <h6>Materials</h6>
       {% for item in inventory_items.materials %}
-        <li>{{ item.material.name }} — Quantity: {{ item.quantity }}</li>
+      <li>{{ item.item.name }} — Quantity: {{ item.quantity }}</li>
       {% endfor %}
     </ul>
 
-  {% else %}
+    {% else %}
     <p><em>No inventory items at this location.</em></p>
-  {% endif %}
+    <p><strong>Add Inventory </strong><a href="#" onclick="addInventory('Part')">(Part </a> | <a href="#"
+        onclick="addInventory('Material')">Material)</a></p>
+    {% endif %}
 
-  <a href="{% url 'location_tree' %}">&larr; Back to Location Tree</a>
+    <p><strong>Add Inventory </strong><a href="#" onclick="addInventory('Part')">(Part </a> | <a href="#"
+        onclick="addInventory('Material')">Material)</a></p>
+    <a href="{% url 'location_tree' %}">&larr; Back to Location Tree</a>
+
+  </div>
+  <div id="inv_item_div" class="col">
+    Inventory Items
+  </div>
+
+</div>
+
+  
 {% endblock %}

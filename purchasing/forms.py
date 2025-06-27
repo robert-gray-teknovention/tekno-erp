@@ -166,8 +166,3 @@ class PurchaseOrderItemForm(ModelForm):
             'status': Select(attrs={'class': 'form-control'}),
             # 'unit_cost': MoneyWidget(amount_widget=NumberInput(attrs={'class': 'form-control'}))
         }
-
-
-    '''def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.action = '/purchaseorderitem/create/'''

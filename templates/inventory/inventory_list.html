@@ -1,0 +1,22 @@
+{% extends 'main_base.html' %}
+{% block main_content%}
+<div class="row position-relative">
+<div class="col">
+  
+    <h5 class="card-title">{{model_name | capfirst}} Inventory List</h5>
+
+    <ul>
+   
+    {% for item in object_list %}
+   
+    <li>{{ item.id }} {{ item.item.name }} {{ item.item.description }} {{ item.location }} {{ item.quantity }}</li>
+   
+    {% endfor %}
+   
+    </ul>
+   
+
+</div>
+</div>
+
+{% endblock%}

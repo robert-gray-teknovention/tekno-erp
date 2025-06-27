@@ -18,7 +18,7 @@ urlpatterns = [
     path('purchasing/', include('purchasing.urls')),
     path('projects/', include('projects.urls')),
     path('documentation/', include('documentation.urls')),
-    # path('inventory/', include('inventory.urls')),
+    path('inventory/', include('inventory.urls')),
     path('locations/', include('locations.urls')),
     path('demo', TemplateView.as_view(template_name="bootstrap_base.html"), name='demo'),
     path('popovers', TemplateView.as_view(template_name="bootstrap_popovers.html"), name="popovers"),

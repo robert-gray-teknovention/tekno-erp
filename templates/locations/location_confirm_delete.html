@@ -1,5 +1,5 @@
-{% extends "locations/base.html" %}
-{% block location_content %}
+{% extends "main_base.html" %}
+{% block main_content %}
   <h2>Delete Location</h2>
   <p>Are you sure you want to delete "{{ object.name }}"?</p>
   <form method="post">{% csrf_token %}

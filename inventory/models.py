@@ -30,17 +30,25 @@ class InventoryItem(models.Model):
     class Meta:
         abstract = True
 
+class InventoryItemUniqueMixin():
+    def save(self, *args, **kwargs):
+        existing = self.__class__.objects.filter(location=self.location, item=self.item).first()
+        if existing and not self.id:
+            existing.quantity += self.quantity
+            self = existing
+        super().save()
 
-class InventoryPart(InventoryItem):
-    part = models.ForeignKey(Part, on_delete=models.CASCADE)
+
+class InventoryPart(InventoryItemUniqueMixin, InventoryItem):
+    item = models.ForeignKey(Part, on_delete=models.CASCADE)
     def __str__(self):
-        return self.part.name + " " + str(self.quantity)
+        return self.item.name + " " + str(self.quantity)
 
-
-class InventoryMaterial(InventoryItem):
-    material = models.ForeignKey(Material, on_delete=models.CASCADE)
+    
+class InventoryMaterial( InventoryItemUniqueMixin, InventoryItem):
+    item = models.ForeignKey(Material, on_delete=models.CASCADE)
     def __str__(self):
-        return self.material.name + " " + str(self.quantity)
+        return self.item.name + " " + str(self.quantity)
 
 
 class SerialPart(PolymorphicModel):

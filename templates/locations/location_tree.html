@@ -1,6 +1,6 @@
-{% extends "locations/base.html" %}
+{% extends "main_base.html" %}
 
-{% block location_content %}
+{% block main_content %}
 <style>
     .toggle {
       cursor: pointer;
@@ -53,9 +53,6 @@
             {% endfor %}
             </ul>
             <a href="{% url 'location_add' %}">Add New Location</a>
-        </div>
-        <div class="col-lg">
-            hello
         </div>
     </div>
 </div>

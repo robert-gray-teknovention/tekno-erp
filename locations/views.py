@@ -56,13 +56,10 @@ class LocationDetailView(DetailView):
         location = self.object
 
         # Include all inventory items for this location
-       
-        if InventoryPart.objects.filter(location=location).exists() and InventoryMaterial.objects.filter(location=location).exists():
-            context['inventory_items'] = {
-                'parts': InventoryPart.objects.filter(location=location),
-                'materials': InventoryMaterial.objects.filter(location=location)
-            }
-        
+        context['inventory_items'] = {
+            'parts': InventoryPart.objects.filter(location=location),
+            'materials': InventoryMaterial.objects.filter(location=location)
+        }
         # Generate breadcrumb trail by walking up parent tree
         breadcrumbs = []
         current = location
