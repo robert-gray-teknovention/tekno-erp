@@ -5,8 +5,9 @@ class LocationForm(forms.ModelForm):
     # parent = forms.ModelChoiceField(queryset=Location.objects.all().order_by('name'))
     class Meta:
         model = Location
-        fields =['name', 'parent']
+        fields =['name', 'description', 'parent']
         widgets = {
             'parent': forms.Select(attrs={'class': 'form-control'}),
-            'name': forms.TextInput(attrs={'class': 'form-control'},)
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows':'2'}),
         }
