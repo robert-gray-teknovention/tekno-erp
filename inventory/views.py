@@ -47,8 +47,20 @@ class InventoryItemCreateView(InventoryItemModelMixin, CreateView):
         if 'initial_type' in self.kwargs:
             if self.kwargs.get('initial_type').lower() == 'location':
                 initial['location'] = self.kwargs.get('initial_id')
-                return initial
+            
+            elif self.kwargs.get('initial_type').lower() in ['part', 'material']:
+                initial['item'] = self.kwargs.get('initial_id')
         return initial
+    
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        self.disable_field = self.kwargs.pop('initial_type', None)
+        if self.disable_field:
+            if self.disable_field in ['part', 'material']:
+                self.disable_field = 'item'
+            kwargs['disabled_fields'] = [self.disable_field]
+        return kwargs
+
 
 
 class InventoryItemUpdateView(InventoryItemModelMixin, UpdateView):
