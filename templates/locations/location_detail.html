@@ -15,6 +15,10 @@
     {% endif %}
   }
 
+  function updateInventoryItem(id, itemType) {
+    $('#inv_item_div').load("{% url 'inventory_edit' %}" + id + "/" + itemType + "/location/{{ location.id }}/location_detail/");
+  }
+
   function addInventory(itemType) {
     $('#inv_item_div').load("{% url 'inventory_add' %}" + itemType + "/location/{{ location.id }}/location_detail/");
   }
@@ -61,13 +65,13 @@
     <ul id="parts_list">
       <h6>Parts</h6>
       {% for item in inventory_items.parts %}
-      <li>{{ item.item.name }} — Quantity: {{ item.quantity }}</li>
+      <li><a href="#" onclick="updateInventoryItem({{item.id}}, '{{ item.get_item_type }}')">{{ item.item.name }}</a> — Quantity: {{ item.quantity }}</li>
       {% endfor %}
     </ul>
     <ul id="materials_list">
       <h6>Materials</h6>
       {% for item in inventory_items.materials %}
-      <li>{{ item.item.name }} — Quantity: {{ item.quantity }}</li>
+      <li><a href="#" onclick="updateInventoryItem({{item.id}}, '{{ item.get_item_type }}')">{{ item.item.name }}</a> — Quantity: {{ item.quantity }}</li>
       {% endfor %}
     </ul>
 

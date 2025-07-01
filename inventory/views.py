@@ -6,14 +6,22 @@ from locations.models import Location
 from .forms import InventoryPartForm, InventoryMaterialForm
 from django.http import Http404
 class InventoryItemModelMixin():
-    
-    def get_form_class(self):
+    def get_object(self, queryset=None):
         model_name = self.kwargs.get('model_name').lower()
         if model_name == 'part':
             self.model = models.InventoryPart
+        if model_name == 'material':
+            self.model = models.InventoryMaterial
+        return super().get_object(queryset)
+
+    def get_form_class(self):
+        model_name = self.kwargs.get('model_name').lower()
+        if model_name == 'part':
+            # self.model = models.InventoryPart
             return InventoryPartForm
         elif model_name == 'material':
-            self.model = models.InventoryMaterial
+            # self.model = models.InventoryMaterial
+            print("We are returning material")
             return InventoryMaterialForm
         else:
             raise Http404('Model not found')
@@ -33,6 +41,12 @@ class InventoryItemModelMixin():
             context['initial_id'] = self.kwargs.get("initial_id")
         if 'success_url' in self.kwargs:
             context['success_url'] = self.kwargs.get("success_url")
+        if self.__class__== InventoryItemCreateView:
+            context['form_type'] = 'create'
+        else:
+            context['form_type'] = 'update'
+            print("We are updating with pk of ", self.kwargs.get('pk'))
+            context['pk'] = self.kwargs.get('pk')
         return context
     
 
@@ -64,10 +78,16 @@ class InventoryItemCreateView(InventoryItemModelMixin, CreateView):
 
 
 class InventoryItemUpdateView(InventoryItemModelMixin, UpdateView):
-    model = models.InventoryPart
+    model = models.InventoryMaterial
     # fields = ['field1', 'field2']
     template_name = 'inventory/_item_form.html'
     success_url = 'inventory/list.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['disabled_fields'] = ['item', 'location']
+        return kwargs
+    
 
 class InventoryItemDeleteView(DeleteView):
     model = models.InventoryPart

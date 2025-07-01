@@ -29,14 +29,17 @@ class InventoryItem(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
     class Meta:
         abstract = True
+    
+
 
 class InventoryItemUniqueMixin():
     def save(self, *args, **kwargs):
-        existing = self.__class__.objects.filter(location=self.location, item=self.item).first()
-        if existing and not self.id:
-            existing.quantity += self.quantity
-            self = existing
-        super().save()
+        if self._state.adding:
+            existing = self.__class__.objects.filter(location=self.location, item=self.item).first()
+            if existing:
+                existing.quantity += self.quantity
+                self = existing
+        super().save(*args, **kwargs)
 
 
 class InventoryPart(InventoryItemUniqueMixin, InventoryItem):
@@ -44,11 +47,18 @@ class InventoryPart(InventoryItemUniqueMixin, InventoryItem):
     def __str__(self):
         return self.item.name + " " + str(self.quantity)
 
+    def get_item_type(self):
+        return 'part'
+
     
+
 class InventoryMaterial( InventoryItemUniqueMixin, InventoryItem):
     item = models.ForeignKey(Material, on_delete=models.CASCADE)
     def __str__(self):
         return self.item.name + " " + str(self.quantity)
+    
+    def get_item_type(self):
+        return 'material'
 
 
 class SerialPart(PolymorphicModel):
