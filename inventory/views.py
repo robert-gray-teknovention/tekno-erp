@@ -1,11 +1,15 @@
 from django.urls import reverse_lazy, reverse
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from .models import InventoryPart, InventoryMaterial
 from . import models
 from locations.models import Location
 from .forms import InventoryPartForm, InventoryMaterialForm
 from django.http import Http404
+from django.db.models import Q
 class InventoryItemModelMixin():
+    
     def get_object(self, queryset=None):
         model_name = self.kwargs.get('model_name').lower()
         if model_name == 'part':
@@ -21,12 +25,12 @@ class InventoryItemModelMixin():
             return InventoryPartForm
         elif model_name == 'material':
             # self.model = models.InventoryMaterial
-            print("We are returning material")
             return InventoryMaterialForm
         else:
             raise Http404('Model not found')
 
     def get_success_url(self):
+        print("WE have succeeded with the form.")
         if 'success_url' in self.kwargs:
             if 'initial_id' in self.kwargs:
                 return reverse(self.kwargs.get('success_url'), kwargs={'pk': self.kwargs.get('initial_id')})
@@ -74,6 +78,13 @@ class InventoryItemCreateView(InventoryItemModelMixin, CreateView):
                 self.disable_field = 'item'
             kwargs['disabled_fields'] = [self.disable_field]
         return kwargs
+    
+    def form_invalid(self, form):
+        print("❌ Form is invalid!")
+        print("Errors:", form.errors)
+        print("POST data:", self.request.POST)
+        return super().form_invalid(form)
+    
 
 
 
@@ -109,6 +120,17 @@ class InventoryItemListView(ListView):
         context["model_name"] = self.kwargs.get('model_name')
         return context
 
+
+def get_items(request):
+    from purchasing import models
+    if request.method == 'GET':
+        item_type =request.GET.get('item_type','part')
+        query = request.GET.get('query', '')
+        results = getattr(models, item_type.capitalize()).objects.filter(Q(name__icontains=query) | Q(description__icontains=query))
+        data = [{'id': obj.pk, 'text': str(obj)} for obj in results]
+        #for d in data:
+        #    print ("id ", d['id'])
+        return JsonResponse({'results': data})
 '''class InventoryMaterialCreate(CreateView):
     model = InventoryMaterial
     fields = ['field1', 'field2'] # Fields to include in the form
