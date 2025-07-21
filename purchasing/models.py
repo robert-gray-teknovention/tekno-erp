@@ -154,6 +154,7 @@ class PurchaseOrder(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL, blank=True)
     sub_total = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
+    discount_coupon = models.DecimalField(default=0.0, max_digits=10, decimal_places=2)
     shipping = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
     tax = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=10, decimal_places=2)
@@ -177,7 +178,7 @@ class PurchaseOrder(models.Model):
 
     def calculate_total(self):
         self.calculate_sub_total()
-        self.total = self.sub_total + self.shipping + self.tax
+        self.total = self.sub_total + self.shipping + self.tax - self.discount_coupon
 
 
 class Payment(models.Model):
