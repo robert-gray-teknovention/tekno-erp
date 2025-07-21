@@ -23,7 +23,7 @@ class Organization(models.Model):
     timezone = models.CharField(max_length=50, blank=True, null=True, default='America/Los_Angeles',
                                 choices=get_tuple_timezones(pytz.common_timezones)
                                 )
-
+    hidden = models.BooleanField(default=True)
     def __str__(self):
         return self.name
 

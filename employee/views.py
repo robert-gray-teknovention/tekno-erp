@@ -5,7 +5,7 @@ from organizations.models import Organization
 
 
 def index(request):
-    orgs = Organization.objects.all().order_by('name')
+    orgs = Organization.objects.filter(hidden=False).order_by('name')
     context = {
             'orgs': orgs
     }
