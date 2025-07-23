@@ -4,7 +4,7 @@ from django.views.generic import (
     ListView, CreateView, UpdateView, DeleteView, DetailView
 )
 from .models import Location
-from inventory.models import InventoryPart, InventoryMaterial
+from inventory.models import InventoryPart, InventoryMaterial, InventoryFood
 from .forms import LocationForm  # Reuse the form we discussed
 
 class LocationListView(ListView):
@@ -58,7 +58,8 @@ class LocationDetailView(DetailView):
         # Include all inventory items for this location
         context['inventory_items'] = {
             'parts': InventoryPart.objects.filter(location=location),
-            'materials': InventoryMaterial.objects.filter(location=location)
+            'materials': InventoryMaterial.objects.filter(location=location),
+            'foods': InventoryFood.objects.filter(location=location),
         }
         # Generate breadcrumb trail by walking up parent tree
         breadcrumbs = []

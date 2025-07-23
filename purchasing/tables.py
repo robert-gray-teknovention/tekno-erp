@@ -29,6 +29,8 @@ class ServiceTable(ItemTable):
 class SubscriptionTable(ItemTable):
     pass
 
+class FoodTable(ItemTable):
+    pass
 
 class VendorTable(tables.Table):
     def render_name(self, value, record):

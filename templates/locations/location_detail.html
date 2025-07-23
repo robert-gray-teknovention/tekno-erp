@@ -77,15 +77,23 @@
       <li><a href="#" onclick="updateInventoryItem({{item.id}}, '{{ item.get_item_type }}')">{{ item.item.name }}</a> — Quantity: {{ item.quantity }}</li>
       {% endfor %}
     </ul>
+    <ul id="foods_list">
+      <h6>Food Items</h6>
+      {% for item in inventory_items.foods %}
+      <li><a href="#" onclick="updateInventoryItem({{item.id}}, '{{ item.get_item_type }}')">{{ item.item.name }}</a> — Quantity: {{ item.quantity }}</li>
+      {% endfor %}
+    </ul>
+
+  
 
     {% else %}
     <p><em>No inventory items at this location.</em></p>
     <p><strong>Add Inventory </strong><a href="#" onclick="addInventory('Part')">(Part </a> | <a href="#"
-        onclick="addInventory('Material')">Material)</a></p>
+        onclick="addInventory('Material')">Material</a> | <a href="#" onclick="addInventory('Food')">Food Item)</a></p>
     {% endif %}
 
     <p><strong>Add Inventory </strong><a href="#" onclick="addInventory('Part')">(Part </a> | <a href="#"
-        onclick="addInventory('Material')">Material)</a></p>
+        onclick="addInventory('Material')">Material</a> | <a href="#" onclick="addInventory('Food')">Food Item)</a></p>
     <a href="{% url 'location_tree' %}">&larr; Back to Location Tree</a>
 
   </div>

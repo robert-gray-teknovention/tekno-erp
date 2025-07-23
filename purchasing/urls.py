@@ -20,6 +20,7 @@ urlpatterns = [
     path('purchaseorderitem/<int:pk>', views.PurchaseOrderItemUpdateView.as_view(), name='poi-form'),
     path('<str:template>/parts', views.FilteredListView.as_view(), name='parts'),
     path('<str:template>/materials', views.FilteredListView.as_view(), name='materials'),
+    path('<str:template>/foods', views.FilteredListView.as_view(), name='foods'),
     path('<str:template>/subscriptions', views.FilteredListView.as_view(), name='subscriptions'),
     path('<str:template>/services', views.FilteredListView.as_view(), name='services'),
     path('item/create/', views.ItemCreateView.as_view(), name='item-form'),

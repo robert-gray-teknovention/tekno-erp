@@ -122,6 +122,15 @@ class Material(Item):
     def __str__(self):
         return 'Material ' + self.name
 
+class FoodType(ItemType):
+    pass
+
+class Food(Item):
+    type = models.ForeignKey(FoodType, null=True, on_delete=models.SET_NULL, blank=True)
+    details = models.JSONField(default=default_itemdetails_data, blank=True)
+
+    def __str__(self):
+        return 'Food' + self.name
 
 class PaymentAccount(models.Model):
     class AccountType(models.TextChoices):

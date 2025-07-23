@@ -2,10 +2,10 @@ from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from .models import InventoryPart, InventoryMaterial
+from .models import InventoryPart, InventoryMaterial, InventoryFood
 from . import models
 from locations.models import Location
-from .forms import InventoryPartForm, InventoryMaterialForm
+from .forms import InventoryPartForm, InventoryMaterialForm, InventoryFoodForm
 from django.http import Http404
 from django.db.models import Q
 class InventoryItemModelMixin():
@@ -16,6 +16,8 @@ class InventoryItemModelMixin():
             self.model = models.InventoryPart
         if model_name == 'material':
             self.model = models.InventoryMaterial
+        if model_name == 'food':
+            self.model =models.InventoryFood
         return super().get_object(queryset)
 
     def get_form_class(self):
@@ -26,6 +28,9 @@ class InventoryItemModelMixin():
         elif model_name == 'material':
             # self.model = models.InventoryMaterial
             return InventoryMaterialForm
+        elif model_name == 'food':
+            return InventoryFoodForm
+    
         else:
             raise Http404('Model not found')
 
@@ -66,7 +71,7 @@ class InventoryItemCreateView(InventoryItemModelMixin, CreateView):
             if self.kwargs.get('initial_type').lower() == 'location':
                 initial['location'] = self.kwargs.get('initial_id')
             
-            elif self.kwargs.get('initial_type').lower() in ['part', 'material']:
+            elif self.kwargs.get('initial_type').lower() in ['part', 'material', 'food']:
                 initial['item'] = self.kwargs.get('initial_id')
         return initial
     
@@ -74,7 +79,7 @@ class InventoryItemCreateView(InventoryItemModelMixin, CreateView):
         kwargs = super().get_form_kwargs()
         self.disable_field = self.kwargs.pop('initial_type', None)
         if self.disable_field:
-            if self.disable_field in ['part', 'material']:
+            if self.disable_field in ['part', 'material', 'food']:
                 self.disable_field = 'item'
             kwargs['disabled_fields'] = [self.disable_field]
         return kwargs

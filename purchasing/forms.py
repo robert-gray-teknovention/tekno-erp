@@ -84,6 +84,7 @@ class ItemTypeForm(Form):
     type_choices = (
         ('Part', 'PART'),
         ('Material', 'MATERIAL'),
+        ('Food', 'FOOD'),
         ('Service', 'SERVICE'),
         ('Subscription', 'SUBSCRIPTION'),
     )

@@ -13,7 +13,7 @@ from .forms import (
     ItemTypeForm,
     )
 from .tables import ManufacturerTable, PurchaseOrderTable, PurchaseOrderItemTable
-from .models import Vendor, Manufacturer, PurchaseOrder, PurchaseOrderItem, Item, Part, Service, Material, Subscription
+from .models import Vendor, Manufacturer, PurchaseOrder, PurchaseOrderItem, Item, Part, Service, Material, Subscription, Food
 from .models import PurchaseItem
 from inventory.models import Part as InvPart
 from django.views.generic.edit import CreateView, UpdateView
@@ -88,6 +88,11 @@ class MaterialFilter(MultiFieldFilterSet):
         model = Material
         fields = MultiFieldFilterSet.Meta.fields
 
+class FoodFilter(MultiFieldFilterSet):
+
+    class Meta:
+        model = Food
+        fields = MultiFieldFilterSet.Meta.fields
 
 class ServiceFilter(MultiFieldFilterSet):
 
