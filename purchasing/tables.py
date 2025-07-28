@@ -60,7 +60,7 @@ class PurchaseOrderTable(tables.Table):
         model = PurchaseOrder
         sequence = ("id", "create_date", "vendor", "orderer")
         exclude = ("organization", "purchaser", "sub_total", "shipping", "tax")
-
+        order_by = "-create_date"
 
 class PurchaseOrderItemTable(tables.Table):
     def render_purchase_item(self, value, record):
