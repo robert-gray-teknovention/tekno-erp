@@ -106,6 +106,7 @@ class PurchaseOrderForm(ModelForm):
             'status': Select(attrs={'class': 'form-control'}),
             'purchase_date': DateInput(attrs={'type': 'date'}),
             'project': Select(attrs={'class': 'form-control'}),
+            'payment_account': Select(attrs=({'class': 'form-control'})),
         }
 
     def __init__(self, *args, **kwargs):

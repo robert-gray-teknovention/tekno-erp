@@ -59,7 +59,7 @@ class PurchaseOrderTable(tables.Table):
     class Meta:
         model = PurchaseOrder
         sequence = ("id", "create_date", "vendor", "orderer")
-        exclude = ("organization", "purchaser", "sub_total", "shipping", "tax")
+        exclude = ("organization", "purchaser", "sub_total", "shipping", "tax", "payment_account")
         order_by = "-create_date"
 
 class PurchaseOrderItemTable(tables.Table):

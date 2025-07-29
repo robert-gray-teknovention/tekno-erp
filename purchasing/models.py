@@ -174,7 +174,7 @@ class PurchaseOrder(models.Model):
     purchaser = models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchaser_pos', null=True, blank=True)
     orderer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orderer_pos', null=True)
     invoice = models.FileField(upload_to='invoices/', null=True, blank=True)
-
+    payment_account=models.ForeignKey(PaymentAccount, null=True,blank=True, on_delete=models.SET_NULL)
     def __str__(self):
         # return self.vendor.name + ' ' + str(self.create_date) + ' ' + self.purchaser.first_name + ' ' + self.purchaser.last_name
         return self.vendor.name + ' ' + str(self.create_date)
