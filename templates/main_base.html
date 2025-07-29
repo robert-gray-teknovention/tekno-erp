@@ -22,9 +22,19 @@
                     <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-sm-0 px-2">
                         <i class="fs-5 bi-speedometer2"></i><span class="ms-1 d-none d-sm-inline">Dashboard</span> </a>
                 </li>
-                <li>
-                    <a href="{% url 'po-list' %}" class="nav-link px-sm-0 px-2">
-                        <i class="fs-5 bi-table"></i><span class="ms-1 d-none d-sm-inline">Purchase Orders</span></a>
+                <li class="dropdown">
+                  <a href="#" class="nav-link dropdown-toggle px-sm-0 px-1" id="purchasing_dropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fs-5 bi-table"></i><span class="ms-1 d-none d-sm-inline">Purchasing</span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="purchasing_dropdown">
+                    <li>
+                      <a href="{% url 'po-list' %}" class="dropdown-item">Purchase Orders</a>
+                      <a href="{% url 'vendors' template='company' %}" class="dropdown-item">Vendors</a>
+                      <a href="{% url 'manufacturers' template='company' %}" class="dropdown-item">Manufacturers</a>
+                      
+                    </li>
+                  </ul>
+                    
                 </li>
                 <li>
                   <a href="{% url 'location_tree' %}" class="nav-link px-sm-0 px-2">

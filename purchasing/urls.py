@@ -5,8 +5,8 @@ from . import views
 urlpatterns = [
     path('company', views.company, name='company'),
     # path('manufacturer', views.company, name='company'),
-    path('<str:template>/vendors', views.FilteredListView.as_view()),
-    path('<str:template>/manufacturers', views.FilteredListView.as_view()),
+    path('<str:template>/vendors', views.FilteredListView.as_view(), name='vendors'),
+    path('<str:template>/manufacturers', views.FilteredListView.as_view(), name='manufacturers'),
     path('api/company', views.CompanyApiView, name='api_company'),
     path('dashboard/', views.dashboard, name='purchasing-dashboard'),
     path('purchaseorders/', views.PurchaseOrderListView.as_view(), name='po-list'),
