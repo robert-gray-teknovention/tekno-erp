@@ -5,17 +5,13 @@
 
 <script>
   function deleteLocation() {
-    {% if inventory_items or children %}
-      alert("This location cannot be deleted.  Please remove all inventory items and child locations from this location.");
-
     
-    {%else%}
     {% if location.parent %}
       window.location.replace("{% url 'location_delete' location.id location.parent.id %}");
 
     {% endif %}
       window.location.replace("{% url 'location_delete' location.id %}");
-    {% endif %}
+    
   }
 
   function updateInventoryItem(id, itemType) {
@@ -41,7 +37,10 @@
 
       {% endfor %}
       <br>
-      <a href="{% url 'location_edit' location.id %}">(Update | </a><a href="#" onclick="deleteLocation()"> Delete)</a>
+      <a href="{% url 'location_add' location.id %}">(Create | </a>
+      <a href="{% url 'location_edit' location.id %}">Update | </a>
+      <a href="#" onclick="deleteLocation()"> Delete | </a>
+      <a href="{% url 'location_copy' location.id %}">Copy</a>)
     <h5>Downstream Locations</h5>
 
     {% if children %}
@@ -57,7 +56,7 @@
 
 
     {% endif %}
-    <strong><a href="{% url 'location_add' location.id %}">Add Location</a></strong>
+    
 
 
     </p>

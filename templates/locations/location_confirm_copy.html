@@ -1,0 +1,17 @@
+{% extends "main_base.html" %}
+{% load crispy_forms_tags %}
+{% block main_content %}
+  <h2>Copy Location</h2>
+  <p>A copy will be made of the location and placed in </p>
+  <ul>
+    <li>Default location Templates</li>
+    <li>Selected parent field</li>
+    <li>Root of the location tree if no default Templates location is found</li>
+  </ul>
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-danger">Copy</button>
+    <a href="{% url 'location_detail' object.id %}">Cancel</a>
+  </form>
+{% endblock %}

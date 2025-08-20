@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     LocationListView, LocationCreateView,
-    LocationUpdateView, LocationDeleteView, LocationDetailView
+    LocationUpdateView, LocationDeleteView, LocationDetailView, LocationCopyView
 )
 
 urlpatterns = [
@@ -12,4 +12,5 @@ urlpatterns = [
     path('<int:pk>/delete/', LocationDeleteView.as_view(), name='location_delete'),
     path('<int:pk>/delete/<int:parent_id>', LocationDeleteView.as_view(), name='location_delete'),
     path('<int:pk>/', LocationDetailView.as_view(), name='location_detail'),
+    path('<int:pk>/copy/', LocationCopyView.as_view(), name='location_copy'),
 ]

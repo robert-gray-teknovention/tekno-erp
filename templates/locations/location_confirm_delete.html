@@ -1,7 +1,7 @@
 {% extends "main_base.html" %}
 {% block main_content %}
   <h2>Delete Location</h2>
-  <p>Are you sure you want to delete "{{ object.name }}"?</p>
+  <p>Are you sure you want to delete?  All children locations and any inventory items will also be deleted! Please be careful. "{{ object.name }}"?</p>
   <form method="post">{% csrf_token %}
     <button type="submit" class="btn btn-danger">Delete</button>
     <a href="{% url 'location_detail' object.pk %}">Cancel</a>
