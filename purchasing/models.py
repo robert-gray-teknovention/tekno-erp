@@ -120,7 +120,7 @@ class Material(Item):
     details = models.JSONField(default=default_itemdetails_data, blank=True)
 
     def __str__(self):
-        return 'Material ' + self.name
+        return 'Material: ' + self.name
 
 class FoodType(ItemType):
     pass
@@ -130,7 +130,7 @@ class Food(Item):
     details = models.JSONField(default=default_itemdetails_data, blank=True)
 
     def __str__(self):
-        return 'Food' + self.name
+        return 'Food: ' + self.name
 
 class PaymentAccount(models.Model):
     class AccountType(models.TextChoices):
