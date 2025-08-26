@@ -1,0 +1,800 @@
+[
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "PVC Pipe 1/2 Inch Schedule 40",
+      "description": "Standard 1/2 Inch Schedule 40 PVC pipe, 10 ft length."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "PVC Pipe 3/4 Inch Schedule 40",
+      "description": "Standard 3/4 Inch Schedule 40 PVC pipe, 10 ft length."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "PVC Pipe 1 Inch Schedule 40",
+      "description": "Standard 1 Inch Schedule 40 PVC pipe, 10 ft length."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "PVC Pipe 1-1/4 Inch Schedule 40",
+      "description": "Standard 1-1/4 Inch Schedule 40 PVC pipe, 10 ft length."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "PVC Pipe 1-1/2 Inch Schedule 40",
+      "description": "Standard 1-1/2 Inch Schedule 40 PVC pipe, 10 ft length."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "PVC Pipe 2 Inch Schedule 40",
+      "description": "Standard 2 Inch Schedule 40 PVC pipe, 10 ft length."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "PVC Pipe 3 Inch Schedule 40",
+      "description": "Standard 3 Inch Schedule 40 PVC pipe, 10 ft length."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "PVC Pipe 4 Inch Schedule 40",
+      "description": "Standard 4 Inch Schedule 40 PVC pipe, 10 ft length."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "PVC Pipe 6 Inch Schedule 40",
+      "description": "Standard 6 Inch Schedule 40 PVC pipe, 10 ft length."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC 90\u00b0 Elbow",
+      "description": "90-degree elbow for 1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC 45\u00b0 Elbow",
+      "description": "45-degree elbow for 1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC 90\u00b0 Elbow",
+      "description": "90-degree elbow for 3/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC 45\u00b0 Elbow",
+      "description": "45-degree elbow for 3/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC 90\u00b0 Elbow",
+      "description": "90-degree elbow for 1 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC 45\u00b0 Elbow",
+      "description": "45-degree elbow for 1 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/4 Inch PVC 90\u00b0 Elbow",
+      "description": "90-degree elbow for 1-1/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/4 Inch PVC 45\u00b0 Elbow",
+      "description": "45-degree elbow for 1-1/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/2 Inch PVC 90\u00b0 Elbow",
+      "description": "90-degree elbow for 1-1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/2 Inch PVC 45\u00b0 Elbow",
+      "description": "45-degree elbow for 1-1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC 90\u00b0 Elbow",
+      "description": "90-degree elbow for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC 45\u00b0 Elbow",
+      "description": "45-degree elbow for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3 Inch PVC 90\u00b0 Elbow",
+      "description": "90-degree elbow for 3 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3 Inch PVC 45\u00b0 Elbow",
+      "description": "45-degree elbow for 3 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC 90\u00b0 Elbow",
+      "description": "90-degree elbow for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC 45\u00b0 Elbow",
+      "description": "45-degree elbow for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "6 Inch PVC 90\u00b0 Elbow",
+      "description": "90-degree elbow for 6 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "6 Inch PVC 45\u00b0 Elbow",
+      "description": "45-degree elbow for 6 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC Tee",
+      "description": "T-shaped fitting for 1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC Tee",
+      "description": "T-shaped fitting for 3/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC Tee",
+      "description": "T-shaped fitting for 1 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/4 Inch PVC Tee",
+      "description": "T-shaped fitting for 1-1/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/2 Inch PVC Tee",
+      "description": "T-shaped fitting for 1-1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Tee",
+      "description": "T-shaped fitting for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3 Inch PVC Tee",
+      "description": "T-shaped fitting for 3 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC Tee",
+      "description": "T-shaped fitting for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "6 Inch PVC Tee",
+      "description": "T-shaped fitting for 6 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC Coupling",
+      "description": "Straight coupling for 1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC Coupling",
+      "description": "Straight coupling for 3/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC Coupling",
+      "description": "Straight coupling for 1 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/4 Inch PVC Coupling",
+      "description": "Straight coupling for 1-1/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/2 Inch PVC Coupling",
+      "description": "Straight coupling for 1-1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Coupling",
+      "description": "Straight coupling for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3 Inch PVC Coupling",
+      "description": "Straight coupling for 3 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC Coupling",
+      "description": "Straight coupling for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "6 Inch PVC Coupling",
+      "description": "Straight coupling for 6 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC Cap",
+      "description": "End cap for 1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC Plug",
+      "description": "Threaded plug for 1/2 Inch PVC fitting."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC Cap",
+      "description": "End cap for 3/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC Plug",
+      "description": "Threaded plug for 3/4 Inch PVC fitting."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC Cap",
+      "description": "End cap for 1 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC Plug",
+      "description": "Threaded plug for 1 Inch PVC fitting."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/4 Inch PVC Cap",
+      "description": "End cap for 1-1/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/4 Inch PVC Plug",
+      "description": "Threaded plug for 1-1/4 Inch PVC fitting."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/2 Inch PVC Cap",
+      "description": "End cap for 1-1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/2 Inch PVC Plug",
+      "description": "Threaded plug for 1-1/2 Inch PVC fitting."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Cap",
+      "description": "End cap for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Plug",
+      "description": "Threaded plug for 2 Inch PVC fitting."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3 Inch PVC Cap",
+      "description": "End cap for 3 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3 Inch PVC Plug",
+      "description": "Threaded plug for 3 Inch PVC fitting."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC Cap",
+      "description": "End cap for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC Plug",
+      "description": "Threaded plug for 4 Inch PVC fitting."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "6 Inch PVC Cap",
+      "description": "End cap for 6 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "6 Inch PVC Plug",
+      "description": "Threaded plug for 6 Inch PVC fitting."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC Male Adapter",
+      "description": "Slip x male thread adapter for 1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC Female Adapter",
+      "description": "Slip x female thread adapter for 1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC Male Adapter",
+      "description": "Slip x male thread adapter for 3/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC Female Adapter",
+      "description": "Slip x female thread adapter for 3/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC Male Adapter",
+      "description": "Slip x male thread adapter for 1 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC Female Adapter",
+      "description": "Slip x female thread adapter for 1 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/4 Inch PVC Male Adapter",
+      "description": "Slip x male thread adapter for 1-1/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/4 Inch PVC Female Adapter",
+      "description": "Slip x female thread adapter for 1-1/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/2 Inch PVC Male Adapter",
+      "description": "Slip x male thread adapter for 1-1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/2 Inch PVC Female Adapter",
+      "description": "Slip x female thread adapter for 1-1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Male Adapter",
+      "description": "Slip x male thread adapter for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Female Adapter",
+      "description": "Slip x female thread adapter for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3 Inch PVC Male Adapter",
+      "description": "Slip x male thread adapter for 3 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3 Inch PVC Female Adapter",
+      "description": "Slip x female thread adapter for 3 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC Male Adapter",
+      "description": "Slip x male thread adapter for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC Female Adapter",
+      "description": "Slip x female thread adapter for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "6 Inch PVC Male Adapter",
+      "description": "Slip x male thread adapter for 6 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "6 Inch PVC Female Adapter",
+      "description": "Slip x female thread adapter for 6 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch x 1/2 Inch PVC Bushing",
+      "description": "Reducer bushing from 3/4 Inch to 1/2 Inch."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch x 1/2 Inch PVC Bushing",
+      "description": "Reducer bushing from 1 Inch to 1/2 Inch."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch x 1 Inch PVC Bushing",
+      "description": "Reducer bushing from 2 Inch to 1 Inch."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch x 2 Inch PVC Bushing",
+      "description": "Reducer bushing from 4 Inch to 2 Inch."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC Cross",
+      "description": "Four-way fitting for 1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC Cross",
+      "description": "Four-way fitting for 3/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC Cross",
+      "description": "Four-way fitting for 1 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Cross",
+      "description": "Four-way fitting for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC Union",
+      "description": "Detachable union fitting for 1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC Union",
+      "description": "Detachable union fitting for 3/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC Union",
+      "description": "Detachable union fitting for 1 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/4 Inch PVC Union",
+      "description": "Detachable union fitting for 1-1/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/2 Inch PVC Union",
+      "description": "Detachable union fitting for 1-1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Union",
+      "description": "Detachable union fitting for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3 Inch PVC Union",
+      "description": "Detachable union fitting for 3 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC Union",
+      "description": "Detachable union fitting for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "6 Inch PVC Union",
+      "description": "Detachable union fitting for 6 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC Ball Valve",
+      "description": "Shut-off ball valve for 1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1/2 Inch PVC Gate Valve",
+      "description": "Shut-off gate valve for 1/2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC Ball Valve",
+      "description": "Shut-off ball valve for 3/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "3/4 Inch PVC Gate Valve",
+      "description": "Shut-off gate valve for 3/4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC Ball Valve",
+      "description": "Shut-off ball valve for 1 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1 Inch PVC Gate Valve",
+      "description": "Shut-off gate valve for 1 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Ball Valve",
+      "description": "Shut-off ball valve for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Gate Valve",
+      "description": "Shut-off gate valve for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC Ball Valve",
+      "description": "Shut-off ball valve for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC Gate Valve",
+      "description": "Shut-off gate valve for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Wye",
+      "description": "Y-shaped brInch fitting for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC Wye",
+      "description": "Y-shaped brInch fitting for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Cleanout Plug",
+      "description": "Threaded cleanout plug for 2 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "4 Inch PVC Cleanout Plug",
+      "description": "Threaded cleanout plug for 4 Inch PVC pipe."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "1-1/2 Inch PVC Trap Adapter",
+      "description": "Adapter for traps in drain systems."
+    }
+  },
+  {
+    "model": "purchasing.part",
+    "fields": {
+      "name": "2 Inch PVC Saddle Tee",
+      "description": "Saddle tee fitting for 2 Inch PVC pipe."
+    }
+  }
+]

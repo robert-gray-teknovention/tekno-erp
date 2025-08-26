@@ -131,6 +131,13 @@ class Food(Item):
 
     def __str__(self):
         return 'Food: ' + self.name
+    
+    def get_inventory_quantity(self):
+        q = ''
+        for f in self.inventoryfood_set.all():
+            q+= '(' + str(f.quantity) + ' ' + f.units + ')'
+        return q
+
 
 class PaymentAccount(models.Model):
     class AccountType(models.TextChoices):
