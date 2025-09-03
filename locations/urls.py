@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (
     LocationListView, LocationCreateView,
-    LocationUpdateView, LocationDeleteView, LocationDetailView, LocationCopyView
+    LocationUpdateView, LocationDeleteView, LocationDetailView, LocationCopyView, get_locations
 )
 
 urlpatterns = [
@@ -13,4 +13,5 @@ urlpatterns = [
     path('<int:pk>/delete/<int:parent_id>', LocationDeleteView.as_view(), name='location_delete'),
     path('<int:pk>/', LocationDetailView.as_view(), name='location_detail'),
     path('<int:pk>/copy/', LocationCopyView.as_view(), name='location_copy'),
+    path('search/', get_locations, name='search_locations'),
 ]

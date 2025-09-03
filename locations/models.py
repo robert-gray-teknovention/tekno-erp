@@ -4,7 +4,7 @@ class Location(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=255, null=True, blank=True)
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, related_name='children')
-
+    full_path = models.TextField(null=True, blank=True)
     def __str__(self):
         full_path = [self.name]
         k = self.parent
@@ -26,3 +26,7 @@ class Location(models.Model):
         if self.children.exists():
             for child in self.children.all():
                 child.duplicate(False, new_loc)
+    
+    def save(self):
+        self.full_path=self.__str__()
+        super().save()

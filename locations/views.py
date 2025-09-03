@@ -6,7 +6,8 @@ from django.views.generic import (
 from .models import Location
 from inventory.models import InventoryPart, InventoryMaterial, InventoryFood
 from .forms import LocationForm  # Reuse the form we discussed
-
+from django.http import JsonResponse
+from django.db.models import Q
 class LocationListView(ListView):
     model = Location
     context_object_name = 'locations'
@@ -103,6 +104,12 @@ class LocationCopyView(UpdateView):
         form.instance.duplicate()
         return HttpResponseRedirect(reverse('location_tree'))
     
+def get_locations(request):
+    if request.method == 'GET':
+        query = request.GET.get('query','')
+        results = Location.objects.filter(Q(full_path__icontains=query) | Q(description__icontains=query))
+        data = [{'id': obj.pk, 'text': str(obj)} for obj in results]
+        return JsonResponse({'results': data})
 
 
 

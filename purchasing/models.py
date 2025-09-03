@@ -51,6 +51,9 @@ class Item(PolymorphicModel):
 
     def __str__(self):
         return self.name + ': ' + self.organization.name
+    
+    def get_class_name(self):
+        return self.__class__.__name__
 
 
 def default_itemtype_data():
@@ -84,7 +87,12 @@ class Part(Item):
     def __str__(self):
         return 'Part: '+self.name
 
-
+    def get_inventory_quantity(self):
+        q = ''
+        for f in self.inventorypart_set.all():
+            q+= '(' + str(f.quantity) + ' ' + f.units + ')'
+        return q
+    
 class SubscriptionType(ItemType):
     pass
 
@@ -121,6 +129,12 @@ class Material(Item):
 
     def __str__(self):
         return 'Material: ' + self.name
+    
+    def get_inventory_quantity(self):
+        q = ''
+        for f in self.inventorymaterial_set.all():
+            q+= '(' + str(f.quantity) + ' ' + f.units + ')'
+        return q
 
 class FoodType(ItemType):
     pass

@@ -1,22 +1,39 @@
 {% extends 'main_base.html' %}
-{% block main_content%}
-<div class="row position-relative">
-<div class="col">
-  
-    <h5 class="card-title">{{model_name | capfirst}} Inventory List</h5>
 
-    <ul>
-   
-    {% for item in object_list %}
-   
-    <li>{{ item.id }} {{ item.item.name }} {{ item.item.description }} {{ item.location }} {{ item.quantity }}</li>
-   
-    {% endfor %}
-   
-    </ul>
+{% block title %} | Item Management {% endblock %}
+
+{% block main_content %}
+
+{% load render_table from django_tables2%}
+{% load django_bootstrap5%}
+<script type="text/javascript">
+  $(document).ready(function(){
    
 
-</div>
-</div>
+  });
 
-{% endblock%}
+</script>
+
+      <div class="row">
+        <div class="mx-auto">
+
+            <div class="card-header bg-primary text-white">
+              <h4>
+                <i class="fa fa-address-book-o"></i> Inventory {{ model_name }} List
+                
+              </h4>
+            </div>
+            <div class="card-body">
+              {% if filter %}
+                <form method="get" class="form form-inline">
+                  <input type="text" name="search" placeholder="Search...">
+                  {% bootstrap_button 'filter' %}
+                </form>
+              {% endif %}
+              {% render_table table %}
+
+            </div>
+
+        </div>
+      </div>
+{% endblock %}

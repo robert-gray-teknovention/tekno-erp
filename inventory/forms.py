@@ -10,12 +10,13 @@ class InventoryItemMixin():
         if self.disabled_fields:
             for field in self.disabled_fields:
                 self.fields[field].widget.attrs['disabled'] = 'disabled'
-       
-       
-        # For bound froms (submitted data)
+                
+        print("Food Item ", self.fields['item'].initial)
+        print("Location", self.fields['location'].initial)
+        # For bound forms (submitted data)
         if self.data.get('item'):
             self.item_id = self.data.get('item')
-
+            
         # For existing     
         elif self.instance and self.instance.pk:
             self.item_id = self.instance.item_id
@@ -30,15 +31,15 @@ class InventoryPartForm(InventoryItemMixin, forms.ModelForm):
         widgets = {
             'item': forms.Select(attrs={'class': 'form-control'}),
             'location': forms.Select(attrs={'class': 'form-control'}),
-
         }
 
-    def __init__(self, *args, **kwargs):
+    '''def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         if self.item_id:
             self.fields['item'].queryset = Part.objects.filter(pk=self.item_id)
         else:
-            self.fields['item'].queryset = Part.objects.none()
+            self.fields['item'].queryset = Part.objects.none()'''
 
     
     
@@ -52,12 +53,13 @@ class InventoryMaterialForm(InventoryItemMixin, forms.ModelForm):
             'location': forms.Select(attrs={'class': 'form-control'}),
         }
     
-    def __init__(self, *args, **kwargs):
+    '''def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         if self.item_id:
             self.fields['item'].queryset = Material.objects.filter(pk=self.item_id)
         else:
-            self.fields['item'].queryset = Material.objects.none()
+            self.fields['item'].queryset = Material.objects.none()'''
 
 
 class InventoryFoodForm(InventoryItemMixin, forms.ModelForm):
@@ -69,9 +71,10 @@ class InventoryFoodForm(InventoryItemMixin, forms.ModelForm):
             'location': forms.Select(attrs={'class': 'form-control'}),
         }
     
-    def __init__(self, *args, **kwargs):
+    '''def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.item_id:
             self.fields['item'].queryset = Food.objects.filter(pk=self.item_id)
+            print("We have and id ", self.item_id)
         else:
-            self.fields['item'].queryset = Food.objects.none()
+            self.fields['item'].queryset = Food.objects.none()'''

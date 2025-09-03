@@ -31,7 +31,9 @@ class InventoryItem(models.Model):
     class Meta:
         abstract = True
     
-
+    def get_class_name(self):
+        return self.__class__.__name__
+    
 
 class InventoryItemUniqueMixin():
     def save(self, *args, **kwargs):

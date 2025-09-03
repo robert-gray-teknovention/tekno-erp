@@ -1,11 +1,14 @@
 from django.urls import path
 from .views import (
-    InventoryItemListView, InventoryItemCreateView,
-    InventoryItemUpdateView, InventoryItemDeleteView, get_items
+    InventoryItemListView, InventoryItemListByItemIdView, InventoryItemCreateView,
+    InventoryItemUpdateView, InventoryItemDeleteView, InventoryFilteredListView, get_items
 )
 
 urlpatterns = [
-    path('<str:model_name>/', InventoryItemListView.as_view(), name='inventory_list'),
+    path('', InventoryFilteredListView.as_view(), name='inventory_list'),
+    path('<str:model_name>/', InventoryFilteredListView.as_view(), name='inventory_list'),
+    path('item/<str:model_name>/<str:lookup_type>/<int:lookup_id>/', InventoryItemListView.as_view(), name='inventory_item_list'),
+    path('item/<int:pk>/', InventoryItemListByItemIdView.as_view(), name='inventory_item_list'),
     path('add/', InventoryItemCreateView.as_view(), name='inventory_add'),
     path('add/<str:model_name>/', InventoryItemCreateView.as_view(), name='inventory_add'),
     path('add/<str:model_name>/<int:initial_id>/<success_url>', InventoryItemCreateView.as_view(), name='inventory_add'),
