@@ -23,8 +23,9 @@
 </div>
 <div class="row position-relative">
 <div class="col">
-  
+    <a href="{% url 'inventory_list' model_name %}">Back to Inventory List</a>
     <h5 class="card-title">{{ object.name }} ({{object.description}}) <a href="#" onclick="loadInventoryItemFormAdd()">Add to Inventory</a></h5>
+
 
     {% render_table table %}
    
