@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'accounting.apps.AccountingConfig',
     'documentation.apps.DocumentationConfig',
     'locations.apps.LocationsConfig',
+    'workorders.apps.WorkOrdersConfig',
     'debug_toolbar',
     'djangobower',
     'schedule',
