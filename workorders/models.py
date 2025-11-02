@@ -5,7 +5,7 @@ from timesheets.models import TimesheetEntry
 
 # Create your models here.
 class WorkOrder(models.Model):
-    class Status(models.Choices):
+    class Status(models.TextChoices):
         CREATED = 'CREATED', 'Created'
         ASSIGNED = 'ASSIGNED', 'Assigned'
         STARTED = 'STARTED', 'Started'
