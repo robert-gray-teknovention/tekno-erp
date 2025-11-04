@@ -2,7 +2,7 @@ from django.contrib import admin
 from polymorphic.admin import PolymorphicParentModelAdmin, PolymorphicChildModelAdmin, PolymorphicChildModelFilter
 from .models import Vendor, Manufacturer, Item, PurchaseItem
 from .models import PurchaseOrderItem, PurchaseOrder, PurchaseOrderItemHistory, PurchaseOrderHistory
-from .models import Part, Service, Subscription, Material
+from .models import Part, Service, Subscription, Material, PartType, MaterialType, ServiceType, SubscriptionType
 from .models import PaymentAccount, Payment
 
 
@@ -49,6 +49,10 @@ class PaymentAdmin(admin.ModelAdmin):
 
 @admin.register(Part)
 class PartAdmin(ItemChildAdmin):
+    pass
+
+@admin.register(PartType)
+class PartTypeAdmin(admin.ModelAdmin):
     pass
 
 
