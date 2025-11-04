@@ -73,7 +73,7 @@ class ItemType(models.Model):
         abstract = True
 
     def __str__(self):
-        return self.name
+        return self.type_name
 
 
 class PartType(ItemType):
