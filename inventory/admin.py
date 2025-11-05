@@ -25,10 +25,10 @@ class InventoryMaterialAdmin(admin.ModelAdmin):
 
 @admin.register(SerialPart)
 class SerialPartAdmin(admin.ModelAdmin):
-    list_display = ['id']
+    list_display = ['id', 'part']
     inlines = (SerialChildPartsInline,)
 
 
 @admin.register(Equipment)
 class Equipment(admin.ModelAdmin):
-    list_display = ['id']
+    list_display = ['id', 'part']
