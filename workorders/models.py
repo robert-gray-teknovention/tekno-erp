@@ -2,6 +2,7 @@ from django.db import models
 from projects.models import Project
 from employee.models import TimesheetUser
 from timesheets.models import TimesheetEntry
+from inventory.models import Equipment
 
 # Create your models here.
 class WorkOrder(models.Model):
@@ -14,12 +15,12 @@ class WorkOrder(models.Model):
         CLOSED = 'CLOSED', 'Closed'
         SCRAPPED = 'SCRAPPED', 'Scrapped'
 
-
+    equipment = models.ForeignKey(Equipment, on_delete=models.SET_NULL, null=True, blank=True)
     request = models.TextField()
     create_date = models.DateTimeField(auto_now_add=True)
     start_date = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
     end_date = models.DateTimeField(auto_now=False, auto_now_add=False, null=True, blank=True)
-    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True)
+    project = models.ForeignKey(Project, null=True, on_delete=models.SET_NULL)
     assigned_to = models.ManyToManyField(TimesheetUser, related_name='assignees',blank=True)
     creator = models.ForeignKey(TimesheetUser, on_delete=models.SET_NULL, null=True, related_name='creators') 
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.CREATED)   
@@ -28,6 +29,7 @@ class WorkOrder(models.Model):
 
     def __str__(self):
         return super().__str__() + f' - {self.request}'
+
 
 class WorkEntry(TimesheetEntry):
     work_order = models.ForeignKey(WorkOrder, on_delete=models.CASCADE)
