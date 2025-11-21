@@ -9,7 +9,7 @@ class WorkOrderTable(tables.Table):
     def render_request(self, value, record):
         # Link the request text to the edit page for the workorder
         short = (value[:75] + '...') if value and len(value) > 75 else (value or "")
-        return format_html("<a href='{}'>{}</a>", f"/workorders/{record.id}/edit/", short)
+        return format_html("<a href='{}'>{}</a>", f"/workorders/{record.id}/", short)
 
     def render_assigned_to(self, value, record):
         # Join M2M assigned_to display names
@@ -38,13 +38,13 @@ class WorkEntryTable(tables.Table):
         return str(value)
 
     actions = tables.TemplateColumn(
-        "<a href='/workorders/workentries/{{record.id}}/edit/' class='btn btn-sm btn-outline-primary me-1'>Edit</a>"
-        "<a href='/workorders/workentries/{{record.id}}/delete/' class='btn btn-sm btn-outline-danger'>Delete</a>",
+        "<a href='/workorders/workentries/{{record.id}}/edit/?next=/workorders/{{record.work_order.id}}/' class='btn btn-sm btn-outline-primary me-1'>Edit</a>"
+        "<a href='/workorders/workentries/{{record.id}}/delete/?next=/workorders/{{record.work_order.id}}/' class='btn btn-sm btn-outline-danger'>Delete</a>",
         verbose_name="Actions",
         orderable=False,
     )
 
     class Meta:
         model = WorkEntry
-        sequence = ("user", "date_time_in", "duration", "project", "work_order", "description", "actions")
+        sequence = ("user", "date_time_in", "duration", "project", "work_order", "actions")
         exclude = ("docs", "approver_approved", "period", "hourly_rate")

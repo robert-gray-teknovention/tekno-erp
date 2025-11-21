@@ -1,6 +1,8 @@
+from http.client import HTTPResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 from .models import TimesheetEntry, TimesheetPeriod, UserTimesheetPeriod
 from employee.models import TimesheetUser, AlternateWageCode
 from projects.models import Project
@@ -197,3 +199,27 @@ def get_report(user_ids, period_id, show_notes, project_id=0):
     p.save()
     buffer.seek(0)
     return buffer
+
+# create a view function that returns TimesheetPeriod JSON that contains a given datetime from request.GET or path param date_time_in
+def get_timesheet_period(request, date_time_in=None):
+    """Return the TimesheetPeriod JSON that contains the given datetime.
+
+    Accepts either a path parameter `date_time_in` (from the URL) or a
+    GET parameter `date_time_in`. The expected format is "%Y-%m-%dT%H:%M".
+    """
+    # Use the path parameter if provided; otherwise check GET
+    
+    if date_time_in:
+        ts_user = TimesheetUser.objects.get(user=request.user)
+        util = TimesheetUtil()
+        date_time_in_tz = util.get_time_with_timezone(date_time_in, '%Y-%m-%dT%H:%M', ts_user.organization.timezone)
+        print("Date time in tz: ", date_time_in_tz)
+        period = TimesheetPeriod.objects.filter(org=ts_user.organization, date_start__lte=date_time_in_tz, date_end__gt=date_time_in_tz).first()
+        if period:      
+            return JsonResponse({
+                'id': period.id,
+                'org': period.org.id,
+                'date_start': period.date_start.isoformat(),
+                'date_end': period.date_end.isoformat(),
+            })
+    return JsonResponse({'error': 'Period not found'}, status=404)

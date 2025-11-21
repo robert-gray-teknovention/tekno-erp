@@ -4,6 +4,7 @@ from .views import (
     WorkOrderUpdateView,
     WorkOrderDeleteView,
     WorkOrderListView,
+    WorkOrderDetailView,
     WorkEntryCreateView,
     WorkEntryUpdateView,
     WorkEntryDeleteView,
@@ -15,6 +16,7 @@ app_name = 'workorders'
 urlpatterns = [
     # WorkOrder URLs (mounted at /workorders/ via mainapp.urls)
     path('', WorkOrderListView.as_view(), name='workorder-list'),
+    path('<int:pk>/', WorkOrderDetailView.as_view(), name='workorder-detail'),
     path('add/', WorkOrderCreateView.as_view(), name='workorder-add'),
     path('<int:pk>/edit/', WorkOrderUpdateView.as_view(), name='workorder-edit'),
     path('<int:pk>/delete/', WorkOrderDeleteView.as_view(), name='workorder-delete'),
