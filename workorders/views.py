@@ -158,6 +158,7 @@ class WorkEntryUpdateView(WorkEntryInitialUserMixin, UpdateView):
     def get_success_url(self):
         # Allow redirecting back to a 'next' parameter (POST or GET)
         next_url = self.request.POST.get("next") or self.request.GET.get("next")
+        print("Next URL in WorkEntryUpdateView:", next_url)
         if next_url:
             return next_url
         return super().get_success_url()
@@ -166,7 +167,6 @@ class WorkEntryUpdateView(WorkEntryInitialUserMixin, UpdateView):
         context = super().get_context_data(**kwargs)
        
         context['doc_count'] = TimesheetEntryDocumentation.objects.filter(parent_id=self.object.id).count()
-        print(context['doc_count'])
         return context
 
 class WorkEntryDeleteView(DeleteView):
