@@ -33,8 +33,13 @@ class FoodTable(ItemTable):
 
 class InventoryItemTable(tables.Table):
     def render_location(self, value, record):
-        return format_html("<b><a href='#' onclick='loadInventoryItemFormEdit({})'>{}</a></b>", record.id, record.location)
+        if record.location:
+            return format_html("<b><a href='#' onclick='loadInventoryItemFormEdit({})'>{}</a></b>", record.id, record.location)
+        
 
+    # link quantity to edit form
+    def render_quantity(self, value, record):
+        return format_html("<b><a href='#' onclick='loadInventoryItemFormEdit({})'>{}</a></b>", record.id, value)
     class Meta:
         model = InventoryItem
         exclude = ("id", )

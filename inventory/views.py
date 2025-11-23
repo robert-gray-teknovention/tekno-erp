@@ -1,5 +1,6 @@
 from django.urls import reverse_lazy, reverse
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django_tables2.views import SingleTableMixin
@@ -8,7 +9,7 @@ from . import tables
 from locations.models import Location
 from purchasing import views
 from purchasing import models as pmodels
-from .models import InventoryPart, InventoryMaterial, InventoryFood
+from .models import InventoryPart, InventoryMaterial, InventoryFood, InventoryItem
 from . import models
 from locations.models import Location
 from .forms import InventoryPartForm, InventoryMaterialForm, InventoryFoodForm
@@ -63,7 +64,6 @@ class InventoryItemModelMixin():
             context['form_type'] = 'create'
         else:
             context['form_type'] = 'update'
-            print("We are updating with pk of ", self.kwargs.get('pk'))
             context['pk'] = self.kwargs.get('pk')
         return context
     
@@ -102,15 +102,13 @@ class InventoryItemCreateView(InventoryItemModelMixin, CreateView):
     
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
-    
-
 
 
 class InventoryItemUpdateView(InventoryItemModelMixin, UpdateView):
     model = models.InventoryMaterial
     # fields = ['field1', 'field2']
     template_name = 'inventory/_item_form.html'
-    success_url = 'inventory/list.html'
+    # success_url = 'inventory/list.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -118,9 +116,12 @@ class InventoryItemUpdateView(InventoryItemModelMixin, UpdateView):
         return kwargs
     
 
-class InventoryItemDeleteView(DeleteView):
+class InventoryItemDeleteView(InventoryItemModelMixin, DeleteView):
     model = models.InventoryPart
-    success_url = '/success/'
+    template_name = 'inventory/inventoryitem_confirm_delete.html'
+    def get_form_class(self):
+        # Returning basde DeleteView form class because we don't want a custom form for delete view.
+        return DeleteView.get_form_class(self)
 
 class InventoryFilteredListView(LoginRequiredMixin, SingleTableMixin, FilterView):
     def setup(self, request, *args, **kwargs):

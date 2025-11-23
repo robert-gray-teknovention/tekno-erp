@@ -5,7 +5,7 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     function loadInventoryItemFormAdd(){
-        $('#inventory_item_div').load("{% url 'inventory_add' %}{{object.get_class_name}}/{{object.get_class_name}}/{{object.id}}/inventory_item_list/");
+        $('#inventory_item_div').load("{% url 'inventory_add' %}{{object.get_class_name}}/{{ object.get_class_name }}/{{object.id}}/inventory_item_list/");
         
     }
     function loadInventoryItemFormEdit(id){
