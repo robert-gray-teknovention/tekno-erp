@@ -3,7 +3,7 @@
 {% block main_content %}
 <div class="row">
   <div class="col-12">
-    <h2>Work Order #{{ workorder.id }}</h2>
+    <h5>Work Order #{{ workorder.id }}</h5>
   </div>
 </div>
 
@@ -23,19 +23,12 @@
         <p class="text-muted">Created: {{ workorder.create_date }}</p>
         <a href="{% url 'workorders:workorder-edit' workorder.pk %}" class="btn btn-sm btn-primary me-1">Edit</a>
         <a href="{% url 'workorders:workorder-list' %}" class="btn btn-sm btn-secondary">Back to list</a>
+         <p>
+          <a href="{% url 'workorders:workentry-add' %}?workorder={{ workorder.pk }}&next={% url 'workorders:workorder-detail' workorder.pk %}" class="btn btn-primary btn-sm">Add Work Entry</a>
+        </p>
       </div>
     </div>
   
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title">Work Entries</h5>
-        <p>
-          <a href="{% url 'workorders:workentry-add' %}?workorder={{ workorder.pk }}&next={% url 'workorders:workorder-detail' workorder.pk %}" class="btn btn-primary btn-sm">Add Work Entry</a>
-        </p>
-        <p class="text-muted">Or manage existing entries below.</p>
-      </div>
-    </div>
-
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Work Entries</h5>
