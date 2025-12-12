@@ -1,0 +1,76 @@
+{% extends 'main_base.html' %}
+{% load crispy_forms_tags %}
+{% block main_content %}
+<script>
+  $(document).ready(function() {
+    // create ajax call to get timesheet period on date_time_in change
+    $('#id_date_time_in').on('change', function() {
+      var date_time_in = $(this).val();
+      $.ajax({
+        url: "{% url 'get_timesheet_period' 'DATE_TIME_IN_PLACEHOLDER' %}".replace('DATE_TIME_IN_PLACEHOLDER', encodeURIComponent(date_time_in)),
+        method: 'GET',
+        success: function(data) {
+          // Assuming the response contains the period ID
+          $('#id_period').val(data.id);
+        },
+        error: function(xhr, status, error) {
+          alert('Invalid date. There is no timesheet period for this date.');
+        }
+      });
+    });
+    // if workorder select is not empty, make workorder style pointerEvents = 'none'
+    if($('#id_work_order').val() !== "") {
+      $('#id_work_order').css('pointerEvents', 'none');
+    }
+    // if project select is not empty, make project style pointerEvents = 'none'
+    if($('#id_project').val() !== "") {
+      $('#id_project').css('pointerEvents', 'none');
+    }
+    // Update duration on date_time_in or date_time_out change
+    $('#id_date_time_in, #id_date_time_out').on('change', function() {
+      var dateIn = new Date($('#id_date_time_in').val());
+      var dateOut = new Date($('#id_date_time_out').val());
+      var durationHours = (dateOut - dateIn) / (1000 * 60 * 60);
+      $('#id_duration').val(durationHours);
+    });
+    // Show documentation modal
+    $("#doc_modal").on("show.bs.modal", function(){
+
+      $("#doc_modal_body").load(`/documentation/doc/create/timesheetentry/{{ object.id }}`)
+    });
+  });
+</script>
+<div class="row position-relative">
+  <div class="col">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Work Entry</h5>
+        <form method="post">
+          {% csrf_token %}
+          {{ form|crispy }}
+          <p>
+            <a class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#doc_modal" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Documentation({{ doc_count }})</a>
+          </p>
+          {# keep redirect/parent context across the POST #}
+          {% if request.GET.workorder %}
+            <input type="hidden" name="workorder" value="{{ request.GET.workorder }}" />
+          {% endif %}
+          {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}" />
+          {% endif %}
+          <button class="btn btn-primary" type="submit">Submit</button>
+          {% if request.GET.next %}
+            <a class="btn btn-secondary" href="{{ request.GET.next }}">Cancel</a>
+          {% elif request.GET.workorder %}
+            <a class="btn btn-secondary" href="{% url 'workorders:workorder-detail' request.GET.workorder %}">Cancel</a>
+          {% else %}
+            <a class="btn btn-secondary" href="{% url 'workorders:workentry-list' %}">Cancel</a>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% include 'documentation/doc_modal.html'%}
+
+{% endblock %}

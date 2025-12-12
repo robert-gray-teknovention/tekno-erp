@@ -17,6 +17,7 @@ urlpatterns = [
     path('message/', include('mailer.urls')),
     path('purchasing/', include('purchasing.urls')),
     path('projects/', include('projects.urls')),
+    path('workorders/', include('workorders.urls')),
     path('documentation/', include('documentation.urls')),
     path('inventory/', include('inventory.urls')),
     path('locations/', include('locations.urls')),

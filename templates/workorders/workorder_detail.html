@@ -1,0 +1,41 @@
+{% extends "main_base.html" %}
+{% load render_table from django_tables2 %}
+{% block main_content %}
+<div class="row">
+  <div class="col-12">
+    <h5>Work Order #{{ workorder.id }}</h5>
+  </div>
+</div>
+
+<div class="row">
+  
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Details</h5>
+        <p><strong>Project:</strong> {{ workorder.project }}</p>
+        <p><strong>Equipment:</strong> {{ workorder.equipment }}</p>
+        <p><strong>Status:</strong> {{ workorder.get_status_display }}</p>
+        <p><strong>Assigned to:</strong> {{ workorder.assigned_to.all|join:", " }}</p>
+        <p><strong>Request:</strong><br>{{ workorder.request }}</p>
+        {% if workorder.notes %}
+          <p><strong>Notes:</strong><br>{{ workorder.notes }}</p>
+        {% endif %}
+        <p class="text-muted">Created: {{ workorder.create_date }}</p>
+        <a href="{% url 'workorders:workorder-edit' workorder.pk %}" class="btn btn-sm btn-primary me-1">Edit</a>
+        <a href="{% url 'workorders:workorder-list' %}" class="btn btn-sm btn-secondary">Back to list</a>
+         <p>
+          <a href="{% url 'workorders:workentry-add' %}?workorder={{ workorder.pk }}&next={% url 'workorders:workorder-detail' workorder.pk %}" class="btn btn-primary btn-sm">Add Work Entry</a>
+        </p>
+      </div>
+    </div>
+  
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Work Entries</h5>
+        {% render_table entry_table %}
+      </div>
+    </div>
+  
+</div>
+
+{% endblock %}
