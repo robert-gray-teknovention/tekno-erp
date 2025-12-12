@@ -25,18 +25,10 @@ class InventoryMaterialAdmin(admin.ModelAdmin):
 
 @admin.register(SerialPart)
 class SerialPartAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
-    list_display = ['id','part']
-=======
     list_display = ['id', 'part']
->>>>>>> workorders
     inlines = (SerialChildPartsInline,)
 
 
 @admin.register(Equipment)
 class Equipment(admin.ModelAdmin):
-<<<<<<< HEAD
-    list_display = ['id','part']
-=======
     list_display = ['id', 'part']
->>>>>>> workorders
