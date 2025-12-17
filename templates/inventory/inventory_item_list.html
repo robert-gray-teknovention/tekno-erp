@@ -1,8 +1,8 @@
 {% extends 'main_base.html' %}
 {% block main_content%}
 {% load render_table from django_tables2%}
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+{% include 'partials/_select2_include.html' %}
+
 <script>
     function loadInventoryItemFormAdd(){
         $('#inventory_item_div').load("{% url 'inventory_add' %}{{object.get_class_name}}/{{ object.get_class_name }}/{{object.id}}/inventory_item_list/");

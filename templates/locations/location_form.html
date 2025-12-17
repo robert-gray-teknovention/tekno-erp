@@ -3,6 +3,36 @@
 
 
 {% block main_content %}
+{% include 'partials/_select2_include.html' %}
+<script>
+  $(document).ready(function(){
+    $("#id_parent").select2({
+      ajax: {
+        url: '{% url "search_locations" %}',
+        dataType: 'json',
+        delay: 250,
+
+        data: function (params) {
+            return {
+                query: params.term,
+            };
+        },
+        processResults: function (data) {
+            return {
+                results: data.results
+            };
+        },
+        cache: true
+      },
+      minimumInputLength: 3,
+      placeholder: "Search Locations",
+      allowClear: true
+
+    });
+  });
+    
+
+</script>
   <form method="post">
     {% csrf_token %}
     {{ form | crispy }}

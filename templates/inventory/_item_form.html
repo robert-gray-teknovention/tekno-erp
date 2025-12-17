@@ -30,32 +30,11 @@
       allowClear: true
 
     });
-    $("#id_location").select2({
-      ajax: {
-        url: '{% url "search_locations" %}',
-        dataType: 'json',
-        delay: 250,
-
-        data: function (params) {
-            return {
-                query: params.term,
-            };
-        },
-        processResults: function (data) {
-            return {
-                results: data.results
-            };
-        },
-        cache: true
-      },
-      minimumInputLength: 3,
-      placeholder: "Search Locations",
-      allowClear: true
-
-    });
+    
     
   }); 
 </script>
+{% include 'locations/_location_search.html' %}
 {% if pk %}
 <script>
   // delete inventory item and return to inventory item list
