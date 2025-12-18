@@ -1,13 +1,15 @@
 <script>
-    $("#id_" + "{{ location_search_select.id }}").select2({
+  $(document).ready(function(){
+    $("#id_" + "{{ item_search_select.id }}").select2({
       ajax: {
-        url: '{% url "search_locations" %}',
+        url: '{% url "search_inventory_items" %}',
         dataType: 'json',
         delay: 250,
 
         data: function (params) {
             return {
                 query: params.term,
+                "item_type": "{{ model_name }}"
             };
         },
         processResults: function (data) {
@@ -18,11 +20,11 @@
         cache: true
       },
       minimumInputLength: 3,
-      placeholder: "Search Locations",
+      placeholder: "Search {{ model_name }}s",
       allowClear: true
 
     });
-
-</script>
-
     
+    
+  }); 
+</script>

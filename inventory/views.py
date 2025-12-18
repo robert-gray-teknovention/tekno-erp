@@ -65,6 +65,8 @@ class InventoryItemModelMixin():
         else:
             context['form_type'] = 'update'
             context['pk'] = self.kwargs.get('pk')
+        context['item_search_select'] = {'id': 'item'}
+        context['location_search_select'] = {'id': 'location'}
         return context
     
 

@@ -4,36 +4,10 @@
   $(document).ready(function(){
     $('form').submit(function(event){
       $('#inventory_item_form :input').prop('disabled', false);
-    });
-
-    $("#id_item").select2({
-      ajax: {
-        url: '{% url "search_inventory_items" %}',
-        dataType: 'json',
-        delay: 250,
-
-        data: function (params) {
-            return {
-                query: params.term,
-                "item_type": "{{ model_name }}"
-            };
-        },
-        processResults: function (data) {
-            return {
-                results: data.results
-            };
-        },
-        cache: true
-      },
-      minimumInputLength: 3,
-      placeholder: "Search {{ model_name }}s",
-      allowClear: true
-
-    });
-    
-    
+    }); 
   }); 
 </script>
+{% include 'inventory/_item_search.html' %}
 {% include 'locations/_location_search.html' %}
 {% if pk %}
 <script>

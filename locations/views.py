@@ -36,6 +36,7 @@ class LocationCreateView(CreateView):
         print(self.kwargs)
         if 'parent_id' in self.kwargs:
             context['parent_id'] = self.kwargs.get('parent_id')
+        context['location_search_select'] = {'id': 'parent'}
         return context
 
 
@@ -46,6 +47,11 @@ class LocationUpdateView(UpdateView):
     # success_url = reverse_lazy('location_tree')
     def get_success_url(self):
         return reverse('location_detail', kwargs={'pk': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['location_search_select'] = {'id': 'parent'}
+        return context
 
 class LocationDeleteView(DeleteView):
     model = Location
