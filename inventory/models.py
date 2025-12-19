@@ -3,7 +3,7 @@ from purchasing.models import Part as BasePart
 from purchasing.models import Material, Food
 from locations.models import Location
 from polymorphic.models import PolymorphicModel
-
+from timesheets.models import TimesheetUser
 
 class Part(BasePart):
     child_parts = models.ManyToManyField('self', blank=True, through="ChildPart")
@@ -95,3 +95,11 @@ class Equipment(SerialPart):
         return self.part.name
 
     
+class InventoryItemTransaction(models.Model):
+    inventory_item = models.ForeignKey(InventoryItem, on_delete=models.CASCADE)
+    quantity_change = models.DecimalField(decimal_places=2, max_digits=10)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Transaction for {self.inventory_item} on {self.timestamp}"
