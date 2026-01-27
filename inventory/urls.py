@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     InventoryItemListView, InventoryItemListByItemIdView, InventoryItemCreateView,
-    InventoryItemUpdateView, InventoryItemDeleteView, InventoryFilteredListView, get_items
+    InventoryItemUpdateView, InventoryItemDeleteView, InventoryFilteredListView, get_items,
+    InventoryItemTransferView
 )
 
 urlpatterns = [
@@ -17,6 +18,7 @@ urlpatterns = [
     path('edit/<int:pk>', InventoryItemUpdateView.as_view(), name='inventory_edit'),
     path('edit/<int:pk>/<str:model_name>/<int:initial_id>/<str:success_url>/', InventoryItemUpdateView.as_view(), name='inventory_edit'),
     path('edit/<int:pk>/<str:model_name>/<str:initial_type>/<int:initial_id>/<str:success_url>/', InventoryItemUpdateView.as_view(), name='inventory_edit'),
+    path('transfer/<int:pk>/<str:model_name>/', InventoryItemTransferView.as_view(), name='inventory_transfer'),
     path('items/search/', get_items, name='search_inventory_items'),
     path('delete/<int:pk>/<str:model_name>/<int:initial_id>/<str:success_url>/', InventoryItemDeleteView.as_view(), name='inventory_delete'),
     # path('<int:pk>/delete/<int:parent_id>', InventoryItemDeleteView.as_view(), name='inventory_delete'),

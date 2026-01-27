@@ -25,14 +25,20 @@
 
 {% if form_type == 'create'%}
   <form id="inventory_item_form" method="post" action="{% url 'inventory_add' model_name initial_id success_url %}">
+{% elif form_type == 'update' %}
+  <form id="inventory_item_form" method="post" action="{% url 'inventory_edit' pk model_name initial_id success_url %}">
 {% else %}
-<form id="inventory_item_form" method="post" action="{% url 'inventory_edit' pk model_name initial_id success_url %}">
+<form id="inventory_item_form" method="post" action="{% url 'inventory_transfer' pk model_name initial_id success_url %}">
 {% endif %}
 
     {% csrf_token %}
     {{ form | crispy }}
+    {% if form_type == 'transfer' %}
+    <button type="submit" class="btn btn-primary">Transfer</button>
+    {% else %}
     <button type="submit" class="btn btn-primary">Save</button>
-    {% if pk %}
+    {% endif %}
+    {% if pk and form_type == 'update' %}
     <button class="btn btn-danger" onclick="">Delete</button>
     {% endif %}
     <button class="btn btn-secondary" onclick="window.location.reload()">Cancel</button>

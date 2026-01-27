@@ -97,21 +97,34 @@ class Equipment(SerialPart):
     
 class InventoryItemTransaction(models.Model):
     class TransactionType(models.TextChoices):
+        CREATE = 'CREATE', 'Create'
+        UPDATE = 'UPDATE', 'Update'
+        DELETE = 'DELETE', 'Delete'
         ADDITION = 'ADDITION', 'Addition'
-        REMOVAL = 'REMOVAL', 'Removal'
-        TRANSFER = 'TRANSFER', 'Transfer'
-        QUANTITY_UPDATE = 'UPDATE', 'Update'
-
+        SUBTRACTION = 'SUBTRACTION', 'Subtraction'
+        TRASH = 'REMOVAL', 'Removal'
+        USAGE = 'USAGE', 'Usage'
+        SOURCE_TRANSFER = 'SOURCE_TRANSFER', 'Source Transfer'
+        DESTINATION_TRANSFER = 'DESTINATION_TRANSFER', 'Destination Transfer'
+    inventory_item_id = models.IntegerField(default=0, null=True)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    inventory_item = models.ForeignKey(InventoryItem, on_delete=models.SET_NULL, null=True, blank=True)
-    previous_location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='previous_location', null=True, blank=True)
-    current_location = models.ForeignKey(Location, on_delete=models.CASCADE, related_name='new_location', null=True, blank=True)
-    previous_quantity = models.DecimalField(decimal_places=2, max_digits=10)
-    current_quantity = models.DecimalField(decimal_places=2, max_digits=10)
+    quantity = models.DecimalField(decimal_places=2, max_digits=10)
+    units = models.CharField(max_length=50, null=True, blank=True, default='each')
     timestamp = models.DateTimeField(auto_now_add=True)
     performed_by = models.ForeignKey(TimesheetUser, on_delete=models.SET_NULL, null=True, blank=True)
-    notes = models.TextField(null=True, blank=True)
+    # notes = models.TextField(null=True, blank=True)
     transaction_type = models.CharField(max_length=20, choices=TransactionType.choices)
 
     def __str__(self):
         return f"Transaction for {self.inventory_item} on {self.timestamp}"
+    
+    @property
+    def notes(self):
+        if self.transaction_type == self.TransactionType.DELETE:
+            return f"{self.transaction_type} {self.quantity} {self.units} of {self.item.name} from {self.location.name} on {self.timestamp} by {self.performed_by}"
+        else:
+            return f"{self.transaction_type} {self.quantity} {self.units} of {self.item.name} at {self.location.name} on {self.timestamp} by {self.performed_by}"
+        # return f"{self.transaction_type} {self.quantity} {self.units} of {self.item.name} at {self.location.name} on {self.timestamp} by {self.performed_by}"
+    
+    
