@@ -161,8 +161,13 @@ class InventoryItemTransferView(InventoryItemModelMixin, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['disabled_fields'] = ['item', 'location']
+        kwargs['disabled_fields'] = ['item']
         return kwargs
+    
+    def form_valid(self, form):
+        # Transfer logic is handled in the form_valid method of this view.
+
+        return super().form_valid(form)
 
 class InventoryItemDeleteView(InventoryItemModelMixin, DeleteView):
     model = models.InventoryPart

@@ -107,6 +107,7 @@ class InventoryItemTransaction(models.Model):
         SOURCE_TRANSFER = 'SOURCE_TRANSFER', 'Source Transfer'
         DESTINATION_TRANSFER = 'DESTINATION_TRANSFER', 'Destination Transfer'
     inventory_item_id = models.IntegerField(default=0, null=True)
+    transfer_transaction_id = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.DecimalField(decimal_places=2, max_digits=10)
@@ -117,7 +118,7 @@ class InventoryItemTransaction(models.Model):
     transaction_type = models.CharField(max_length=20, choices=TransactionType.choices)
 
     def __str__(self):
-        return f"Transaction for {self.inventory_item} on {self.timestamp}"
+        return f"Transaction for {self.inventory_item_id} on {self.timestamp}"
     
     @property
     def notes(self):
