@@ -268,7 +268,7 @@ def dashboard_main(request):
     user = TimesheetUser.objects.get(user=User.objects.get(id=request.user.id))
     tz = pytz.timezone(user.organization.timezone)
     project_id = 0
-    for p in TimesheetPeriod.objects.filter(org=user.organization).order_by('-date_end')[0:12]:
+    for p in TimesheetPeriod.objects.filter(org=user.organization).order_by('-date_end')[0:24]:
         periods.append({'id': p.id, 'date_start': date.strftime(timezone.localtime(p.date_start, tz), '%m/%d/%Y'),
                        'date_end': date.strftime(timezone.localtime(p.date_end, tz), '%m/%d/%Y')})
     query_period = periods[0]

@@ -166,7 +166,6 @@ class InventoryItemTransferView(InventoryItemModelMixin, UpdateView):
     
     def form_valid(self, form):
         # Transfer logic is handled in the form_valid method of this view.
-
         return super().form_valid(form)
 
 class InventoryItemDeleteView(InventoryItemModelMixin, DeleteView):
