@@ -9,7 +9,7 @@ from . import tables
 from locations.models import Location
 from purchasing import views
 from purchasing import models as pmodels
-from .models import InventoryPart, InventoryMaterial, InventoryFood, InventoryItem
+from .models import InventoryPart, InventoryMaterial, InventoryFood, InventoryItem, InventoryItemTransaction
 from . import models
 from locations.models import Location
 from .forms import InventoryPartForm, InventoryMaterialForm, InventoryFoodForm
@@ -20,7 +20,33 @@ from employee.models import TimesheetUser
 from django.core.exceptions import ImproperlyConfigured
 import re
 class InventoryItemModelMixin():
-    
+    def log_transaction(self):
+        class_type = self.__class__.__name__.replace('View','').replace('InventoryItem','').capitalize()
+        object = self.object
+        print("object id for logging transaction: ", object.id)
+        # Compose notes and transaction type based on action type
+        if self.__class__== InventoryItemCreateView:
+            transaction_type = InventoryItemTransaction.TransactionType.CREATE
+            # notes = f"{class_type} quantity of {object.quantity} {object.units} of {object.item.name} in {object.location}."
+        elif self.__class__== InventoryItemUpdateView:
+            transaction_type = InventoryItemTransaction.TransactionType.UPDATE
+            # notes = f"{class_type} quantity of {object.quantity} {object.units} of {object.item.name} in {object.location}."    
+        elif self.__class__== InventoryItemDeleteView:
+            transaction_type = InventoryItemTransaction.TransactionType.DELETE
+            # notes =f"{class_type} {object.item.name} in {object.location}."
+        InventoryItemTransaction.objects.create(
+            inventory_item_id=object.id,
+            location=object.location,
+            item=object.item,
+            quantity=object.quantity,
+            units = object.units,
+            transaction_type=transaction_type,
+            performed_by=TimesheetUser.objects.filter(user_id=self.request.user.id).first(),
+            # notes = notes
+        )
+
+        # print("Logging transaction for ", object, " of type ", class_type)
+        
     def get_object(self, queryset=None):
         model_name = self.kwargs.get('model_name').lower()
         if model_name == 'part':
@@ -62,6 +88,9 @@ class InventoryItemModelMixin():
             context['success_url'] = self.kwargs.get("success_url")
         if self.__class__== InventoryItemCreateView:
             context['form_type'] = 'create'
+        elif self.__class__== InventoryItemTransferView:
+            context['form_type'] = 'transfer'
+            context['pk'] = self.kwargs.get('pk')
         else:
             context['form_type'] = 'update'
             context['pk'] = self.kwargs.get('pk')
@@ -69,6 +98,16 @@ class InventoryItemModelMixin():
         context['location_search_select'] = {'id': 'location'}
         return context
     
+    def form_valid(self, form):
+        # the form_valid method in this mixin logs the transaction after saving the form for create, update, and delete views. Transfers are handled separately.
+        if self.__class__ == InventoryItemCreateView:
+            response = super().form_valid(form)
+            self.log_transaction()
+            return response
+        else:
+            # response = super().form_valid(form)
+            self.log_transaction()
+            return super().form_valid(form)
 
 class InventoryItemCreateView(InventoryItemModelMixin, CreateView):
     # fields = ['field1', 'field2'] # Fields to include in the form
@@ -105,7 +144,6 @@ class InventoryItemCreateView(InventoryItemModelMixin, CreateView):
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 
-
 class InventoryItemUpdateView(InventoryItemModelMixin, UpdateView):
     model = models.InventoryMaterial
     # fields = ['field1', 'field2']
@@ -117,6 +155,18 @@ class InventoryItemUpdateView(InventoryItemModelMixin, UpdateView):
         kwargs['disabled_fields'] = ['item', 'location']
         return kwargs
     
+class InventoryItemTransferView(InventoryItemModelMixin, UpdateView):
+    model = models.InventoryPart
+    template_name = 'inventory/_item_form.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['disabled_fields'] = ['item']
+        return kwargs
+    
+    def form_valid(self, form):
+        # Transfer logic is handled in the form_valid method of this view.
+        return super().form_valid(form)
 
 class InventoryItemDeleteView(InventoryItemModelMixin, DeleteView):
     model = models.InventoryPart
@@ -213,3 +263,111 @@ def get_items(request):
         results = getattr(models, item_type.capitalize()).objects.filter(Q(name__icontains=query) | Q(description__icontains=query))
         data = [{'id': obj.pk, 'text': str(obj)} for obj in results]
         return JsonResponse({'results': data})
+
+
+class TempInventoryItemTransferView(LoginRequiredMixin, InventoryItemModelMixin,UpdateView):
+    """
+    View to transfer inventory items between locations.
+    Adds/updates item in new location and subtracts from old location.
+    """
+    model = models.InventoryItem
+    template_name = 'inventory/transfer_item_form.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['model_name'] = self.kwargs.get('model_name', 'part').lower()
+        context['available_locations'] = Location.objects.exclude(id=self.object.location.id)
+        context['source_location'] = self.object.location
+        context['item'] = self.object.item
+        return context
+    
+    def form_valid(self, form):
+        """
+        Handle the transfer logic:
+        1. Get the quantity to transfer
+        2. Get the destination location from POST
+        3. Subtract from source location
+        4. Add/update in destination location
+        5. Log transactions
+        """
+        from django.db import transaction
+        from django.contrib.auth.models import User
+        
+        source_inventory = self.object
+        transfer_quantity = form.cleaned_data['quantity']
+        destination_location_id = self.request.POST.get('destination_location')
+        
+        if not destination_location_id:
+            form.add_error(None, "Please select a destination location.")
+            return self.form_invalid(form)
+        
+        # Validate transfer quantity
+        if transfer_quantity <= 0:
+            form.add_error('quantity', "Transfer quantity must be greater than 0.")
+            return self.form_invalid(form)
+        
+        if transfer_quantity > source_inventory.quantity:
+            form.add_error('quantity', f"Cannot transfer more than available quantity ({source_inventory.quantity}).")
+            return self.form_invalid(form)
+        
+        try:
+            with transaction.atomic():
+                destination_location = Location.objects.get(id=destination_location_id)
+                model_name = self.kwargs.get('model_name', 'part').lower()
+                model_class = self.model
+                
+                # Update source location - subtract quantity
+                source_inventory.quantity -= transfer_quantity
+                source_inventory.save()
+                
+                # Add or update destination location
+                destination_inventory, created = model_class.objects.get_or_create(
+                    item=source_inventory.item,
+                    location=destination_location,
+                    defaults={
+                        'quantity': transfer_quantity,
+                        'units': source_inventory.units
+                    }
+                )
+                
+                if not created:
+                    destination_inventory.quantity += transfer_quantity
+                    destination_inventory.save()
+                
+                # Log source transfer transaction
+                current_user = TimesheetUser.objects.filter(user_id=self.request.user.id).first()
+                
+                InventoryItemTransaction.objects.create(
+                    location=source_inventory.location,
+                    item=source_inventory.item,
+                    quantity=transfer_quantity,
+                    transaction_type=InventoryItemTransaction.TransactionType.SOURCE_TRANSFER,
+                    performed_by=current_user,
+                    notes=f"Transferred {transfer_quantity} {source_inventory.units} to {destination_location.name}"
+                )
+                
+                # Log destination transfer transaction
+                InventoryItemTransaction.objects.create(
+                    location=destination_location,
+                    item=source_inventory.item,
+                    quantity=transfer_quantity,
+                    transaction_type=InventoryItemTransaction.TransactionType.DESTINATION_TRANSFER,
+                    performed_by=current_user,
+                    notes=f"Received {transfer_quantity} {source_inventory.units} from {source_inventory.location.name}"
+                )
+        
+        except Location.DoesNotExist:
+            form.add_error(None, "Selected destination location does not exist.")
+            return self.form_invalid(form)
+        except Exception as e:
+            form.add_error(None, f"Transfer failed: {str(e)}")
+            return self.form_invalid(form)
+        
+        return redirect(self.get_success_url())
+    
+    def get_success_url(self):
+        return reverse_lazy('inventory_item_list', kwargs={
+            'lookup_type': 'location',
+            'lookup_id': self.object.location.id,
+            'model_name': self.kwargs.get('model_name', 'part').lower()
+        })

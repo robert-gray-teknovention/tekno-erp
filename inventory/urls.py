@@ -1,10 +1,12 @@
-from django.urls import path
+from django.urls import include, path
 from .views import (
     InventoryItemListView, InventoryItemListByItemIdView, InventoryItemCreateView,
-    InventoryItemUpdateView, InventoryItemDeleteView, InventoryFilteredListView, get_items
+    InventoryItemUpdateView, InventoryItemDeleteView, InventoryFilteredListView, get_items,
+    InventoryItemTransferView
 )
 
 urlpatterns = [
+    path('apis/', include('inventory.apis.urls')),
     path('', InventoryFilteredListView.as_view(), name='inventory_list'),
     path('<str:model_name>/', InventoryFilteredListView.as_view(), name='inventory_list'),
     path('item/<str:model_name>/<str:lookup_type>/<int:lookup_id>/', InventoryItemListView.as_view(), name='inventory_item_list'),
@@ -17,8 +19,10 @@ urlpatterns = [
     path('edit/<int:pk>', InventoryItemUpdateView.as_view(), name='inventory_edit'),
     path('edit/<int:pk>/<str:model_name>/<int:initial_id>/<str:success_url>/', InventoryItemUpdateView.as_view(), name='inventory_edit'),
     path('edit/<int:pk>/<str:model_name>/<str:initial_type>/<int:initial_id>/<str:success_url>/', InventoryItemUpdateView.as_view(), name='inventory_edit'),
+    path('transfer/<int:pk>/<str:model_name>/', InventoryItemTransferView.as_view(), name='inventory_transfer'),
     path('items/search/', get_items, name='search_inventory_items'),
     path('delete/<int:pk>/<str:model_name>/<int:initial_id>/<str:success_url>/', InventoryItemDeleteView.as_view(), name='inventory_delete'),
     # path('<int:pk>/delete/<int:parent_id>', InventoryItemDeleteView.as_view(), name='inventory_delete'),
     # path('<int:pk>/', InventoryItemDetailView.as_view(), name='inventory_detail'),
+   
 ]
