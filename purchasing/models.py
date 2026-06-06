@@ -91,7 +91,7 @@ class Part(Item):
         q = ''
         for f in self.inventorypart_set.all():
             q+= '(' + str(f.quantity) + ' ' + f.units + ')'
-        return q
+        return q            
     
 class SubscriptionType(ItemType):
     pass

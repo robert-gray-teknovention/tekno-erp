@@ -27,6 +27,6 @@ class Location(models.Model):
             for child in self.children.all():
                 child.duplicate(False, new_loc)
     
-    def save(self):
+    def save(self, *args, **kwargs):
         self.full_path=self.__str__()
         super().save()
