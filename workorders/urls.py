@@ -9,6 +9,7 @@ from .views import (
     WorkEntryUpdateView,
     WorkEntryDeleteView,
     WorkEntryListView,
+    TimesheetEntryPromotionView,
 )
 
 app_name = 'workorders'
@@ -26,4 +27,5 @@ urlpatterns = [
     path('workentries/add/', WorkEntryCreateView.as_view(), name='workentry-add'),
     path('workentries/<int:pk>/edit/', WorkEntryUpdateView.as_view(), name='workentry-edit'),
     path('workentries/<int:pk>/delete/', WorkEntryDeleteView.as_view(), name='workentry-delete'),
+    path('timesheetentries/<int:pk>/promote/', TimesheetEntryPromotionView.as_view(), name='timesheetentry-promote'),
 ]

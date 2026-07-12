@@ -9,7 +9,7 @@ class WorkOrderTable(tables.Table):
     def render_request(self, value, record):
         # Link the request text to the edit page for the workorder
         short = (value[:75] + '...') if value and len(value) > 75 else (value or "")
-        return format_html("<a href='{}'>{}</a>", f"/workorders/{record.id}/", short)
+        return format_html("<a href='{}' data-work-order-id='{}'>{}</a>", f"/workorders/{record.id}/", record.id, short)
 
     def render_assigned_to(self, value, record):
         # Join M2M assigned_to display names
@@ -26,6 +26,16 @@ class WorkOrderTable(tables.Table):
         sequence = ("id", "create_date", "project", "equipment", "status", "assigned_to", "request", "actions")
         exclude = ("notes", "is_active", "creator", "start_date", "end_date", "scheduled_at")
 
+class WorkOrderListTable(tables.Table):
+    select = tables.TemplateColumn(
+        template_code="<input type='radio' name='work_order' value='{{record.id}}'>",
+        verbose_name="Select",
+        orderable=False,
+    )
+
+    class Meta:
+        model = WorkOrder
+        fields = ("select", "id", "create_date", "project", "equipment", "status", "assigned_to", "request")
 
 class WorkEntryTable(tables.Table):
     def render_notes(self, value, record):

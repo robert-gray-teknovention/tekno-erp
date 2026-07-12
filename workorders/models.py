@@ -34,4 +34,25 @@ class WorkOrder(models.Model):
 class WorkEntry(TimesheetEntry):
     work_order = models.ForeignKey(WorkOrder, on_delete=models.CASCADE)
     def __str__(self):
-        return f"WorkEntry for WorkOrder {self.work_order.id} - {self.description}" 
+        return f"WorkEntry for WorkOrder {self.work_order.id} - {self.description}"
+    
+    @classmethod
+    def from_timesheet(cls, timesheet_entry, work_order):
+        """
+        Promotes an existing TimesheetEntry into a WorkEntry subclass instance.
+        """
+        # 1. Initialize the subclass with the parent pointer ID
+        instance = cls(
+            timesheetentry_ptr_id=timesheet_entry.pk,
+            work_order=work_order
+        )
+        
+        # 2. Copy all data fields from the existing parent
+        instance.__dict__.update(timesheet_entry.__dict__)
+        
+        # 3. Tell Django the base row already exists in the database
+        instance._state.adding = False
+        
+        # 4. Save and return the newly linked child instance
+        instance.save()
+        return instance    

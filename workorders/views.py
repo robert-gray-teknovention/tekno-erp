@@ -8,12 +8,20 @@ from django_tables2 import RequestConfig
 
 from documentation.models import TimesheetEntryDocumentation
 from projects.models import Project
-from .tables import WorkOrderTable, WorkEntryTable
+from .tables import WorkOrderTable, WorkEntryTable, WorkOrderListTable
 from django.db.models import Q
 from .models import WorkOrder, WorkEntry
 from .forms import WorkOrderForm, WorkEntryForm, WorkEntryInlineForm
 from employee.models import TimesheetUser
-from timesheets.models import TimesheetPeriod
+from timesheets.models import TimesheetEntry, TimesheetPeriod
+
+
+class WorkOrderSearchMixin:
+    def apply_workorder_search(self, queryset):
+        q = self.request.GET.get('q')
+        if q:
+            return queryset.filter(Q(request__icontains=q) | Q(project__name__icontains=q))
+        return queryset
 
 
 # WorkOrder views
@@ -37,7 +45,7 @@ class WorkOrderDeleteView(DeleteView):
     success_url = reverse_lazy("workorders:workorder-list")
 
 
-class WorkOrderListView(LoginRequiredMixin, SingleTableView):
+class WorkOrderListView(LoginRequiredMixin, WorkOrderSearchMixin, SingleTableView):
     model = WorkOrder
     table_class = WorkOrderTable
     template_name = "workorders/workorder_list.html"
@@ -45,12 +53,7 @@ class WorkOrderListView(LoginRequiredMixin, SingleTableView):
 
     def get_queryset(self):
         qs = super().get_queryset()
-        q = self.request.GET.get('q')
-        if q:
-            qs = qs.filter(
-                Q(request__icontains=q)
-            )
-        return qs
+        return self.apply_workorder_search(qs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -200,3 +203,44 @@ class WorkEntryListView(LoginRequiredMixin, SingleTableView):
         context = super().get_context_data(**kwargs)
         context['q'] = self.request.GET.get('q', '')
         return context
+
+class TimesheetEntryPromotionView(LoginRequiredMixin, WorkOrderSearchMixin, SingleTableView):
+    model = WorkOrder
+    table_class = WorkOrderListTable
+    template_name = 'workorders/tse_woe_promote.html'
+    table_pagination = {"per_page": 20}
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return self.apply_workorder_search(qs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['timesheet_entry'] = self.get_timesheet_entry()
+        context['q'] = self.request.GET.get('q', '')
+        return context
+
+    def get_timesheet_entry(self):
+        return TimesheetEntry.objects.filter(pk=self.kwargs.get('pk')).first()
+
+    def post(self, request, *args, **kwargs):
+        timesheet_entry = self.get_timesheet_entry()
+        if not timesheet_entry:
+            return redirect(reverse_lazy('workorders:workentry-list'))
+
+        work_order_pk = request.POST.get('work_order')
+        if not work_order_pk:
+            return redirect(reverse_lazy('workorders:workentry-list'))
+
+        work_order = WorkOrder.objects.filter(pk=work_order_pk).first()
+        if not work_order:
+            return redirect(reverse_lazy('workorders:workentry-list'))
+
+        existing_entry = WorkEntry.objects.filter(timesheetentry_ptr=timesheet_entry).first()
+        if existing_entry is None:
+            WorkEntry.from_timesheet(timesheet_entry, work_order)
+        else:
+            existing_entry.work_order = work_order
+            existing_entry.save(update_fields=['work_order'])
+
+        return redirect(reverse_lazy('workorders:workorder-detail', kwargs={'pk': work_order.pk}))

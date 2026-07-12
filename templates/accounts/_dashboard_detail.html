@@ -4,9 +4,10 @@
   <div class="row">
     <div class="col-md-12 bg-light text-right">
         <a href="{%url 'dashboard'%}?project_id={{selected_project}}&period_id={{selected_period}}" class="btn btn-primary">Back</a>
-
+        {% if entry.id %}
+        <a href="{% url 'workorders:timesheetentry-promote' entry.id %}" class="btn btn-outline-primary ms-2">Promote to Work Order</a>
+        {% endif %}
     </div>
-
   </div>
   <div class="row">
     <div class="col-md-12">
