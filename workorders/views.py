@@ -20,8 +20,8 @@ class WorkOrderSearchMixin:
     def apply_workorder_search(self, queryset):
         q = self.request.GET.get('q')
         if q:
-            return queryset.filter(Q(request__icontains=q) | Q(project__name__icontains=q))
-        return queryset
+            return queryset.filter(Q(request__icontains=q) | Q(project__name__icontains=q)).order_by('-start_date')
+        return queryset.order_by('-start_date')
 
 
 # WorkOrder views
