@@ -12,9 +12,13 @@ class Project(models.Model):
     owner = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     contributors = models.ManyToManyField(User, related_name='projects', blank=True)
     organizations = models.ManyToManyField(Organization, related_name='projects', blank=True)
+    class Meta:
+        ordering = ['name', '-start_date']
 
     def __str__(self):
         return self.name
+
+    
 
 
 class ProjectDocumentation(models.Model):
